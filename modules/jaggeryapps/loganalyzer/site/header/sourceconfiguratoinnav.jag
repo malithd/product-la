@@ -1,0 +1,9 @@
+<div class="navbar-wrapper">
+	<div id="nav" class="row wr-app-bar row-centered">
+		<a href="" class="btn-action btn-lg" data-toggle="tooltip" data-placement="top" title="Input"><i class="fa fa-sign-in fa-fw "></i>Input</a>
+		<a href="" class="btn-action btn-lg" data-toggle="tooltip" data-placement="top" title="Input"><i class="fa fa-filter fa-fw"></i>Filter</a>
+		<a href="" class="btn-action btn-lg" data-toggle="tooltip" data-placement="top" title="Input"><i class="fa fa-sign-out fa-fw"></i>Output</a>
+		<a href="" class="btn-action btn-lg" data-toggle="tooltip" data-placement="top" title="Input"><i class="fa fa-check-circle-o fa-fw"></i>Verify</a>
+		<a href="" class="btn-action btn-lg" data-toggle="tooltip" data-placement="top" title="Input"><i class="fa fa-code fa-fw"></i>Source</a>
+	</div>
+</div>
