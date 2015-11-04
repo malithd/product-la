@@ -27,7 +27,6 @@
 <body>
 
     <div class="container col-lg-12 col-md-12 col-sm-12">
-
         <header>
             <div class="row wr-global-header">
                 <div class="col-sm-8 app-logo">
@@ -77,15 +76,14 @@
 				<div class="row row-centered">
 
 					<div class="ctrl-summary-navigator col-centered" id="ctrl-add-data">
-						<!--<a href="../data/datasets.jag" class="no-deco">-->
 							<h3>Add Data <i class="fa fa-database float-right"></i></h3>
 							<div class="content">
-								<p>Dataset is a collection of data organized according to a defined schema in an CSV or TSV format. Datasets can be uploaded from file system, HDFS or WSO2 DAS.</p>
+								<p>You can feed the Log Analyzer with different kinds of file sources. File upload and agents are the most popular.</p>
 							</div>
 						<!--</a>-->
 						<div class="bg-summary-actions">
-							<label><a href="../data/datasets.jag">You have (<span id="dataset-count">0</span>) Datasets</a></label>
-							<a href="../data/adddata.jag" class="btn-summary btn-add-new">Add Data</a>
+							<label><a href="#">You have (<span id="dataset-count">0</span>) Datasets</a></label>
+							<a href="#" class="btn-summary btn-add-new">Add Data</a>
 						</div>
 					</div>
 
@@ -97,9 +95,8 @@
 							</div>
 						</a>
 						<div class="bg-summary-actions">
-							<!-- <label><a href="../project/projects.jag">You have (0) Projects</a></label> -->
 							<label><a href="../project/projects.jag">You have (<span id="project-count">0</span>) Projects</a></label>
-							<a href="../project/create_project.jag" class="btn-summary btn-add-new">Explore</a>
+							<a href="#" class="btn-summary btn-add-new">Explore</a>
 						</div>		
 					</div>
 
@@ -113,7 +110,7 @@
 						<div class="bg-summary-actions">
 							<!-- <label><a href="../project/projects.jag">You have (0) Projects</a></label> -->
 							<label><a href="../project/projects.jag">You have (<span id="project-count">0</span>) Projects</a></label>
-							<a href="../project/create_project.jag" class="btn-summary btn-add-new">Add Project</a>
+							<a href="#" class="btn-summary btn-add-new">Add Project</a>
 						</div>
 					</div>
 
@@ -125,32 +122,32 @@
 	</div>
 </div>
 
-<div class="row">
+<div class="row row-centered">
         <div class="add-data-operation middle-banner" style="display:none">
             <div class="clearfix"></div>
-            <div class="col-sm-8 col-md-8 col-lg-7">
-                <h2 class="app-type-name">How Do You want to add Data?</h2>
-                <div class="app-description"> You can either upload a file or configure log agent as data <sources></sources>
+            <div class="col-sm-8 col-md-8 col-lg-7 col-centered">
+                <h2 class="operation-name">How Do You want to add Data?</h2>
+                <div class="operation-description"> You can either upload a file or configure log agent as data <sources></sources>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-3">
-                        <a href="#">
+                <div class="row row-centered">
+                    <div class="col-md-3 col-centered">
+                        <a href="../data/upload.jag">
                            <span class="fa-stack fa-4x">
                               <i class="fa fa-circle-thin fa-stack-2x"></i>
                               <i class="fa fa-upload fa-stack-1x"></i>
                             </span></a>
                             <h3>Upload</h3>
                     </div>
-                    <div class="col-md-3">
-                        <a href="#">
+                    <div class="col-md-3 col-centered">
+                        <a href="../data/agent.jag">
                            <span class="fa-stack fa-4x">
                               <i class="fa fa-circle-thin fa-stack-2x"></i>
                               <i class="fa fa-paper-plane fa-stack-1x"></i>
                             </span></a>
                             <h3>Agents</h3>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-centered">
                         <a href="#">
                            <span class="fa-stack fa-4x">
                               <i class="fa fa-circle-thin fa-stack-2x"></i>
@@ -224,14 +221,10 @@ $( document ).ready(function() {
 </script>
 
 <script>
-    /**
-     * this function use to append description block on app type selection
-     * */
     $(document).on('click', '#ctrl-add-data', function(){
         $(".add-data-operation").toggle()
 
     })
-
 
 </script>
 

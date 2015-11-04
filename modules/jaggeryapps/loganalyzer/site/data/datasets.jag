@@ -100,7 +100,7 @@
 
 			<div id="notification-area"></div>
 			<div class="ctrl-info-panel col-md-12 col-centered">
-				<p><a href="adddata.jag" id="create-dataset" class="cu-level2-btn btn-add-new-dark" data-toggle="tooltip" data-original-title="Create Dataset"><span>Create Dataset</span></a></p>
+				<p><a href="upload.jag" id="create-dataset" class="cu-level2-btn btn-add-new-dark" data-toggle="tooltip" data-original-title="Create Dataset"><span>Create Dataset</span></a></p>
 			</div>
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"></div>
 
