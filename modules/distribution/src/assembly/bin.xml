@@ -285,6 +285,14 @@
             </includes>
         </fileSet>
 
+        <fileSet>
+            <directory>../jaggeryapps/loganalyzer</directory>
+            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/loganalyzer/</outputDirectory>
+            <includes>
+                <include>**/**</include>
+            </includes>
+        </fileSet>
+
     </fileSets>
 
     <files>
