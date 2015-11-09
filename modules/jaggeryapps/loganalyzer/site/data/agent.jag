@@ -3,14 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WSO2 Machine Learner</title>
+    <title>WSO2 Log Analyzer</title>
     <link rel="icon" href="../../images/favicon.png" type="image/x-icon" />    
-    <link href="../../css/bootstrap.css" rel="stylesheet">
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
     <link href="../../css/custom.css" rel="stylesheet">
-    <link href="../../css/custom-theme.css" rel="stylesheet">
     <link href="../../css/font-awesome.min.css" rel="stylesheet">
-    <link href="../../css/jquery.dataTables.min.css" rel="stylesheet">
-    <script src="../../js/respond.min.js"></script>
+
 
     <% include("../../includes/tenantAware.jag"); %>
 
@@ -31,132 +29,66 @@
 <!-- content/body -->
 <div class="container-fluid">
     <div class="row">
-        <!--<div class="col-sm-3 col-md-2 sidebar">-->
-          <!--<ul class="nav nav-sidebar">-->
-            <!--<li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>-->
-            <!--<li><a href="#">Reports</a></li>-->
-            <!--<li><a href="#">Analytics</a></li>-->
-            <!--<li><a href="#">Export</a></li>-->
-          <!--</ul>-->
-          <!--<ul class="nav nav-sidebar">-->
-            <!--<li><a href="">Nav item</a></li>-->
-            <!--<li><a href="">Nav item again</a></li>-->
-            <!--<li><a href="">One more nav</a></li>-->
-            <!--<li><a href="">Another nav item</a></li>-->
-            <!--<li><a href="">More navigation</a></li>-->
-          <!--</ul>-->
-          <!--<ul class="nav nav-sidebar">-->
-            <!--<li><a href="">Nav item again</a></li>-->
-            <!--<li><a href="">One more nav</a></li>-->
-            <!--<li><a href="">Another nav item</a></li>-->
-          <!--</ul>-->
-        <!--</div>-->
+         <div class="col-md-2">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingOne">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Collapsible Group Item #1
+        </a>
+      </h4>
     </div>
-
-    <div class="row">
-        <div class="col-md-2">
-        <div class="dd" id="nestable2">
-            <ol class="dd-list">
-                <li class="dd-item" data-id="1">
-                    <div class="dd-handle">
-                        <span class="label label-info"><i class="fa fa-users"></i></span> Cras ornare tristique.
-                    </div>
-                    <ol class="dd-list">
-                        <li class="dd-item" data-id="2">
-                            <div class="dd-handle">
-                                <span class="pull-right"> 12:00 pm </span>
-                                <span class="label label-info"><i class="fa fa-cog"></i></span> Vivamus vestibulum nulla nec ante.
-                            </div>
-                        </li>
-                        <li class="dd-item" data-id="3">
-                            <div class="dd-handle">
-                                <span class="pull-right"> 11:00 pm </span>
-                                <span class="label label-info"><i class="fa fa-bolt"></i></span> Nunc dignissim risus id metus.
-                            </div>
-                        </li>
-                        <li class="dd-item" data-id="4">
-                            <div class="dd-handle">
-                                <span class="pull-right"> 11:00 pm </span>
-                                <span class="label label-info"><i class="fa fa-laptop"></i></span> Vestibulum commodo
-                            </div>
-                        </li>
-                    </ol>
-                </li>
-
-                <li class="dd-item" data-id="5">
-                    <div class="dd-handle">
-                        <span class="label label-warning"><i class="fa fa-users"></i></span> Integer vitae libero.
-                    </div>
-                    <ol class="dd-list">
-                        <li class="dd-item" data-id="6">
-                            <div class="dd-handle">
-                                <span class="pull-right"> 15:00 pm </span>
-                                <span class="label label-warning"><i class="fa fa-users"></i></span> Nam convallis pellentesque nisl.
-                            </div>
-                        </li>
-                        <li class="dd-item" data-id="7">
-                            <div class="dd-handle">
-                                <span class="pull-right"> 16:00 pm </span>
-                                <span class="label label-warning"><i class="fa fa-bomb"></i></span> Vivamus molestie gravida turpis
-                            </div>
-                        </li>
-                        <li class="dd-item" data-id="8">
-                            <div class="dd-handle">
-                                <span class="pull-right"> 21:00 pm </span>
-                                <span class="label label-warning"><i class="fa fa-child"></i></span> Ut aliquam sollicitudin leo.
-                            </div>
-                        </li>
-                    </ol>
-                </li>
-            </ol>
-        </div>
-        </div>
-         <textarea id="nestable2-output" class="form-control"></textarea>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </div>
     </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingTwo">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Collapsible Group Item #2
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+      <div class="panel-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingThree">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Collapsible Group Item #3
+        </a>
+      </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+      <div class="panel-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </div>
+    </div>
+  </div>
 </div>
 
+         </div>
+         <div class="clo-md-10">
 
-<div id="content-asset-types" style="display: none">
-    <div>
-        <a class="ast-type-item" href="../project/projects.jag"><img src="../../images/icons/ico-projects.png" /><span>Projects</span></a>
-        <a class="ast-type-item" href="../data/datasets.jag"><img src="../../images/icons/ico-datasets.png" /><span>Datasets</span></a>
+         </div>
     </div>
+
 </div>
+
 
 <script src="../../js/jquery-1.11.1.min.js"></script>
 <script src="../../js/bootstrap.min.js"></script>
-<script src="../../js/jquery.form.min.js"></script>
-<script src="../../js/jquery.nestable.js"></script>
-<script src="../../js/jquery.dataTables.js"></script>
 
 <script type="text/javascript">
     $( document ).ready(function() {
-        var updateOutput = function (e) {
-             var list = e.length ? e : $(e.target),
-                     output = list.data('output');
-             if (window.JSON) {
-                 output.val(window.JSON.stringify(list.nestable('serialize')));//, null, 2));
-             } else {
-                 output.val('JSON browser support required for this demo.');
-             }
-         };
-         $('#nestable2').nestable({
-             group: 1
-         }).on('change', updateOutput);
-
-         // output initial serialised data
-         updateOutput($('#nestable2').data('output', $('#nestable2-output')));
-
-         $('#nestable-menu').on('click', function (e) {
-             var target = $(e.target),
-                     action = target.data('action');
-             if (action === 'expand-all') {
-                 $('.dd').nestable('expandAll');
-             }
-             if (action === 'collapse-all') {
-                 $('.dd').nestable('collapseAll');
-             }
-         });
 
     });
 </script>
