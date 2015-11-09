@@ -18,8 +18,8 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wso2.la</groupId>
-    <artifactId>wso2la-parent</artifactId>
+    <groupId>org.wso2.carbon.la</groupId>
+    <artifactId>wso2-la</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
     <name>WSO2 Log Analyzer</name>
@@ -36,7 +36,8 @@
     <modules>
         <module>modules/org.wso2.cep.storm.dependencies</module>
         <module>modules/styles</module>
-        <!--module>modules/features</module-->
+        <module>modules/components</module>
+        <module>modules/features</module>
         <module>modules/p2-profile-gen</module>
         <module>modules/distribution</module>
     </modules>
@@ -257,6 +258,80 @@
             </dependency>
             <!-- END - MT Dashboard-->
 
+            <!-- Dependencies for Rest API -->
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.user.core</artifactId>
+                <version>${carbon.kernel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+                <version>${apache.cxf.jaxrs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.equinox</groupId>
+                <artifactId>javax.servlet</artifactId>
+                <version>${javax.servlet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-api</artifactId>
+                <version>${apache.cxf.jaxrs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>${codehaus.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jaxen</groupId>
+                <artifactId>jaxen</artifactId>
+                <version>${jaxen.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>${codehaus.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-jaxrs</artifactId>
+                <version>${codehaus.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.governance</groupId>
+                <artifactId>org.wso2.carbon.governance.api</artifactId>
+                <version>${carbon.kernel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.core</artifactId>
+                <version>${carbon.kernel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.registry.core</artifactId>
+                <version>${carbon.kernel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.registry.api</artifactId>
+                <version>${carbon.kernel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.orbit.org.htrace</groupId>
+                <artifactId>htrace-core</artifactId>
+                <version>${orbit.version.htrace}</version>
+            </dependency>
+            <!-- End dependencies for REST API -->
+
             <!--START - Samples Dependencies-->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
@@ -339,6 +414,26 @@
                 <version>${geoip.api.version}</version>
             </dependency>
             <!--END - Samples Dependencies-->
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wso2.carbon.la</groupId>
+                <artifactId>org.wso2.carbon.la.rest.api</artifactId>
+                <version>${la.version}</version>
+                <type>war</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wso2.carbon.analytics</groupId>
+                <artifactId>org.wso2.carbon.analytics.datasource.commons</artifactId>
+                <version>${carbon.analytics.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -371,7 +466,7 @@
     </profiles>
 
     <properties>
-
+        <la.version>1.0.0-SNAPSHOT</la.version>
         <carbon.kernel.version>4.4.2</carbon.kernel.version>
 
         <carbon.analytics.version>1.0.4</carbon.analytics.version>
@@ -423,6 +518,19 @@
         <geoip.api.version>1.2.15</geoip.api.version>
 
         <project.scm.id>my-scm-server</project.scm.id>
+
+        <!--Rest API Dependency versions -->
+        <codehaus.jackson.version>1.8.6</codehaus.jackson.version>
+        <apache.cxf.jaxrs.version>2.5.1</apache.cxf.jaxrs.version>
+        <junit.version>4.12</junit.version>
+        <jaxen.version>1.1.1</jaxen.version>
+        <xml.apis.version>1.4.01</xml.apis.version>
+        <apache.httpcore.version>4.3.3.wso2v1</apache.httpcore.version>
+        <apache.httpclient.version>4.3.1.wso2v1</apache.httpclient.version>
+
+        <commons-lang3.version>3.3.2</commons-lang3.version>
+        <javax.servlet.version>3.0.0.v201112011016</javax.servlet.version>
+
     </properties>
 
     <pluginRepositories>
