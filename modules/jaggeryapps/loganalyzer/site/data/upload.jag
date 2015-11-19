@@ -3,14 +3,17 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WSO2 Machine Learner</title>
+    <title>WSO2 Log Analyzer</title>
     <link rel="icon" href="../../images/favicon.png" type="image/x-icon" />    
-    <link href="../../css/bootstrap.css" rel="stylesheet">
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
     <link href="../../css/custom.css" rel="stylesheet">
     <link href="../../css/custom-theme.css" rel="stylesheet">
     <link href="../../css/font-awesome.min.css" rel="stylesheet">
     <link href="../../css/jquery.dataTables.min.css" rel="stylesheet">
     <script src="../../js/respond.min.js"></script>
+    <script src="../../js/custom-file-input.js"></script>
+    <link href="../../css/filedrag.css" rel="stylesheet">
+<script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
 
     <% include("../../includes/tenantAware.jag"); %>
 
@@ -31,100 +34,176 @@
 <!-- secondary header - app bar -->
 
 <!-- content/body -->
-<div class="row">
-</div>
-
 
 <div class="row">
 <div class="col-md-12">
 
 
-    <!-- content -->
-    <div class="container col-md-12 col-centered wr-content">
+        <!-- content -->
+        <form id="upload-logfile-form" method="POST" enctype="multipart/form-data">
+        <div class="container col-md-12 col-centered wr-content">
 
-        <div id="notification-area"></div>
-        <div class="wr-form col-lg-5 col-centered">
+            <div id="notification-area"></div>
+            <div class="wr-form col-md-4">
+                <h1 class="title">Upload Log File</h1>
+                <div class="text-center">
 
-            <h1 class="title">Create Dataset</h1>
+                    <style>
+                    #holder { border: 10px dashed #ccc; width: 300px; min-height: 300px; margin: 20px auto;}
+                    #holder.hover { border: 10px dashed #6c5c76; }
+                    #holder img { display: block; margin: 10px auto; }
+                    #holder p { margin: 10px; font-size: 14px; }
+                    progress { width: 100%; }
+                    progress:after { content: '%'; }
+                    .fail { background: #c00; padding: 2px; color: #fff; }
+                    .hidden { display: none !important;}
+                    </style>
+                    <article>
+                        <div id="holder">
+                        <div class="text-center">
+                        Drag File
+                        </div>
+                        </div>
+                        <p id="upload" class="hidden"><label>Drag & drop not supported, but you can still upload via this input field:<br/><input type="file"></label></p>
+                        <p id="filereader">File API & FileReader API not supported</p>
+                        <p id="formdata">XHR2's FormData is not supported</p>
+                        <p id="progress">XHR2's upload progress isn't supported</p>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                                <span class="sr-only">40% Complete (success)</span>
+                            </div>
+                        </div>
+                    </article>
+                    <script>
+                    var holder = document.getElementById('holder'),
+                        tests = {
+                          filereader: typeof FileReader != 'undefined',
+                          dnd: 'draggable' in document.createElement('span'),
+                          formdata: !!window.FormData,
+                          progress: "upload" in new XMLHttpRequest
+                        },
+                        support = {
+                          filereader: document.getElementById('filereader'),
+                          formdata: document.getElementById('formdata'),
+                          progress: document.getElementById('progress')
+                        },
+                        acceptedTypes = {
+                          'image/png': true,
+                          'image/jpeg': true,
+                          'image/gif': true
+                        },
+                        progress = document.getElementById('uploadprogress'),
+                        fileupload = document.getElementById('upload');
 
-               <form id="create-dataset-form" method="POST" enctype="multipart/form-data">
-                <label class="input-label">Dataset Name<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Name of the dataset to be uploaded."></span></label>
-                <span class="fld-required">*</span>
-                <div class="input-control text">
-                    <input type="text" value="" placeholder="e.g. Iris" id="dataset-name" name="datasetName"/>
-                    <!--span class="form-val-error">* Name for this Dataset is required.</span-->
+                    "filereader formdata progress".split(' ').forEach(function (api) {
+                      if (tests[api] === false) {
+                        support[api].className = 'fail';
+                      } else {
+                        // FFS. I could have done el.hidden = true, but IE doesn't support
+                        // hidden, so I tried to create a polyfill that would extend the
+                        // Element.prototype, but then IE10 doesn't even give me access
+                        // to the Element object. Brilliant.
+                        support[api].className = 'hidden';
+                      }
+                    });
+
+                    function previewfile(file) {
+                      if (tests.filereader === true && acceptedTypes[file.type] === true) {
+                        var reader = new FileReader();
+                        reader.onload = function (event) {
+                          var image = new Image();
+                          image.src = event.target.result;
+                          image.width = 250; // a fake resize
+                          holder.appendChild(image);
+                        };
+
+                        reader.readAsDataURL(file);
+                      }  else {
+                        holder.innerHTML += '<p>Uploaded ' + file.name + ' ' + (file.size ? (file.size/1024|0) + 'K' : '');
+                        console.log(file);
+                      }
+                    }
+
+                    function readfiles(files) {
+                        debugger;
+                        var formData = tests.formdata ? new FormData() : null;
+                        for (var i = 0; i < files.length; i++) {
+                          if (tests.formdata) formData.append('file', files[i]);
+                          previewfile(files[i]);
+                        }
+
+                        // now post a new XHR request
+                        if (tests.formdata) {
+                          var xhr = new XMLHttpRequest();
+                          xhr.open('POST', '/devnull.php');
+                          xhr.onload = function() {
+                            progress.value = progress.innerHTML = 100;
+                          };
+
+                          if (tests.progress) {
+                            xhr.upload.onprogress = function (event) {
+                              if (event.lengthComputable) {
+                                var complete = (event.loaded / event.total * 100 | 0);
+                                progress.value = progress.innerHTML = complete;
+                              }
+                            }
+                          }
+
+                          xhr.send(formData);
+                        }
+                    }
+
+                    if (tests.dnd) {
+                      holder.ondragover = function () { this.className = 'hover'; return false; };
+                      holder.ondragend = function () { this.className = ''; return false; };
+                      holder.ondrop = function (e) {
+                        this.className = '';
+                        e.preventDefault();
+                        readfiles(e.dataTransfer.files);
+                      }
+                    } else {
+                      fileupload.className = 'hidden';
+                      fileupload.querySelector('input').onchange = function () {
+                        readfiles(this.files);
+                      };
+                    }
+
+                    </script>
                 </div>
-
-                <label class="input-label">Version<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Version of the dataset to be uploaded."></span></label>
-                <span class="fld-required">*</span>
-                <div class="input-control text">
-                    <input type="text" value="1.0.0" placeholder="" id="dataset-version" name="version"/>
+                <br/>
+                <div class="text-center">
+                        <input type="file" name="file-upload" id="file-upload" class="inputfile inputfile-4"/>
+                        <label for="file-upload"><figure><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg></figure> <span>Choose a file&hellip;</span></label>
                 </div>
+            </div>
+            <div class="wr-form col-md-5">
+                  <br/> <br/> <br/>
 
-                <label class="input-label">Description<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Description on the dataset to be uploaded."></span></label>
-                <div class="input-control text">
-                    <textarea rows="3" id="dataset-desc" name="description"></textarea>
-                </div>
-
-                <label class="input-label">Source Type<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Type of your source of data. Type can only be one of 'File', 'HDFS' or 'DAS'."></span></label>
-                <div class="input-control text">
-                    <select class="form-control" id="src-type" name="sourceType">
-                      <option value="file">File</option>
-                      <option value="hdfs">HDFS</option>
-                      <option value="das">DAS</option>
-                    </select>
-                </div>
-
-                <label class="input-label">Data Source<span class="File Location"></span>  <span><label class="input-label" id="size-limit">(max size: 100MB)</label></span></label>
-                <span class="fld-required">*</span>
-                <!-- input for 'File' selection -->
-                <div id="source-file" class="input-control file info-state" data-role="input-control">
-                       <input type="file" id="fileInput" name="file"/>
-                </div>
-                <!-- dynamically loads inputs for HDFS and DAS -->
-                <div id="source-hdfs-das"></div>
-
-                <div id="source-das-table" class="wr-datalookup">
-                    <p class="p-note">* Select a table from the below list</p>
-                    <table id="datasetTable">
-                        <thead>
-                            <tr>
-                                <th style="width:40px"></th>
-                                <th>Table name</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-
-                <div id="not-das">
-
-                    <label class="input-label">Data Format<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Format of the data to be uploaded. Data can only be in CSV (comma separated values) or TSV (tab separated values) format."></span></label>
+                    <label class="input-label">Start Position<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Start Position Type choose where Log analyzer starts initially reading files: at the beginning or at the end."></span></label>
                     <div class="input-control text">
-                        <select class="form-control" id="data-format" name="dataFormat">
-                            <option value="csv">CSV</option>
-                            <option value="tsv">TSV</option>
+                        <select class="form-control" id="src-type" name="sourceType">
+                          <option value="file">Begining</option>
+                          <option value="hdfs">Ending</option>
                         </select>
                     </div>
 
-                    <label class="input-label">Column header available<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Whether you have the header row as the first row of the dataset or not. If your dataset does not have a header row, WSO2 ML will generate a header row similar to V1, V2 .. Vn"></span></label>
+                    <label class="input-label">Delimeter<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="set the new line delimiter."></span></label>
+                    <span class="fld-required">*</span>
                     <div class="input-control text">
-                        <select class="form-control" id="column-header" name="containsHeader">
-                             <option value="true">Yes</option>
-                              <option value="false">No</option>
-                        </select>
+                        <input type="text" value="\n" placeholder="" id="dataset-delimeter" name="delimeter"/>
                     </div>
 
-                </div>
+                    <label class="input-label">Tags<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Add any number of arbitrary tags to your event."></span></label>
+                    <div class="input-control text">
+                        <input type="text" value="1.0.0" placeholder="" id="dataset-tags" name="tags"/>
+                    </div>
 
-                <div class="btn-group-actions">
-                    <button class="btn btn-main" type="submit" id="submit-dataset">Create Dataset</button>
-                </div>
-            </form>
+            </div>
+
         </div>
+        </form>
+        <!-- /content -->
 
-    </div>
-    <!-- /content -->
 </div>
 </div>
 <!-- /content/body -->
@@ -134,7 +213,7 @@
 
 
 <!--footer class="footer">
-    <p>&copy; 2014 WSO2 Inc. All Rights Reserved</p>
+    <p>&copy; 2015 WSO2 Inc. All Rights Reserved</p>
 </footer-->
 
 <div id="content-asset-types" style="display: none">
@@ -153,33 +232,6 @@
 <script type="text/javascript">
 
 var baseUrl = getBaseUrl(window.location.href);
-
-function displayDataSource() {
-var dataSourceType = $('#src-type option:selected').text();
-if (dataSourceType == 'HDFS') {
-    $('#source-file, #size-limit, #source-das, #source-das-table').hide();
-    $('#not-das').show();
-    var hdfsInput = '<div id="source-hdfs" class="input-control text">' +
-                        '<input type="text" value="" placeholder="e.g. hdfs://localhost:9000/home/datasets/iris.csv" id="src-path" name="sourcePath" />' +
-                    '</div>';
-    $('#source-hdfs-das').html(hdfsInput);
-
-} else if (dataSourceType == 'DAS') {
-    $('#source-file, #size-limit, #source-hdfs, #not-das, #source-das-table').hide();
-    var dasInput = '<div id="source-das">' +
-                        '<div id="source-das-input" class="input-control text" style="position:relative">' +
-                            '<input type="text" value="" placeholder="" id="selected-table" name="sourcePath" readonly/><a style="position:absolute; right:0px" id="select-table" class="cu-level3-btn btn-set-dt" href="#"></a>' +
-                        '</div>' +
-                    '</div>';
-    $('#source-hdfs-das').html(dasInput);
-    loadDataTables();
-}
-else { // File
-    $('#source-hdfs-das').html("");
-    $('#source-das-table').hide();
-    $('#source-file, #size-limit, #not-das').show();
-}
-}
 
 $( document ).ready(function() {
 // Display only the correct dataSource input
@@ -200,7 +252,7 @@ $(".ctrl-asset-type-switcher").popover({
     }
 });
 
-$('#create-dataset-form').ajaxForm({
+$('#upload-logfile-form').ajaxForm({
     url: baseUrl + '/api/datasets',
 
     beforeSubmit: function(arr, $form, options) {
@@ -235,46 +287,6 @@ $(document).on('click', '.source-das-table-radio', function(e){
     $('#source-das-table').hide();
 });
 });
-
-function loadDataTables() {
-$.ajax({
-    type : 'GET',
-    url: baseUrl + '/api/configs/das/tables',
-    success : function(res) {
-        var tableNames = res;
-        var tableData = "";
-        for (var i=0; i < tableNames.length; i++) {
-            tableData += '<tr class="dataRow">' +
-                            '<td><input class="source-das-table-radio" type="radio" name="das-tables" value="' + tableNames[i] + '"></td>' +
-                            '<td>' + tableNames[i] + '</td>' +
-                         '</tr>';
-        }
-        $('#datasetTable tbody').html(tableData);
-
-        // creating and destroying table to avoid reinitialize error
-        var oTable = $('#datasetTable').dataTable();
-        oTable.fnDestroy();
-        // draw table with DataTables
-        var oTable = $('#datasetTable').DataTable({
-            "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-            "iDisplayLength": 5
-        });
-    },
-    error :  function(res){
-        var errorText = JSON.parse(res.responseText)["exception"];
-        handleNotification(errorText, '#notification-area', 'warning');
-    }
-});
-}
-
-// Dataset name input validation
-function isValidDatasetName(text){
-if(text.length > 100) {
-    handleNotification("Dataset name is too long. Maximum 100 characters allowed.", '#notification-area', 'warning');
-    return false;
-}
-return true;
-}
 
 </script>
 </body>

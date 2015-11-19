@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSO2 Log Analyzer</title>
+    <link rel="icon" href="../../images/favicon.png" type="image/x-icon" />
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/custom.css" rel="stylesheet">
+    <link href="../../css/breadcrumb.css" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css" rel="stylesheet">
+
+
+    <% include("../../includes/tenantAware.jag"); %>
+
+</head>
+
+<body>
+
+<!-- header -->
+<header>
+	<% include("../header/mainnav.jag");%>
+</header>
+<!-- /header -->
+
+<!-- secondary header - app bar -->
+	<% include("../header/sourceconfiguratoinnav.jag");%>
+<!-- secondary header - app bar -->
+
+<!-- content/body -->
+<div class="container-fluid">
+
+  <div class="row" style="padding-top: 20px;background-color: rgba(138, 125, 136, 0.1); padding-bottom:20px;margin-top:20px;margin-bottom:20px;">
+     <div class="col-md-5 col-centered" >
+        <div class="btn-group btn-breadcrumb">
+            <a href="#" class="btn btn-lg btn-default"><i class="glyphicon glyphicon-home"> Extract Fields</i></a>
+            <a href="../filter/sample.jag" class="btn btn-lg btn-default">Sample</a>
+            <a href="#" class="btn btn-lg btn-default">Method</a>
+            <a href="#" class="btn btn-lg btn-default">Fields</a>
+            <a href="#" class="btn btn-lg btn-default">Validate & Save</a>
+        </div>
+     </div>
+  </div>
+
+  <div id="filterContent">
+    <!--<% include("../filter/sample.jag");%>-->
+    <% include("../filter/method.jag");%>
+  </div>
+
+</div>
+
+
+<script src="../../js/jquery-1.11.1.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+
+    });
+</script>
+</body>
+</html>

@@ -19,7 +19,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.carbon.la</groupId>
-    <artifactId>wso2-la</artifactId>
+    <artifactId>wso2la-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
     <name>WSO2 Log Analyzer</name>
@@ -312,16 +312,6 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.core</artifactId>
-                <version>${carbon.kernel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.registry.core</artifactId>
-                <version>${carbon.kernel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.registry.api</artifactId>
                 <version>${carbon.kernel.version}</version>
             </dependency>
@@ -422,13 +412,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.wso2.carbon.la</groupId>
-                <artifactId>org.wso2.carbon.la.rest.api</artifactId>
-                <version>${la.version}</version>
-                <type>war</type>
-            </dependency>
-
-            <dependency>
                 <groupId>org.wso2.carbon.analytics</groupId>
                 <artifactId>org.wso2.carbon.analytics.datasource.commons</artifactId>
                 <version>${carbon.analytics.version}</version>
@@ -466,7 +449,7 @@
     </profiles>
 
     <properties>
-        <la.version>1.0.0-SNAPSHOT</la.version>
+
         <carbon.kernel.version>4.4.2</carbon.kernel.version>
 
         <carbon.analytics.version>1.0.4</carbon.analytics.version>
@@ -530,7 +513,7 @@
 
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <javax.servlet.version>3.0.0.v201112011016</javax.servlet.version>
-
+        <carbon.la.version>1.0.0-SNAPSHOT</carbon.la.version>
     </properties>
 
     <pluginRepositories>
