@@ -372,7 +372,7 @@
             if(fromCompare == 'true') {
                 window.location.href = '../project/compare.jag?projectId=' + projectId + '&projectName=' + projectName + '&dataseId=' + datasetId;
             } else {
-                window.location.href = '../analysis/analysis.jag?analysisId=' + analysisId + '&datasetId=' + datasetId + '&projectName=' + projectName + '&analysisName=' + analysisName;
+                window.location.href = '../analysis/sample.jag?analysisId=' + analysisId + '&datasetId=' + datasetId + '&projectName=' + projectName + '&analysisName=' + analysisName;
             }
         });
 

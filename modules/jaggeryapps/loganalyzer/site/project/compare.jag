@@ -483,7 +483,7 @@
             var modelName = $(this).data('modelname');
             var analysisId = $(this).data('analysisid');
             var analysisName = modelName.split(".")[0];
-            window.location.href = '../analysis/view-model.jag?projectId='+projectId+'&analysisId='+analysisId+'&datasetId='+datasetId+'&modelId='+modelId+'&projectName='+projectName+'&analysisName='+analysisName+'&modelName='+modelName+'&fromCompare=true';
+            window.location.href = '../analysis/fields.jag?projectId='+projectId+'&analysisId='+analysisId+'&datasetId='+datasetId+'&modelId='+modelId+'&projectName='+projectName+'&analysisName='+analysisName+'&modelName='+modelName+'&fromCompare=true';
         });
 
         $(document).on('click', '#publish', function(e){ 

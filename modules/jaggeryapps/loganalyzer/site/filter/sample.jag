@@ -1,0 +1,4 @@
+<div class="col-md-12">
+  <h4>Select an event from the sample </h4>
+  <p>Choose a source or source type, select a sample event, and click next to go to the next step.Field extractor will use the selected event to extract fields</p>
+</div>
