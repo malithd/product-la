@@ -33,6 +33,7 @@
 		<dependency>
 			<groupId>org.wso2.carbon.la</groupId>
 			<artifactId>org.wso2.carbon.la.rest.api</artifactId>
+			<version>${carbon.la.version}</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
@@ -106,7 +107,7 @@
 							<goal>p2-feature-gen</goal>
 						</goals>
 						<configuration>
-							<id>org.wso2.carbon.ml.rest.api</id>
+							<id>org.wso2.carbon.la.rest.api</id>
 							<propertiesFile>../feature.properties</propertiesFile>
 							<adviceFile>
 								<properties>

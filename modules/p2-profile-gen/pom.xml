@@ -19,7 +19,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-       <groupId>org.wso2.la</groupId>
+       <groupId>org.wso2.carbon.la</groupId>
         <artifactId>wso2la-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
@@ -87,12 +87,10 @@
                         <configuration>
                             <metadataRepository>file:${basedir}/target/p2-repo</metadataRepository>
                             <artifactRepository>file:${basedir}/target/p2-repo</artifactRepository>
-                            <publishArtifacts>false</publishArtifacts>
-                            <publishArtifactRepository>false</publishArtifactRepository>
+                            <publishArtifacts>true</publishArtifacts>
+                            <publishArtifactRepository>true</publishArtifactRepository>
                             <featureArtifacts>
-                                <featureArtifactDef>
-                                    org.wso2.carbon.la:org.wso2.carbon.la.rest.api.feature:1.0.0-SNAPSHOT
-                                </featureArtifactDef>
+
                                 <!-- START - Analytics Features -->
                                 <featureArtifactDef>
                                     org.wso2.carbon.analytics:org.wso2.carbon.analytics.core.feature:${carbon.analytics.version}
@@ -324,6 +322,11 @@
                                     org.wso2.ciphertool:org.wso2.ciphertool.feature:${cipher.tool.version}
                                 </featureArtifactDef>
                                 <!-- END - Tools -->
+
+                                <featureArtifactDef>
+                                    org.wso2.carbon.la:org.wso2.carbon.la.rest.api.feature:${carbon.la.version}
+                                </featureArtifactDef>
+
                             </featureArtifacts>
                         </configuration>
                     </execution>
@@ -342,6 +345,11 @@
                             </destination>
                             <deleteOldProfileFiles>true</deleteOldProfileFiles>
                             <features>
+                                <feature>
+                                    <id>org.wso2.carbon.la.rest.api.feature.group</id>
+                                    <version>1.0.0-SNAPSHOT</version>
+                                </feature>
+
                                 <!-- START - Analytics Features -->
                                 <feature>
                                     <id>org.wso2.carbon.analytics.core.feature.group</id>
@@ -646,7 +654,7 @@
                             <tasks>
                                 <replace token="false" value="true"
                                          dir="target/wso2carbon-core-${carbon.kernel.version}/repository/components">
-                                    <include name="**/bundles.info"/>
+                                        <include name="**/bundles.info"/>
                                 </replace>
                             </tasks>
                         </configuration>

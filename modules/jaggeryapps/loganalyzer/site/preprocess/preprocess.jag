@@ -211,7 +211,7 @@ $( document ).ready(function() {
         e.preventDefault();
         // if navigation is from analysis page do not delete the analysis
         if (fromAnalysis == 'true') {
-            window.location.href = '../analysis/analysis.jag?analysisId=' + analysisId + '&datasetId=' + datasetId + '&projectName=' + projectName + '&analysisName=' + analysisName;
+            window.location.href = '../analysis/sample.jag?analysisId=' + analysisId + '&datasetId=' + datasetId + '&projectName=' + projectName + '&analysisName=' + analysisName;
         }
         else {
             var noOfModels;
