@@ -266,10 +266,11 @@ a.ctrl-filter-category:hover {
 
 
 /* input */
-.form-control {
+.drop-down-fixed {
 	display: block;
-	width: 100%;
-	height: 34px;
+    margin-top: 20px;
+	width: auto;
+	height: 48px;
 	padding: 6px 12px;
 	font-size: 14px;
 	line-height: 1.42857143;
@@ -614,4 +615,78 @@ table.dataTable.no-footer {
   background: -ms-linear-gradient(top, #585858 0%, #585858 100%);
   background: -o-linear-gradient(top, #585858 0%, #585858 100%);
   background: linear-gradient(to bottom, #585858 0%, #585858 100%);
+}
+
+.wrapper{
+    position: relative;
+    float: left;
+    left: 0px;
+    width: 100%;
+    margin-bottom: 10px;
+    background: transparent;
+}
+.left-panel{
+    position: relative;
+    float: left;
+    left: 5px;
+    width: 20%;
+    height: 917px;
+    border-right: 1px solid black;
+}
+.right-panel{
+    position: relative;
+    float: left;
+    left: 15px;
+    width: 80%;
+    height: 917px;
+}
+
+#search-field-area, #search-btn-area, #drop-down-area, #save-btn-area, #save-options{
+    float:left;
+}
+
+#save-btn-area, #save-options{
+    float:right;
+}
+
+.search-field {
+    margin-top: 20px;
+    margin-bottom:20px;
+}
+
+.search-field input, .search-field textarea {
+    border: 1px #999 solid;
+    width: 900px;
+    height: 48px;
+    padding: 6px 10px;
+    z-index: 1;
+    -webkit-appearance: none;
+}
+
+.search-field input:focus, .search-field textarea:focus {
+    border-color: #555;
+    box-shadow: 0 0px 0px rgba(229, 103, 23, 0.075) inset, 0 0 0px rgba(229, 103, 23, 0.6);
+    outline: 0 none
+}
+
+table {
+    width:1400px;
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    text-align: left;
+}
+.table_solid tr:nth-child(even) {
+    background-color: #eee;
+}
+.table_solid tr:nth-child(odd) {
+    background-color:#fff;
+}
+.table_solid th	{
+    background-color: black;
+    color: white;
 }

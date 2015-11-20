@@ -171,6 +171,16 @@ h2.app-title {
     text-transform: uppercase;
 }
 
+h2.sub-title {
+    font-weight:500;
+    font-size:17px;
+    margin:0;
+    padding:3px 0 0 0;
+    color:#0c0c0c;
+    text-transform: uppercase;
+    border-bottom:1px solid #999999;
+}
+
 .wr-global-header {
 	/* background:#5d5d5d; */
 	background:#533565;

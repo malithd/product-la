@@ -88,15 +88,16 @@
 					</div>
 
 					<div class="ctrl-summary-navigator col-centered">
-						<a href="../project/projects.jag" class="no-deco">
+						<a href="../search/search.jag" class="no-deco">
 							<h3>Explore Data<i class="fa fa-search float-right"></i></h3>
 							<div class="content">
 								<p>Project is a logical grouping of machine learning analyses, which are performed on a dataset. To analyze multiple datasets, you need to create multiple projects.</p>
 							</div>
 						</a>
 						<div class="bg-summary-actions">
-							<label><a href="../project/projects.jag">You have (<span id="project-count">0</span>) Projects</a></label>
-							<a href="#" class="btn-summary btn-add-new">Explore</a>
+							<!-- <label><a href="../project/projects.jag">You have (0) Projects</a></label> -->
+							<label><a href="../search/search.jag">You have (<span id="project-count">0</span>) Projects</a></label>
+							<a href="../search/search.jag" class="btn-summary btn-add-new">Explore</a>
 						</div>		
 					</div>
 
