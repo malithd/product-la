@@ -213,6 +213,11 @@
                 <version>${carbon.analytics.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.analytics</groupId>
+                <artifactId>org.wso2.carbon.analytics.activitydashboard.admin</artifactId>
+                <version>${carbon.analytics.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon.analytics-common</groupId>
                 <artifactId>org.wso2.carbon.event.stream.persistence.stub</artifactId>
                 <version>${carbon.analytics.common.version}</version>
