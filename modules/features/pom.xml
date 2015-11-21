@@ -16,6 +16,6 @@
     <description>WSO2 Log Analyzer Features Parent</description>
 
     <modules>
-        <module>org.wso2.carbon.la.rest.api.feature</module>
+        <module>org.wso2.carbon.la.restapi.feature</module>
     </modules>
 </project> 

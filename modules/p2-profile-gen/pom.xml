@@ -320,7 +320,7 @@
                                 <!-- END - Tools -->
 
                                 <featureArtifactDef>
-                                    org.wso2.carbon.la:org.wso2.carbon.la.rest.api.feature:${carbon.la.version}
+                                    org.wso2.carbon.la:org.wso2.carbon.la.restapi.feature:${carbon.la.version}
                                 </featureArtifactDef>
 
                             </featureArtifacts>
@@ -342,8 +342,8 @@
                             <deleteOldProfileFiles>true</deleteOldProfileFiles>
                             <features>
                                 <feature>
-                                    <id>org.wso2.carbon.la.rest.api.feature.group</id>
-                                    <version>1.0.0-SNAPSHOT</version>
+                                    <id>org.wso2.carbon.la.restapi.feature.group</id>
+                                    <version>${carbon.la.version}</version>
                                 </feature>
 
                                 <!-- START - Analytics Features -->
