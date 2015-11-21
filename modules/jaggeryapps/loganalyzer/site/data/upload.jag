@@ -36,9 +36,6 @@
 <!-- content/body -->
 
 <div class="row">
-<div class="col-md-12">
-
-
         <!-- content -->
         <form id="upload-logfile-form" method="POST" enctype="multipart/form-data">
         <div class="container col-md-12 col-centered wr-content">
@@ -177,7 +174,22 @@
                 </div>
             </div>
             <div class="wr-form col-md-5">
-                  <br/> <br/> <br/>
+                  <!--<br/> <br/> <br/>-->
+                    <label class="input-label">Log Group<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Start Position Type choose where Log analyzer starts initially reading files: at the beginning or at the end."></span></label>
+                    <div class="input-control text">
+                        <select class="form-control" id="src-type" name="sourceType">
+                          <option value="file">Begining</option>
+                          <option value="hdfs">Ending</option>
+                        </select>
+                    </div>
+
+                    <label class="input-label">Log Stream<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Start Position Type choose where Log analyzer starts initially reading files: at the beginning or at the end."></span></label>
+                    <div class="input-control text">
+                        <select class="form-control" id="src-type" name="sourceType">
+                          <option value="file">Begining</option>
+                          <option value="hdfs">Ending</option>
+                        </select>
+                    </div>
 
                     <label class="input-label">Start Position<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Start Position Type choose where Log analyzer starts initially reading files: at the beginning or at the end."></span></label>
                     <div class="input-control text">
@@ -203,18 +215,10 @@
         </div>
         </form>
         <!-- /content -->
-
-</div>
 </div>
 <!-- /content/body -->
 
 </div>
-
-
-
-<!--footer class="footer">
-    <p>&copy; 2015 WSO2 Inc. All Rights Reserved</p>
-</footer-->
 
 <div id="content-asset-types" style="display: none">
 <div>
@@ -230,64 +234,60 @@
 <script src="../../js/jquery.dataTables.js"></script>
 
 <script type="text/javascript">
+    var baseUrl = getBaseUrl(window.location.href);
 
-var baseUrl = getBaseUrl(window.location.href);
+    $( document ).ready(function() {
 
-$( document ).ready(function() {
-// Display only the correct dataSource input
-displayDataSource();
+    $('#nav').affix({
+          offset: {
+            top: $('header').height()
+          }
+    });
 
-$('#nav').affix({
-      offset: {
-        top: $('header').height()
-      }
-});
+    $("[data-toggle=popover]").popover();
 
-$("[data-toggle=popover]").popover();
+    $(".ctrl-asset-type-switcher").popover({
+        html : true,
+        content: function() {
+            return $('#content-asset-types').html();
+        }
+    });
 
-$(".ctrl-asset-type-switcher").popover({
-    html : true,
-    content: function() {
-        return $('#content-asset-types').html();
-    }
-});
+    $('#upload-logfile-form').ajaxForm({
+        url: baseUrl + '/api/datasets',
 
-$('#upload-logfile-form').ajaxForm({
-    url: baseUrl + '/api/datasets',
+        beforeSubmit: function(arr, $form, options) {
+           return isValidDatasetName($('#dataset-name').val());
+        },
+        success : function(res){
+             window.location = baseUrl + '/ml/site/data/datasets.jag';
+        },
+        error :  function(res){
+            var errorText = JSON.parse(res.responseText)["exception"];
+            handleNotification(errorText, '#notification-area', 'warning');
+        }
+    });
 
-    beforeSubmit: function(arr, $form, options) {
-       return isValidDatasetName($('#dataset-name').val());
-    },
-    success : function(res){
-         window.location = baseUrl + '/ml/site/data/datasets.jag';
-    },
-    error :  function(res){
-        var errorText = JSON.parse(res.responseText)["exception"];
-        handleNotification(errorText, '#notification-area', 'warning');
-    }
-});
+    $('#cancel-dataset').on('click', function(e){
+        window.location.href = './datasets.jag';
+    });
 
-$('#cancel-dataset').on('click', function(e){
-    window.location.href = './datasets.jag';
-});
+    // change data source input according to data source type input
+    $('#src-type').on('change', function(e){
+        displayDataSource();
+    });
 
-// change data source input according to data source type input
-$('#src-type').on('change', function(e){
-    displayDataSource();
-});
+    // show/hide DAS tables
+    $(document).on('click', '#select-table, #selected-table', function(e){
+        $('#source-das-table').toggle();
+    });
 
-// show/hide DAS tables
-$(document).on('click', '#select-table, #selected-table', function(e){
-    $('#source-das-table').toggle();
-});
-
-// hide DAS tables when a table is selected
-$(document).on('click', '.source-das-table-radio', function(e){
-    $('#selected-table').val($('input[name=das-tables]:checked').val());
-    $('#source-das-table').hide();
-});
-});
-
+    // hide DAS tables when a table is selected
+    $(document).on('click', '.source-das-table-radio', function(e){
+        $('#selected-table').val($('input[name=das-tables]:checked').val());
+        $('#source-das-table').hide();
+    });
+    });
 </script>
 </body>
 </html>
