@@ -90,6 +90,11 @@
 			<artifactId>org.wso2.carbon.analytics.datasource.commons</artifactId>
 			<scope>provided</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.analytics</groupId>
+            <artifactId>org.wso2.carbon.analytics.activitydashboard.admin</artifactId>
+            <scope>provided</scope>
+        </dependency>
 	</dependencies>
 
     <profiles>
