@@ -21,7 +21,7 @@
 
 /**BasePlot the parent class of all graph classes.
    It contains a set of properties and methods which 
-   are common to all graph classes*/
+   are commons to all graph classes*/
 var BasePlot = function(data) {
 
     if(!data){
@@ -314,7 +314,7 @@ ScatterPlot.prototype.plot = function(selection) {
 /*********** BasicLineGraph starts *********************/
 
 /** This is the abstract class of all line graphs.
-    It contains a set of methods which are common to all
+    It contains a set of methods which are commons to all
     specialized line graphs such as ROC curve*/ 
 var BasicLineGraph = function(data){
     // calling the base class 
@@ -501,7 +501,7 @@ ROCGraph.prototype.plot = function(selection){
 
 /*******************************************************/
 /******************** BaseHistogram starts *************/
-/** This class represents properties common to 
+/** This class represents properties commons to
     all histogram classes*/
 var BaseHistogram = function(data){
     //calling the base class constructor

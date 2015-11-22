@@ -990,7 +990,7 @@ function drawTrellisChart() {
                     }).attr("cy", function(d) {
                         return y(d[p.y]);
                     }).attr("r", trellisMarkerSize).style("fill", function(d) {
-                        // replace current header of categorical feature header with common header
+                        // replace current header of categorical feature header with commons header
                         // can be accessed by color
                         var dString = JSON.stringify(d);
                         dString = dString.replace(categoricalHeader, "categoricalFeature");

@@ -110,7 +110,7 @@ class InstanceReadyToShutdownEvent:
 
 def to_json(instance):
     """
-    common function to serialize status event object
+    commons function to serialize status event object
     :param obj instance:
     :return: serialized json string
     :rtype str

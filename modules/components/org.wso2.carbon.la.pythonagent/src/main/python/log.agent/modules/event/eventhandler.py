@@ -375,7 +375,7 @@ class EventHandler:
             input_values = EventHandler.add_common_input_values(input_values)
             input_values["EVENT"] = event
         except Exception as e:
-            self.__log.error("Error while adding common input values for event extendables: %s" % e)
+            self.__log.error("Error while adding commons input values for event extendables: %s" % e)
 
         # Execute the extension
         self.execute_extension_for_event(event, input_values)
@@ -524,7 +524,7 @@ class EventHandler:
     @staticmethod
     def add_common_input_values(plugin_values):
         """
-        Adds the common parameters to be used by the extension scripts
+        Adds the commons parameters to be used by the extension scripts
         :param dict[str, str] plugin_values: Dictionary to be added
         :return: Dictionary with updated parameters
         :rtype: dict[str, str]
