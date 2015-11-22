@@ -54,11 +54,11 @@
                             ${project.artifactId}
                         </Bundle-SymbolicName>
                         <Export-Package>
-                            org.wso2.carbon.la.common.*,
+                            org.wso2.carbon.la.commons.*,
                         </Export-Package>
                         <Private-Package>
-                            org.wso2.carbon.la.common.internal.*,
-                            org.wso2.carbon.la.common.util.*,
+                            org.wso2.carbon.la.commons.internal.*,
+                            org.wso2.carbon.la.commons.util.*,
                         </Private-Package>
                         <Import-Package>
                             !javax.xml.namespace,

@@ -179,7 +179,7 @@
                 </UrlContexts>
             </SuperTenantOnly> -->
             <!-- 
-                Contexts that are common to all tenants
+                Contexts that are commons to all tenants
             -->
             <AllTenants>
                 <UrlContexts>

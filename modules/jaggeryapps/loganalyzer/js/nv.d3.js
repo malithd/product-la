@@ -971,7 +971,7 @@ nv.utils.pjax = function(links, content) {
 }
 
 /* For situations where we want to approximate the width in pixels for an SVG:text element.
-Most common instance is when the element is in a display:none; container.
+Most commons instance is when the element is in a display:none; container.
 Forumla is : text.length * font-size * constant_factor
 */
 nv.utils.calcApproxTextWidth = function (svgTextElem) {
@@ -1334,7 +1334,7 @@ nv.utils.optionsFunc = function(args) {
   chart.axis = axis;
 
   d3.rebind(chart, axis, 'orient', 'tickValues', 'tickSubdivide', 'tickSize', 'tickPadding', 'tickFormat');
-  d3.rebind(chart, scale, 'domain', 'range', 'rangeBand', 'rangeBands'); //these are also accessible by chart.scale(), but added common ones directly for ease of use
+  d3.rebind(chart, scale, 'domain', 'range', 'rangeBand', 'rangeBands'); //these are also accessible by chart.scale(), but added commons ones directly for ease of use
 
   chart.options = nv.utils.optionsFunc.bind(chart);
 
