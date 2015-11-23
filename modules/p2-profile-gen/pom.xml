@@ -331,6 +331,10 @@
                                     org.wso2.carbon.la:org.wso2.carbon.la.database.feature:${carbon.la.version}
                                 </featureArtifactDef>
 
+                                <featureArtifactDef>
+                                    org.wso2.carbon.la:org.wso2.carbon.la.core.feature:${carbon.la.version}
+                                </featureArtifactDef>
+
                             </featureArtifacts>
                         </configuration>
                     </execution>
@@ -357,6 +361,11 @@
 
                                 <feature>
                                     <id>org.wso2.carbon.la.restapi.feature.group</id>
+                                    <version>${carbon.la.version}</version>
+                                </feature>
+
+                                <feature>
+                                    <id>org.wso2.carbon.la.core.feature.group</id>
                                     <version>${carbon.la.version}</version>
                                 </feature>
 
