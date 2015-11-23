@@ -39,6 +39,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
         	<bean class="org.wso2.carbon.la.restapi.LoginLogoutApiV10"/>
             <bean class="org.wso2.carbon.la.restapi.ProjectApiV10"/>
             <bean class="org.wso2.carbon.la.restapi.ActivityDashboardApiV10"/>
+            <bean class="org.wso2.carbon.la.restapi.FileProcessingApi"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
