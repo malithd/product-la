@@ -30,6 +30,7 @@
     <name>WSO2 Log Analyzer Components</name>
     <modules>
         <module>org.wso2.carbon.la.commons</module>
+        <module>org.wso2.carbon.la.core</module>
         <module>org.wso2.carbon.la.api</module>
         <module>org.wso2.carbon.la.database</module>
         <module>org.wso2.carbon.la.restapi</module>

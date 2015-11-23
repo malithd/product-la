@@ -21,18 +21,18 @@
 	<Properties>
 		<Property name="la.thread.pool.size" value="100" />
 		<Property name="file.in"
-			value="org.wso2.carbon.la.core.impl.FileInputAdapter" />
+				  value="org.wso2.carbon.la.core.impl.FileInputAdapter" />
 		<Property name="file.out"
-			value="org.wso2.carbon.la.core.impl.FileOutputAdapter" />
+				  value="org.wso2.carbon.la.core.impl.FileOutputAdapter" />
 		<Property name="hdfs.in"
-			value="org.wso2.carbon.la.core.impl.HdfsInputAdapter" />
+				  value="org.wso2.carbon.la.core.impl.HdfsInputAdapter" />
 		<Property name="hdfs.out"
-			value="org.wso2.carbon.la.core.impl.HdfsOutputAdapter" />
+				  value="org.wso2.carbon.la.core.impl.HdfsOutputAdapter" />
 		<Property name="das.in" value="org.wso2.carbon.la.core.impl.BAMInputAdapter" />
 		<Property name="registry.in"
-			value="org.wso2.carbon.la.core.impl.RegistryInputAdapter" />
+				  value="org.wso2.carbon.la.core.impl.RegistryInputAdapter" />
 		<Property name="registry.out"
-			value="org.wso2.carbon.la.core.impl.RegistryOutputAdapter" />
+				  value="org.wso2.carbon.la.core.impl.RegistryOutputAdapter" />
 	</Properties>
 
 	<!-- Email address to which the model building status mails are sent. -->
@@ -44,6 +44,6 @@
 	<!-- Optional element. This element should point to a HDFS location where 
 		LA is allowed to store files. -->
 	<HdfsURL>hdfs://localhost:9000</HdfsURL>
-	
+
 
 </LogAnalyzer>
