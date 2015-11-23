@@ -1,0 +1,33 @@
+{
+  "agentid": "awsinstance-23",
+  "authid": "sDe334#q2",
+  "authsecret": "defr34w3qq#@Qd",
+  "output": {
+    "loganalyzer": {
+      "binhosts": "192.168.12.2",
+      "bindport": 9200
+    }
+  },
+  "groups": [
+    {
+      "name": "httpd-group1",
+      "version": "1.0.0",
+      "config": {
+        "input": {
+          "file": {
+            "path": "/tmp/access_log",
+            "start_position": "beginning"
+          }
+        },
+        "filter": {
+          "regex": {
+            "match": [
+              "level",
+              ""
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -15,9 +15,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.wso2.carbon.databridge.commons.utils.DataBridgeCommonsUtils;
+import org.wso2.carbon.la.log.agent.conf.AgentConfig;
+import org.wso2.carbon.la.log.agent.conf.LogGroup;
 import org.wso2.carbon.la.log.agent.conf.ServerConfig;
 import org.wso2.carbon.la.log.agent.data.LogEvent;
 import org.wso2.carbon.la.log.agent.data.LogPublisher;
+import org.wso2.carbon.la.log.agent.filters.AbstractFilter;
 import org.wso2.carbon.la.log.agent.util.PublisherUtil;
 
 /**
@@ -225,5 +228,17 @@ public class LogReader {
             e.printStackTrace();
         }
         return logEvent;
+    }
+
+    private Map<String, String> applyFilters(String logKey,String logLine){
+        Map<String, String> values = new HashMap<String, String>();
+
+        LogGroup logGroup = AgentConfig.getLogGroups().get(logKey);
+
+        for(AbstractFilter ab : logGroup.getFilters()){
+            ab.process(logLine, values);
+        }
+
+        return values;
     }
 }
