@@ -18,12 +18,22 @@
 
 package org.wso2.carbon.la.restapi;
 
+import javax.activation.DataHandler;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.http.HttpHeaders;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.InputStream;
 
 /**
  * File Processing API
@@ -39,56 +49,40 @@ public class FileProcessingApi {
         return Response.ok().header(HttpHeaders.ALLOW, "GET POST DELETE").build();
     }
 
-//    @POST
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.MULTIPART_FORM_DATA)
-//    public Response uploadDataset(@Multipart("datasetName") String datasetName, @Multipart("version") String version,
-//                                  @Multipart("description") String description, @Multipart("sourceType") String sourceType,
-//                                  @Multipart("destination") String destination, @Multipart("sourcePath") String sourcePath,
-//                                  @Multipart("dataFormat") String dataFormat, @Multipart("containsHeader") boolean containsHeader,
-//                                  @Multipart("file") InputStream inputStream) {
-//        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-//        int tenantId = carbonContext.getTenantId();
-//        String userName = carbonContext.getUsername();
-//        ConfigurationBean configuration = new ConfigurationBean();
-//        try {
-//            // validate input parameters
-//            if (sourceType == null || sourceType.isEmpty()) {
-//                String msg = "Required parameters are missing.";
-//                logger.error(msg);
-//                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorBean(msg)).build();
-//            }
-//
-//            dataset.setName(datasetName);
-//            dataset.setVersion(version);
-//            dataset.setSourcePath(sourcePath);
-//            dataset.setDataSourceType(sourceType);
-//            dataset.setComments(description);
-//            dataset.setDataTargetType(destination);
-//            dataset.setDataType(dataFormat);
-//            dataset.setTenantId(tenantId);
-//            dataset.setUserName(userName);
-//            dataset.setContainsHeader(containsHeader);
-//
-//            datasetProcessor.process(dataset, inputStream);
-//            return Response.ok(dataset).build();
-//        } catch (MLInputValidationException e) {
-//            String msg = MLUtils.getErrorMsg(String.format(
-//                    "Error occurred while uploading a [dataset] %s of tenant [id] %s and [user] %s .", dataset,
-//                    tenantId, userName), e);
-//            logger.error(msg, e);
-//            return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON)
-//                    .entity(new MLErrorBean(e.getMessage())).build();
-//
-//        } catch (MLDataProcessingException e) {
-//            String msg = MLUtils.getErrorMsg(String.format(
-//                    "Error occurred while uploading a [dataset] %s of tenant [id] %s and [user] %s .", dataset,
-//                    tenantId, userName), e);
-//            logger.error(msg, e);
-//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new MLErrorBean(e.getMessage()))
-//                    .build();
-//        }
-//    }
+    @POST
+    @Path("/upload")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadFile(@Multipart("file") Attachment attachment){
+        DataHandler dataHandler = attachment.getDataHandler();
+        try {
+            InputStream stream = dataHandler.getInputStream();
+            MultivaluedMap<String, String> map = attachment.getHeaders();
+            System.out.println("fileName Here" + getFileName(map));
+            OutputStream out = new FileOutputStream(new File("/home/anuruddha/Desktop/" + getFileName(map)));
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = stream.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            stream.close();
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Response.status(200).build();
+    }
 
+    private String getFileName(MultivaluedMap<String, String> header) {
+        String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
+        for (String filename : contentDisposition) {
+            if ((filename.trim().startsWith("filename"))) {
+                String[] name = filename.split("=");
+                String exactFileName = name[1].trim().replaceAll("\"", "");
+                return exactFileName;
+            }
+        }
+        return "unknown";
+    }
 
 }

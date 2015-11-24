@@ -32,6 +32,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.wso2.carbon.la</groupId>
+            <artifactId>org.wso2.carbon.la.commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.la</groupId>
+            <artifactId>org.wso2.carbon.la.database</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
@@ -54,11 +62,11 @@
                             ${project.artifactId}
                         </Bundle-SymbolicName>
                         <Export-Package>
-                            org.wso2.carbon.la.commons.*,
+                            org.wso2.carbon.la.core.*,
                         </Export-Package>
                         <Private-Package>
-                            org.wso2.carbon.la.commons.internal.*,
-                            org.wso2.carbon.la.commons.util.*,
+                            org.wso2.carbon.la.core.internal.*,
+                            org.wso2.carbon.la.core.util.*,
                         </Private-Package>
                         <Import-Package>
                             !javax.xml.namespace,

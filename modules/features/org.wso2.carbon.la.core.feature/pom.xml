@@ -33,7 +33,6 @@
 		<dependency>
 			<groupId>org.wso2.carbon.la</groupId>
 			<artifactId>org.wso2.carbon.la.core</artifactId>
-			<version>${carbon.la.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -57,6 +56,11 @@
 									<propertyDef>org.wso2.carbon.p2.category.type:server</propertyDef>
 								</properties>
 							</adviceFile>
+							<bundles>
+								<bundleDef>org.wso2.carbon.la:org.wso2.carbon.la.database</bundleDef>
+								<bundleDef>org.wso2.carbon.la:org.wso2.carbon.la.commons</bundleDef>
+								<bundleDef>org.wso2.carbon.la:org.wso2.carbon.la.core</bundleDef>
+							</bundles>
 						</configuration>
 					</execution>
 				</executions>

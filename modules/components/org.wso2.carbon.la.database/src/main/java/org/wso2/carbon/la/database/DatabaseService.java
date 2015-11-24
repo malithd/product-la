@@ -17,8 +17,11 @@
  */
 package org.wso2.carbon.la.database;
 
+import org.wso2.carbon.la.commons.domain.LogGroup;
 import org.wso2.carbon.la.commons.domain.config.LAConfiguration;
 import org.wso2.carbon.la.database.exceptions.DatabaseHandlerException;
+
+import java.util.List;
 
 public interface DatabaseService {
     
@@ -32,5 +35,21 @@ public interface DatabaseService {
      * @throws DatabaseHandlerException
      */
     void shutdown() throws DatabaseHandlerException;
+
+    void createLogGroup(LogGroup logGroup) throws DatabaseHandlerException;
+
+    void deleteLogGroup(LogGroup logGroup) throws DatabaseHandlerException;
+
+    LogGroup getLogGroup(String name, int tenantId, String username) throws DatabaseHandlerException;
+
+    List<String> getAllLogGroupNames() throws DatabaseHandlerException;
+
+    List<LogGroup> getAllLogGroups() throws DatabaseHandlerException;
+
+    void createLogStream(String name) throws DatabaseHandlerException;
+
+    void deleteLogStream(String name) throws DatabaseHandlerException;
+
+    List<String> getAllLogStreamNames() throws DatabaseHandlerException;
 
 }

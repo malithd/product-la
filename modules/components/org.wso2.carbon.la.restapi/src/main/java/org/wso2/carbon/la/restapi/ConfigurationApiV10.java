@@ -16,24 +16,19 @@
  * under the License.
  */
 
-package org.wso2.carbon.la.restapi.beans;
+package org.wso2.carbon.la.restapi;
 
-/**
- * Represent an Error in LAS
- */
-public class ErrorBean {
+public class ConfigurationApiV10 extends LARestApi {
 
-    private String error;
+    public void saveOrUpdateConfiguration(){
 
-    public ErrorBean(String msg) {
-        error = msg;
     }
 
-    public String getException() {
-        return error;
+    public void getConfiguration(){
+
     }
 
-    public void setException(String exception) {
-        this.error = exception;
+    public void validateConfiguration(){
+
     }
 }

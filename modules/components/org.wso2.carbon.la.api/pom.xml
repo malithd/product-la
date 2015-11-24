@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.la.api</artifactId>
     <packaging>bundle</packaging>
-    <name>WSO2 Logan Alyzer - Core</name>
+    <name>WSO2 Logan Alyzer - API</name>
     <url>http://www.wso2.com</url>
 
     <dependencies>
