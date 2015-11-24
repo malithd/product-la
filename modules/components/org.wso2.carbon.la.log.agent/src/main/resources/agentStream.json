@@ -11,6 +11,10 @@
     {
       "name": "logMessage",
       "type": "STRING"
+    },
+    {
+      "name": "logGroup",
+      "type": "STRING"
     }
   ]
 }

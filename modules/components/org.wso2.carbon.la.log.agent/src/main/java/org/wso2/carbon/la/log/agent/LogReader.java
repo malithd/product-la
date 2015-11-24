@@ -10,12 +10,12 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.wso2.carbon.databridge.commons.utils.DataBridgeCommonsUtils;
-import org.wso2.carbon.la.log.agent.conf.AgentConfig;
 import org.wso2.carbon.la.log.agent.conf.LogGroup;
 import org.wso2.carbon.la.log.agent.conf.ServerConfig;
 import org.wso2.carbon.la.log.agent.data.LogEvent;
@@ -29,7 +29,7 @@ import org.wso2.carbon.la.log.agent.util.PublisherUtil;
 public class LogReader {
     private static final String LOG_STREAM = "org.wso2.sample.logs";
     private static final String VERSION = "1.0.0";
-    private static final Logger logger = Logger.getLogger("Test2");
+    private static final Logger logger = Logger.getLogger("LogReader");
     private final File file;
     private long offset = 0;
     private int lineCount = 0;
@@ -38,18 +38,18 @@ public class LogReader {
     ArrayDeque<String> lines = new ArrayDeque<String>();
     private boolean readFromTop = true;
     private LogPublisher logPublisher;
+    private LogGroup logGroup;
 
     /**
      * Allows output of a file that is being updated by another process.
      *
-     * @param file to watch and read
-     *             watching will stop. If =0, watch will continue until <code>stop()</code>
-     *             is called.
+     * @param logGroup
+     * @param logPublisher
      */
-    public LogReader(File file, boolean readFromTop, ServerConfig serverConfig) throws FileNotFoundException {
-        this.file = file;
-        setReadFromTop(readFromTop);
-        logPublisher = new LogPublisher(serverConfig);
+    public LogReader(LogPublisher logPublisher, LogGroup logGroup) throws FileNotFoundException {
+        this.file = new File(logGroup.getLogInput().getFilePath());
+        this.logGroup=logGroup;
+        this.logPublisher=logPublisher;
     }
 
     /**
@@ -198,30 +198,14 @@ public class LogReader {
         this.readFromTop = readFromTop;
     }
 
-    /**
-     * Example main. Beware: the watch listens on a whole folder, not on a single
-     * file. Any update on a file within the folder will trigger a read-update.
-     *
-     * @param args
-     * @throws Exception
-     */
-    public static void main(String[] args) throws Exception {
-        String fn = "/home/malith/Products/WSO2/BAM/2-5-0/wso2bam-2.5.0/repository/logs/wso2carbon.log";
-        ServerConfig serverConfig = new ServerConfig("ssl://10.100.0.88:7711", "tcp://10.100.0.88:7611", "admin", "admin");
-
-        LogReader t = new LogReader(new File(fn), true, serverConfig);
-
-        t.start();
-    }
 
     private LogEvent constructLogEvent(String logLine) {
         LogEvent logEvent = new LogEvent();
-        Map<String, String> arb = new HashMap<String, String>();
 
         try {
             logEvent.setHost(PublisherUtil.getLocalAddress().getHostAddress());
             logEvent.setMessage(logLine);
-            logEvent.setExtractedValues(arb);
+            logEvent.setExtractedValues(applyFilters(logGroup.getFilters(), logLine));
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (UnknownHostException e) {
@@ -230,12 +214,10 @@ public class LogReader {
         return logEvent;
     }
 
-    private Map<String, String> applyFilters(String logKey,String logLine){
+    private Map<String, String> applyFilters(List<AbstractFilter> filters,String logLine){
         Map<String, String> values = new HashMap<String, String>();
 
-        LogGroup logGroup = AgentConfig.getLogGroups().get(logKey);
-
-        for(AbstractFilter ab : logGroup.getFilters()){
+        for(AbstractFilter ab : filters){
             ab.process(logLine, values);
         }
 
