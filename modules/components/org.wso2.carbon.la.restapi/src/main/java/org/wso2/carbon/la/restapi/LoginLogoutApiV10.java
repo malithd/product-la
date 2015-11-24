@@ -32,7 +32,7 @@ import org.wso2.carbon.context.PrivilegedCarbonContext;
 /**
  * WSO2 ML Login logout API. This is responsible for managing user sessions.
  */
-public class LoginLogoutApiV10 extends LARestAPI {
+public class LoginLogoutApiV10 extends LARestApi {
 
     @Context
     HttpServletRequest httpServletRequest;

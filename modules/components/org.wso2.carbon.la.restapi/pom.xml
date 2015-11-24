@@ -25,7 +25,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>org.wso2.carbon.la.restapi</artifactId>
-	<name>WSO2 Carbon - Machine Learner REST API</name>
+	<name>WSO2 Carbon - Log Analyzer REST API</name>
 	<packaging>war</packaging>
 	<description>Machine Learner REST API</description>
 
@@ -43,6 +43,11 @@
 	</repositories>
 
 	<dependencies>
+        <dependency>
+            <groupId>org.wso2.carbon.la</groupId>
+            <artifactId>org.wso2.carbon.la.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.wso2.carbon</groupId>
 			<artifactId>org.wso2.carbon.user.core</artifactId>

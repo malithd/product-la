@@ -30,7 +30,7 @@ import org.apache.http.HttpHeaders;
  * This class is to handle REST verbs GET , POST and DELETE.
  */
 @Path("/projects")
-public class ProjectApiV10 extends LARestAPI {
+public class ProjectApiV10 extends LARestApi {
 
     private static final Log logger = LogFactory.getLog(ProjectApiV10.class);
     //private MLProjectHandler mlProjectHandler;

@@ -59,7 +59,6 @@ public class FileProcessingApi {
             MultivaluedMap<String, String> map = attachment.getHeaders();
             System.out.println("fileName Here" + getFileName(map));
             OutputStream out = new FileOutputStream(new File("/home/anuruddha/Desktop/" + getFileName(map)));
-
             int read = 0;
             byte[] bytes = new byte[1024];
             while ((read = stream.read(bytes)) != -1) {

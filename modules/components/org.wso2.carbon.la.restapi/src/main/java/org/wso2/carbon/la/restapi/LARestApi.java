@@ -17,29 +17,13 @@ package org.wso2.carbon.la.restapi;
 
 import org.wso2.carbon.context.CarbonContext;
 
-public abstract class LARestAPI {
+public abstract class LARestApi {
     private String tenantID = null;
 
     protected String getTenantID() {
-        int x = CarbonContext.getThreadLocalCarbonContext().getTenantId();
-        tenantID = String.valueOf(x);
+        int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
+        tenantID = String.valueOf(tenantId);
 
         return tenantID;
     }
-    public void uploadFile(){
-
-    }
-
-    public void getSampleEvents(){
-
-    }
-
-    public void saveOrUpdateConfiguration(){
-
-    }
-
-    public void getConfiguration(){
-
-    }
-
 }

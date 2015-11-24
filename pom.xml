@@ -453,6 +453,24 @@
                 <version>${orbit.version.json}</version>
             </dependency>
 
+            <!-- dependencies on Carbon LA components -->
+            <dependency>
+                <groupId>org.wso2.carbon.la</groupId>
+                <artifactId>org.wso2.carbon.la.commons</artifactId>
+                <version>${carbon.la.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wso2.carbon.la</groupId>
+                <artifactId>org.wso2.carbon.la.core</artifactId>
+                <version>${carbon.la.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wso2.carbon.la</groupId>
+                <artifactId>org.wso2.carbon.la.database</artifactId>
+                <version>${carbon.la.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

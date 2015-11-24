@@ -52,7 +52,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2.carbon.ml.commons.*;version="${carbon.la.version}",
+                            org.wso2.carbon.la.commons.*;version="${carbon.la.version}",
                         </Export-Package>
                         <Import-Package>
                             *;resolution:=optional
