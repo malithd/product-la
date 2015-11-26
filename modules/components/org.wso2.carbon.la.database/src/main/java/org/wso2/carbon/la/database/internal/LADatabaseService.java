@@ -30,7 +30,9 @@ import org.wso2.carbon.la.database.internal.ds.LocalDatabaseCreator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LADatabaseService implements DatabaseService {
@@ -119,7 +121,7 @@ public class LADatabaseService implements DatabaseService {
             }
         } catch (SQLException e) {
             LADatabaseUtils.rollBack(connection);
-            throw new DatabaseHandlerException("Error occurred while inserting details of project: " + logGroupName
+            throw new DatabaseHandlerException("Error occurred while inserting details of log group: " + logGroupName
                     + " to the database: " + e.getMessage(), e);
         } finally {
             // enable auto commit
@@ -130,18 +132,88 @@ public class LADatabaseService implements DatabaseService {
     }
 
     @Override
-    public void deleteLogGroup(LogGroup logGroup) throws DatabaseHandlerException {
-
+    public void deleteLogGroup(String name, int tenantId, String username) throws DatabaseHandlerException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = dbh.getDataSource().getConnection();
+            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement(SQLQueries.DELETE_LOG_GROUP);
+            preparedStatement.setString(1, name);
+            preparedStatement.setInt(2, tenantId);
+            preparedStatement.setString(3, username);
+            preparedStatement.execute();
+            connection.commit();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Successfully deleted the log group: " + name);
+            }
+        } catch (SQLException e) {
+            LADatabaseUtils.rollBack(connection);
+            throw new DatabaseHandlerException("Error occurred while deleting the log group: " + name + ": "
+                    + e.getMessage(), e);
+        } finally {
+            // enable auto commit
+            LADatabaseUtils.enableAutoCommit(connection);
+            // close the database resources
+            LADatabaseUtils.closeDatabaseResources(connection, preparedStatement);
+        }
     }
 
     @Override
     public LogGroup getLogGroup(String name, int tenantId, String username) throws DatabaseHandlerException {
-        return null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result;
+
+        try {
+            connection = dbh.getDataSource().getConnection();
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(SQLQueries.GET_LOG_GROUP);
+            statement.setString(1, name);
+            statement.setInt(2, tenantId);
+            statement.setString(3, username);
+            result = statement.executeQuery();
+
+            if (result.next()) {
+                LogGroup logGroup = new LogGroup();
+                logGroup.setName(result.getString(1));
+                logGroup.setTenantId(result.getInt(2));
+                logGroup.setUsername(result.getString(3));
+                return logGroup;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseHandlerException("Error occurred while getting details of log group: " + name
+                    + " to the database: " + e.getMessage(), e);
+        } finally {
+            // close the database resources
+            LADatabaseUtils.closeDatabaseResources(connection, statement);
+        }
     }
 
     @Override
-    public List<String> getAllLogGroupNames() throws DatabaseHandlerException {
-        return null;
+    public List<String> getAllLogGroupNames(int tenantId, String username) throws DatabaseHandlerException {
+        Connection connection = null;
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        List<String> groupnames = new ArrayList<String>();
+        try {
+            connection = dbh.getDataSource().getConnection();
+            statement = connection.prepareStatement(SQLQueries.GET_ALL_LOG_GROUP_NAMES);
+            statement.setInt(1, tenantId);
+            statement.setString(2, username);
+            result = statement.executeQuery();
+            while (result.next()) {
+                groupnames.add(result.getString(1));
+            }
+            return groupnames;
+        } catch (SQLException e) {
+            throw new DatabaseHandlerException(" An error has occurred while extracting log group names for user : " + username, e);
+        } finally {
+            // Close the database resources.
+            LADatabaseUtils.closeDatabaseResources(connection, statement, result);
+        }
     }
 
     @Override

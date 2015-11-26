@@ -26,6 +26,7 @@ import org.wso2.carbon.la.core.utils.LACoreServiceValueHolder;
 import org.wso2.carbon.la.database.DatabaseService;
 import org.wso2.carbon.la.database.exceptions.DatabaseHandlerException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LogsController {
@@ -49,11 +50,27 @@ public class LogsController {
         }
     }
 
-    public void deleteLogGroup(String name){
-
+    public void deleteLogGroup(String name, int tenantId, String username) throws LogsControllerException{
+        try {
+            databaseService.deleteLogGroup(name,tenantId,username);
+            if(log.isDebugEnabled()){
+                log.debug("Log Group deleted : " + name );
+            }
+        } catch (DatabaseHandlerException e) {
+            throw new LogsControllerException(e.getMessage(),e);
+        }
     }
 
-    public List<LogGroup> getAllLogGroups(){
+    public List<LogGroup> getAllLogGroups(int tenantId, String username) throws LogsControllerException{
         return null;
+    }
+
+    public List<String> getAllLogGroupNames(int tenantId, String username) throws LogsControllerException{
+        try {
+            List<String> logGroupList = databaseService.getAllLogGroupNames(tenantId, username);
+            return logGroupList;
+        } catch (DatabaseHandlerException e) {
+            throw new LogsControllerException(e.getMessage(),e);
+        }
     }
 }

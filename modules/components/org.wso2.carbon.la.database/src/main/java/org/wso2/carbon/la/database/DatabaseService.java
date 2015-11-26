@@ -38,11 +38,11 @@ public interface DatabaseService {
 
     void createLogGroup(LogGroup logGroup) throws DatabaseHandlerException;
 
-    void deleteLogGroup(LogGroup logGroup) throws DatabaseHandlerException;
+    void deleteLogGroup(String name, int tenantId, String username) throws DatabaseHandlerException;
 
     LogGroup getLogGroup(String name, int tenantId, String username) throws DatabaseHandlerException;
 
-    List<String> getAllLogGroupNames() throws DatabaseHandlerException;
+    List<String> getAllLogGroupNames(int tenantId, String username) throws DatabaseHandlerException;
 
     List<LogGroup> getAllLogGroups() throws DatabaseHandlerException;
 
