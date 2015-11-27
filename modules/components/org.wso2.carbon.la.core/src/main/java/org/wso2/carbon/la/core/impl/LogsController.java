@@ -21,12 +21,12 @@ package org.wso2.carbon.la.core.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.la.commons.domain.LogGroup;
+import org.wso2.carbon.la.commons.domain.LogStream;
 import org.wso2.carbon.la.core.exceptions.LogsControllerException;
 import org.wso2.carbon.la.core.utils.LACoreServiceValueHolder;
 import org.wso2.carbon.la.database.DatabaseService;
 import org.wso2.carbon.la.database.exceptions.DatabaseHandlerException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LogsController {
@@ -52,7 +52,7 @@ public class LogsController {
 
     public void deleteLogGroup(String name, int tenantId, String username) throws LogsControllerException{
         try {
-            databaseService.deleteLogGroup(name,tenantId,username);
+            databaseService.deleteLogGroup(name, tenantId, username);
             if(log.isDebugEnabled()){
                 log.debug("Log Group deleted : " + name );
             }
@@ -69,6 +69,37 @@ public class LogsController {
         try {
             List<String> logGroupList = databaseService.getAllLogGroupNames(tenantId, username);
             return logGroupList;
+        } catch (DatabaseHandlerException e) {
+            throw new LogsControllerException(e.getMessage(),e);
+        }
+    }
+
+    public void createLogStream(LogStream logStream) throws LogsControllerException{
+        try {
+            databaseService.createLogStream(logStream);
+            if(log.isDebugEnabled()){
+                log.debug("Log Stream created : " + logStream.getName() );
+            }
+        } catch (DatabaseHandlerException e) {
+            throw new LogsControllerException(e.getMessage(),e);
+        }
+    }
+
+    public void deleteLogStream(String name, int logGroupId) throws LogsControllerException{
+        try {
+            databaseService.deleteLogStream(name, logGroupId);
+            if(log.isDebugEnabled()){
+                log.debug("Log stream deleted : " + name + " log groupId : " + logGroupId);
+            }
+        } catch (DatabaseHandlerException e) {
+            throw new LogsControllerException(e.getMessage(),e);
+        }
+    }
+
+    public List<String> getAllLogStreamNames(int logGroupId) throws LogsControllerException{
+        try {
+            List<String> logStreamList = databaseService.getAllLogStreamNamesOfLogGroup(logGroupId);
+            return logStreamList;
         } catch (DatabaseHandlerException e) {
             throw new LogsControllerException(e.getMessage(),e);
         }

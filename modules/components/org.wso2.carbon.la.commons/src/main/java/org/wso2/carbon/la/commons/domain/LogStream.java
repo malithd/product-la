@@ -18,12 +18,22 @@ package org.wso2.carbon.la.commons.domain;
 
 public class LogStream {
     private String name;
+    private int logGroupId;
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
+    }
+
+    public int getLogGroupId() {
+        return logGroupId;
+    }
+
+    public void setLogGroupId(int logGroupId) {
+        this.logGroupId = logGroupId;
     }
 }
