@@ -19,11 +19,13 @@
 package org.wso2.carbon.la.core.utils;
 
 import org.wso2.carbon.la.database.DatabaseService;
+import org.wso2.carbon.utils.ConfigurationContextService;
 
 public class LACoreServiceValueHolder {
 
     private static volatile LACoreServiceValueHolder laCoreServiceValueHolder;
     private DatabaseService databaseService;
+    private ConfigurationContextService configurationContextService;
 
     public static LACoreServiceValueHolder getInstance(){
         if (laCoreServiceValueHolder == null) {
@@ -42,6 +44,14 @@ public class LACoreServiceValueHolder {
 
     public DatabaseService getDatabaseService() {
         return databaseService;
+    }
+
+    public ConfigurationContextService getConfigurationContextService() {
+        return configurationContextService;
+    }
+
+    public void registerConfigurationContextService(ConfigurationContextService configurationContextService) {
+        this.configurationContextService = configurationContextService;
     }
 }
 

@@ -29,10 +29,7 @@ import org.wso2.carbon.la.database.exceptions.LAConfigurationParserException;
 import org.wso2.carbon.la.database.internal.constants.SQLQueries;
 import org.wso2.carbon.la.database.internal.ds.LocalDatabaseCreator;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +95,7 @@ public class LADatabaseService implements DatabaseService {
     }
 
     @Override
-    public void createLogGroup(LogGroup logGroup) throws DatabaseHandlerException {
+    public int createLogGroup(LogGroup logGroup) throws DatabaseHandlerException {
         Connection connection = null;
         PreparedStatement createLogGroupStatement = null;
         int tenantId = logGroup.getTenantId();
@@ -111,14 +108,26 @@ public class LADatabaseService implements DatabaseService {
         try {
             connection = dbh.getDataSource().getConnection();
             connection.setAutoCommit(false);
-            createLogGroupStatement = connection.prepareStatement(SQLQueries.CREATE_LOG_GROUP);
+            createLogGroupStatement = connection.prepareStatement(SQLQueries.CREATE_LOG_GROUP, Statement.RETURN_GENERATED_KEYS);
             createLogGroupStatement.setString(1, logGroupName);
             createLogGroupStatement.setInt(2, tenantId);
             createLogGroupStatement.setString(3, username);
-            createLogGroupStatement.execute();
+            int affectedRow = createLogGroupStatement.executeUpdate();
             connection.commit();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Successfully created log group: " + logGroupName);
+
+            if (affectedRow == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = createLogGroupStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Successfully created log group: " + logGroupName);
+                    }
+                    return generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Log Group creation failed, no ID obtained.");
+                }
             }
         } catch (SQLException e) {
             LADatabaseUtils.rollBack(connection);

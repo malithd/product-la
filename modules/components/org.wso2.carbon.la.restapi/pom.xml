@@ -25,9 +25,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>org.wso2.carbon.la.restapi</artifactId>
-	<name>WSO2 Carbon - Log Analyzer REST API</name>
+	<name>WSO2 Carbon - Log Analyzer REST API Component</name>
 	<packaging>war</packaging>
-	<description>Machine Learner REST API</description>
+	<description>Log Analyzer REST API</description>
 
 	<repositories>
 		<repository>

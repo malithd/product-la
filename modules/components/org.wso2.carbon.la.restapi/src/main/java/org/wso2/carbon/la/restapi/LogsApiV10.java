@@ -30,7 +30,9 @@ import org.wso2.carbon.la.restapi.beans.LAErrorBean;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/logs")
 public class LogsApiV10 extends LARestApi {
@@ -70,8 +72,8 @@ public class LogsApiV10 extends LARestApi {
         try {
             logGroup.setTenantId(tenantId);
             logGroup.setUsername(userName);
-            logsController.createLogGroup(logGroup);
-            return Response.ok().build();
+            int logGroupId = logsController.createLogGroup(logGroup);
+            return Response.ok(logGroupId).build();
         } catch (LogsControllerException e) {
             String msg = String.format(
                     "Error occurred while creating [log group] %s of tenant [id] %s and [user] %s .", logGroup.getName(),                 tenantId, userName);
@@ -193,4 +195,20 @@ public class LogsApiV10 extends LARestApi {
         }
     }
 
+    @POST
+    @Path("/publish")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response publishLogEvent(Object rawEvent){
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        String userName = carbonContext.getUsername();
+        HashMap<String, String> event = (HashMap<String, String>)rawEvent;
+        try {
+            logsController.publishLogEvent(event,tenantId, userName);
+        } catch (LogsControllerException e) {
+            logger.error("Error occured while publishing event.");
+        }
+        return null;
+    }
 }

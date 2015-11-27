@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.la.commons</artifactId>
     <packaging>bundle</packaging>
-    <name>WSO2 Logan Analyzer - Commons</name>
+    <name>WSO2 Logan Analyzer - Commons Component</name>
     <url>http://www.wso2.com</url>
 
     <dependencies>

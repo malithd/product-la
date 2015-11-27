@@ -37,7 +37,7 @@ public interface DatabaseService {
      */
     void shutdown() throws DatabaseHandlerException;
 
-    void createLogGroup(LogGroup logGroup) throws DatabaseHandlerException;
+    int createLogGroup(LogGroup logGroup) throws DatabaseHandlerException;
 
     void deleteLogGroup(String name, int tenantId, String username) throws DatabaseHandlerException;
 
