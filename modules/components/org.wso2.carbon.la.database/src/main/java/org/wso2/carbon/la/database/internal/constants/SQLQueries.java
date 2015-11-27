@@ -23,6 +23,7 @@ package org.wso2.carbon.la.database.internal.constants;
  */
 public class SQLQueries {
 
+    /*Log group related queries*/
     public static final String CREATE_LOG_GROUP = "INSERT INTO LA_LOG_GROUPS(NAME,TENANT_ID,USER_NAME) VALUES(?, ?, ?)";
 
     public static final String GET_LOG_GROUP = "SELECT * FROM LA_LOG_GROUPS WHERE NAME=? AND TENANT_ID=? AND USER_NAME=?";
@@ -30,6 +31,16 @@ public class SQLQueries {
     public static final String GET_ALL_LOG_GROUP_NAMES = "SELECT NAME FROM LA_LOG_GROUPS WHERE TENANT_ID=? AND USER_NAME=?";
 
     public static final String DELETE_LOG_GROUP = "DELETE FROM LA_LOG_GROUPS WHERE NAME=? AND TENANT_ID=? AND USER_NAME=?";
+
+    /*Log Stream related queries*/
+    public static final String CREATE_LOG_STREAM = "INSERT INTO LA_LOG_STREAMS(LOG_GROUP_ID, NAME) VALUES(?, ?)";
+
+    public static final String GET_LOG_STREAMS = "SELECT * FROM LA_LOG_STREAMS WHERE NAME=? AND LOG_GROUP_ID=?";
+
+    public static final String GET_ALL_LOG_STREAM_NAMES = "SELECT NAME FROM LA_LOG_STREAMS WHERE LOG_GROUP_ID=?";
+
+    public static final String DELETE_LOG_STREAM = "DELETE FROM LA_LOG_STREAMS WHERE NAME=? AND LOG_GROUP_ID=?";
+
     /*
      * private Constructor to prevent any other class from instantiating.
      */

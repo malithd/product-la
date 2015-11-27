@@ -18,6 +18,7 @@
 package org.wso2.carbon.la.database;
 
 import org.wso2.carbon.la.commons.domain.LogGroup;
+import org.wso2.carbon.la.commons.domain.LogStream;
 import org.wso2.carbon.la.commons.domain.config.LAConfiguration;
 import org.wso2.carbon.la.database.exceptions.DatabaseHandlerException;
 
@@ -36,7 +37,7 @@ public interface DatabaseService {
      */
     void shutdown() throws DatabaseHandlerException;
 
-    void createLogGroup(LogGroup logGroup) throws DatabaseHandlerException;
+    int createLogGroup(LogGroup logGroup) throws DatabaseHandlerException;
 
     void deleteLogGroup(String name, int tenantId, String username) throws DatabaseHandlerException;
 
@@ -46,10 +47,10 @@ public interface DatabaseService {
 
     List<LogGroup> getAllLogGroups() throws DatabaseHandlerException;
 
-    void createLogStream(String name) throws DatabaseHandlerException;
+    void createLogStream(LogStream logStream) throws DatabaseHandlerException;
 
-    void deleteLogStream(String name) throws DatabaseHandlerException;
+    void deleteLogStream(String name, int logGroupId) throws DatabaseHandlerException;
 
-    List<String> getAllLogStreamNames() throws DatabaseHandlerException;
+    List<String> getAllLogStreamNamesOfLogGroup(int logGroupId) throws DatabaseHandlerException;
 
 }

@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.la.core</artifactId>
     <packaging>bundle</packaging>
-    <name>WSO2 Logan Alyzer - Core</name>
+    <name>WSO2 Logan Alyzer - Core Component</name>
     <url>http://www.wso2.com</url>
 
     <dependencies>
@@ -38,6 +38,14 @@
         <dependency>
             <groupId>org.wso2.carbon.la</groupId>
             <artifactId>org.wso2.carbon.la.database</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.analytics-common</groupId>
+            <artifactId>org.wso2.carbon.databridge.commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.analytics-common</groupId>
+            <artifactId>org.wso2.carbon.databridge.agent</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

@@ -23,13 +23,16 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpHeaders;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.la.commons.domain.LogGroup;
+import org.wso2.carbon.la.commons.domain.LogStream;
 import org.wso2.carbon.la.core.exceptions.LogsControllerException;
 import org.wso2.carbon.la.core.impl.LogsController;
 import org.wso2.carbon.la.restapi.beans.LAErrorBean;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/logs")
 public class LogsApiV10 extends LARestApi {
@@ -37,7 +40,7 @@ public class LogsApiV10 extends LARestApi {
     private static final Log logger = LogFactory.getLog(LogsApiV10.class);
     private LogsController logsController;
 
-    public LogsApiV10(){
+    public LogsApiV10() {
         logsController = new LogsController();
     }
 
@@ -53,6 +56,7 @@ public class LogsApiV10 extends LARestApi {
 
     /**
      * Create a LOG group
+     *
      * @param logGroup
      * @return
      */
@@ -60,7 +64,7 @@ public class LogsApiV10 extends LARestApi {
     @Path("/group")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response createLogGroup(LogGroup logGroup){
+    public Response createLogGroup(LogGroup logGroup) {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
         String userName = carbonContext.getUsername();
@@ -68,12 +72,11 @@ public class LogsApiV10 extends LARestApi {
         try {
             logGroup.setTenantId(tenantId);
             logGroup.setUsername(userName);
-            logsController.createLogGroup(logGroup);
-            return Response.ok().build();
+            int logGroupId = logsController.createLogGroup(logGroup);
+            return Response.ok(logGroupId).build();
         } catch (LogsControllerException e) {
             String msg = String.format(
-                    "Error occurred while creating [log group] %s of tenant [id] %s and [user] %s .", logGroup.getName(),
-                    tenantId, userName);
+                    "Error occurred while creating [log group] %s of tenant [id] %s and [user] %s .", logGroup.getName(),                 tenantId, userName);
             logger.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
@@ -82,17 +85,18 @@ public class LogsApiV10 extends LARestApi {
 
     /**
      * Delete a log group
+     *
      * @param name
      */
     @DELETE
     @Path("/group/{groupname}")
     @Produces("application/json")
-    public Response deleteLogGroup(@PathParam("groupname") String name){
+    public Response deleteLogGroup(@PathParam("groupname") String name) {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
         String userName = carbonContext.getUsername();
         try {
-            logsController.deleteLogGroup(name,tenantId,userName);
+            logsController.deleteLogGroup(name, tenantId, userName);
             return Response.ok().build();
         } catch (LogsControllerException e) {
             String msg = String.format(
@@ -106,12 +110,13 @@ public class LogsApiV10 extends LARestApi {
 
     /**
      * GET all the log group names
+     *
      * @return
      */
     @GET
     @Path("/group")
     @Produces("application/json")
-    public Response getAllLogGroupNames(){
+    public Response getAllLogGroupNames() {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
         String userName = carbonContext.getUsername();
@@ -132,22 +137,78 @@ public class LogsApiV10 extends LARestApi {
     @Path("/stream")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response creatLogStream(String streamId){
-        return null;
+    public Response creatLogStream(LogStream logStream) {
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        String userName = carbonContext.getUsername();
+        try {
+            logsController.createLogStream(logStream);
+            return Response.ok().build();
+        } catch (LogsControllerException e) {
+            String msg = String.format(
+                    "Error occurred while creating [log stream] %s of tenant [id] %s and [user] %s .", logStream.getName(),
+                    tenantId, userName);
+            logger.error(msg, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
+                    .build();
+        }
     }
 
     @DELETE
-    @Path("/stream/{name}")
+    @Path("/stream/{logGroupId}/{name}")
     @Produces("application/json")
-    public Response deleteLogStream(){
-        return null;
+    public Response deleteLogStream(@PathParam("name") String name, @PathParam("logGroupId") int logGroupId) {
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        String userName = carbonContext.getUsername();
+        try {
+            logsController.deleteLogStream(name, logGroupId);
+            return Response.ok().build();
+        } catch (LogsControllerException e) {
+            String msg = String.format(
+                    "Error occurred while deleting [log stream] %s of tenant [id] %s and [user] %s .", name, tenantId,
+                    userName);
+            logger.error(msg, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
+                    .build();
+        }
     }
 
     @GET
-    @Path("/stream")
+    @Path("/stream/{logGroupId}")
     @Produces("application/json")
-    public Response getAllLogStreams(){
-        return null;
+    public Response getAllLogStreams(@PathParam("logGroupId") int logGroupId) {
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        String userName = carbonContext.getUsername();
+        try {
+            List<String> logGroupNames = logsController.getAllLogStreamNames(logGroupId);
+            return Response.ok(logGroupNames).build();
+        } catch (LogsControllerException e) {
+            String msg = String.format(
+                    "Error occurred while getting  the log streams  of tenant [id] %s and [user] %s for log [group] %s."
+                    , tenantId,
+                    userName, logGroupId);
+            logger.error(msg, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
+                    .build();
+        }
     }
 
+    @POST
+    @Path("/publish")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response publishLogEvent(Object rawEvent){
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        String userName = carbonContext.getUsername();
+        HashMap<String, String> event = (HashMap<String, String>)rawEvent;
+        try {
+            logsController.publishLogEvent(event,tenantId, userName);
+        } catch (LogsControllerException e) {
+            logger.error("Error occured while publishing event.");
+        }
+        return null;
+    }
 }
