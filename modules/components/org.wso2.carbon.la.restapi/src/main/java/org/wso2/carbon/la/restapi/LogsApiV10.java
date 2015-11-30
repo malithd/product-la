@@ -207,7 +207,7 @@ public class LogsApiV10 extends LARestApi {
         try {
             logsController.publishLogEvent(event,tenantId, userName);
         } catch (LogsControllerException e) {
-            logger.error("Error occured while publishing event.");
+            logger.error("Error occured while publishing event.", e);
         }
         return null;
     }

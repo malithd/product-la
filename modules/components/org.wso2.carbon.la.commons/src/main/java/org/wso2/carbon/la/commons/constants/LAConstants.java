@@ -26,10 +26,14 @@ public class LAConstants {
         
     }
     public static final String LOG_ANALYZER_XML = "repository/conf/log-analyzer.xml";
-    public static final String LOG_STREAM_ID = "loganalyzerstream:1.0.0";
+    public static final String LOG_ANALYZER_STREAM_NAME = "loganalyzerstream";
+    public static final String LOG_ANALYZER_STREAM_VERSION = "1.0.0";
+    public static final String LOG_ANALYZER_STREAM_ID = LOG_ANALYZER_STREAM_NAME + ":" + LOG_ANALYZER_STREAM_VERSION;
 
     public static final String LOG_GROUP = "loggroup";
     public static final String LOG_STREAM = "logstream";
+
+    public static final String EVENT_STREAM_PERSIST_ADMINSERVICE = "EventStreamPersistenceAdminService";
 
     // Data-set upload configurations    
     public static final String UPLOAD_SETTINGS = "dataUploadSettings";

@@ -22,6 +22,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.databridge.agent.DataPublisher;
 import org.wso2.carbon.databridge.commons.Event;
+import org.wso2.carbon.databridge.commons.StreamDefinition;
+import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
+import org.wso2.carbon.event.stream.core.EventStreamService;
+import org.wso2.carbon.event.stream.core.exception.EventStreamConfigurationException;
 import org.wso2.carbon.la.commons.constants.LAConstants;
 import org.wso2.carbon.la.commons.domain.LogGroup;
 import org.wso2.carbon.la.commons.domain.LogStream;
@@ -38,7 +42,6 @@ public class LogsController {
     private static final Log log = LogFactory.getLog(LogsController.class);
 
     private DatabaseService databaseService;
-    private DataPublisher dataPublisher;
 
     public LogsController(){
         databaseService = LACoreServiceValueHolder.getInstance().getDatabaseService();
@@ -124,13 +127,35 @@ public class LogsController {
         rawEvent.remove(LAConstants.LOG_GROUP);
         rawEvent.remove(LAConstants.LOG_STREAM);
 
-        event.setStreamId(LAConstants.LOG_STREAM_ID);
-        event.setTimeStamp(System.currentTimeMillis());
-        event.setPayloadData(new Object[]{logGroup, logStream});
-        event.setArbitraryDataMap(rawEvent);
+        StreamDefinition streamDefinition = null;
+        try {
+            streamDefinition = new StreamDefinition(LAConstants.LOG_ANALYZER_STREAM_NAME, LAConstants.LOG_ANALYZER_STREAM_VERSION);
+        } catch (MalformedStreamDefinitionException e) {
+            log.error("Unable to create stream definition", e);
+        }
+        if(streamDefinition != null){
+            EventStreamService eventStreamService = LACoreServiceValueHolder.getInstance().getEventStreamService();
+            if (eventStreamService != null) {
+//                try {
+//                    eventStreamService.addEventStreamDefinition(streamDefinition);
+//                    if (log.isDebugEnabled()) {
+//                        log.debug("Added stream definition to event publisher service.");
+//                    }
+//                } catch (EventStreamConfigurationException e) {
+//                    log.error("Error in adding stream definition to service:" + e.getMessage(), e);
+//                }
+                Event tracingEvent = new Event();
+                tracingEvent.setStreamId(streamDefinition.getStreamId());
+                tracingEvent.setTimeStamp(System.currentTimeMillis());
+                tracingEvent.setPayloadData(new Object[]{logGroup, logStream});
+                tracingEvent.setArbitraryDataMap(rawEvent);
 
-        dataPublisher.publish(event);
-        // event.setPayloadData();
+                eventStreamService.publish(tracingEvent);
+                if (log.isDebugEnabled()) {
+                    log.debug("Successfully published event");
+                }
+            }
+        }
 
     }
 }

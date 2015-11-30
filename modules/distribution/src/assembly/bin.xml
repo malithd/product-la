@@ -603,6 +603,18 @@
         </file>
 
         <file>
+            <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/eventsink/loganalyzer.xml</source>
+            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/eventsink/</outputDirectory>
+            <fileMode>644</fileMode>
+        </file>
+
+        <file>
+            <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/eventstream/log-eventstream.json</source>
+            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/eventstream/</outputDirectory>
+            <fileMode>644</fileMode>
+        </file>
+
+        <file>
             <source>
                 ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/etc/logging-config.xml
             </source>

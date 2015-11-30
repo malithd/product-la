@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.la.core.utils;
 
+import org.wso2.carbon.event.stream.core.EventStreamService;
 import org.wso2.carbon.la.database.DatabaseService;
 import org.wso2.carbon.utils.ConfigurationContextService;
 
@@ -26,6 +27,7 @@ public class LACoreServiceValueHolder {
     private static volatile LACoreServiceValueHolder laCoreServiceValueHolder;
     private DatabaseService databaseService;
     private ConfigurationContextService configurationContextService;
+    private EventStreamService eventStreamService;
 
     public static LACoreServiceValueHolder getInstance(){
         if (laCoreServiceValueHolder == null) {
@@ -52,6 +54,14 @@ public class LACoreServiceValueHolder {
 
     public void registerConfigurationContextService(ConfigurationContextService configurationContextService) {
         this.configurationContextService = configurationContextService;
+    }
+
+    public void setEventStreamService(EventStreamService eventStreamService) {
+        this.eventStreamService = eventStreamService;
+    }
+
+    public EventStreamService getEventStreamService() {
+        return eventStreamService;
     }
 }
 
