@@ -36,6 +36,7 @@ import org.wso2.carbon.la.database.exceptions.DatabaseHandlerException;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LogsController {
 
@@ -111,8 +112,7 @@ public class LogsController {
         }
     }
 
-    public void publishLogEvent(HashMap<String, String> rawEvent, int tenantId, String username) throws LogsControllerException{
-        Event event = new Event();
+    public void publishLogEvent(Map<String, String> rawEvent, int tenantId, String username) throws LogsControllerException{
         if(!rawEvent.containsKey(LAConstants.LOG_GROUP)){
             throw new LogsControllerException("Log group doesn't exist in the event");
         }
@@ -136,15 +136,8 @@ public class LogsController {
         if(streamDefinition != null){
             EventStreamService eventStreamService = LACoreServiceValueHolder.getInstance().getEventStreamService();
             if (eventStreamService != null) {
-//                try {
-//                    eventStreamService.addEventStreamDefinition(streamDefinition);
-//                    if (log.isDebugEnabled()) {
-//                        log.debug("Added stream definition to event publisher service.");
-//                    }
-//                } catch (EventStreamConfigurationException e) {
-//                    log.error("Error in adding stream definition to service:" + e.getMessage(), e);
-//                }
                 Event tracingEvent = new Event();
+                tracingEvent.setTimeStamp(System.currentTimeMillis());
                 tracingEvent.setStreamId(streamDefinition.getStreamId());
                 tracingEvent.setTimeStamp(System.currentTimeMillis());
                 tracingEvent.setPayloadData(new Object[]{logGroup, logStream});
@@ -152,7 +145,7 @@ public class LogsController {
 
                 eventStreamService.publish(tracingEvent);
                 if (log.isDebugEnabled()) {
-                    log.debug("Successfully published event");
+                    log.debug("Successfully published event " + tracingEvent.toString());
                 }
             }
         }

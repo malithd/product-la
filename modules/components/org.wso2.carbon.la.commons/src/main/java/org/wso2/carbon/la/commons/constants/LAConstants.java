@@ -26,7 +26,7 @@ public class LAConstants {
         
     }
     public static final String LOG_ANALYZER_XML = "repository/conf/log-analyzer.xml";
-    public static final String LOG_ANALYZER_STREAM_NAME = "loganalyzerstream";
+    public static final String LOG_ANALYZER_STREAM_NAME = "loganalyzer";
     public static final String LOG_ANALYZER_STREAM_VERSION = "1.0.0";
     public static final String LOG_ANALYZER_STREAM_ID = LOG_ANALYZER_STREAM_NAME + ":" + LOG_ANALYZER_STREAM_VERSION;
 

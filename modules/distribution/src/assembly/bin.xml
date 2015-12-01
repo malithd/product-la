@@ -609,8 +609,8 @@
         </file>
 
         <file>
-            <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/eventstream/log-eventstream.json</source>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/eventstream/</outputDirectory>
+            <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/eventstreams/loganalyzer_1.0.0.json</source>
+            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/eventstreams/</outputDirectory>
             <fileMode>644</fileMode>
         </file>
 
