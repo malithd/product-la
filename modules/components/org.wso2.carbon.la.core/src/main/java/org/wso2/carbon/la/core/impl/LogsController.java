@@ -22,6 +22,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.databridge.agent.DataPublisher;
 import org.wso2.carbon.databridge.commons.Event;
+import org.wso2.carbon.databridge.commons.StreamDefinition;
+import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
+import org.wso2.carbon.event.stream.core.EventStreamService;
+import org.wso2.carbon.event.stream.core.exception.EventStreamConfigurationException;
 import org.wso2.carbon.la.commons.constants.LAConstants;
 import org.wso2.carbon.la.commons.domain.LogGroup;
 import org.wso2.carbon.la.commons.domain.LogStream;
@@ -32,13 +36,13 @@ import org.wso2.carbon.la.database.exceptions.DatabaseHandlerException;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LogsController {
 
     private static final Log log = LogFactory.getLog(LogsController.class);
 
     private DatabaseService databaseService;
-    private DataPublisher dataPublisher;
 
     public LogsController(){
         databaseService = LACoreServiceValueHolder.getInstance().getDatabaseService();
@@ -108,8 +112,7 @@ public class LogsController {
         }
     }
 
-    public void publishLogEvent(HashMap<String, String> rawEvent, int tenantId, String username) throws LogsControllerException{
-        Event event = new Event();
+    public void publishLogEvent(Map<String, String> rawEvent, int tenantId, String username) throws LogsControllerException{
         if(!rawEvent.containsKey(LAConstants.LOG_GROUP)){
             throw new LogsControllerException("Log group doesn't exist in the event");
         }
@@ -124,13 +127,28 @@ public class LogsController {
         rawEvent.remove(LAConstants.LOG_GROUP);
         rawEvent.remove(LAConstants.LOG_STREAM);
 
-        event.setStreamId(LAConstants.LOG_STREAM_ID);
-        event.setTimeStamp(System.currentTimeMillis());
-        event.setPayloadData(new Object[]{logGroup, logStream});
-        event.setArbitraryDataMap(rawEvent);
+        StreamDefinition streamDefinition = null;
+        try {
+            streamDefinition = new StreamDefinition(LAConstants.LOG_ANALYZER_STREAM_NAME, LAConstants.LOG_ANALYZER_STREAM_VERSION);
+        } catch (MalformedStreamDefinitionException e) {
+            log.error("Unable to create stream definition", e);
+        }
+        if(streamDefinition != null){
+            EventStreamService eventStreamService = LACoreServiceValueHolder.getInstance().getEventStreamService();
+            if (eventStreamService != null) {
+                Event tracingEvent = new Event();
+                tracingEvent.setTimeStamp(System.currentTimeMillis());
+                tracingEvent.setStreamId(streamDefinition.getStreamId());
+                tracingEvent.setTimeStamp(System.currentTimeMillis());
+                tracingEvent.setPayloadData(new Object[]{logGroup, logStream});
+                tracingEvent.setArbitraryDataMap(rawEvent);
 
-        dataPublisher.publish(event);
-        // event.setPayloadData();
+                eventStreamService.publish(tracingEvent);
+                if (log.isDebugEnabled()) {
+                    log.debug("Successfully published event " + tracingEvent.toString());
+                }
+            }
+        }
 
     }
 }

@@ -203,11 +203,11 @@ public class LogsApiV10 extends LARestApi {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
         String userName = carbonContext.getUsername();
-        HashMap<String, String> event = (HashMap<String, String>)rawEvent;
+        Map<String, String> event = (Map<String, String>)rawEvent;
         try {
             logsController.publishLogEvent(event,tenantId, userName);
         } catch (LogsControllerException e) {
-            logger.error("Error occured while publishing event.");
+            logger.error("Error occured while publishing event.", e);
         }
         return null;
     }

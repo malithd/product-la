@@ -471,6 +471,17 @@
                 <artifactId>org.wso2.carbon.la.database</artifactId>
                 <version>${carbon.la.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.wso2.carbon.analytics-common</groupId>
+                <artifactId>org.wso2.carbon.event.stream.core</artifactId>
+                <version>${carbon.analytics.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.analytics-common</groupId>
+                <artifactId>org.wso2.carbon.event.stream.persistence.stub</artifactId>
+                <version>${carbon.analytics.common.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

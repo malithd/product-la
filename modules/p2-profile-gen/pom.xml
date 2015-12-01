@@ -335,6 +335,10 @@
                                     org.wso2.carbon.la:org.wso2.carbon.la.core.feature:${carbon.la.version}
                                 </featureArtifactDef>
 
+                                <featureArtifactDef>
+                                    org.wso2.carbon.analytics:org.wso2.carbon.analytics.messageconsole.feature:${carbon.analytics.version}
+                                </featureArtifactDef>
+
                             </featureArtifacts>
                         </configuration>
                     </execution>
@@ -367,6 +371,11 @@
                                 <feature>
                                     <id>org.wso2.carbon.la.core.feature.group</id>
                                     <version>${carbon.la.version}</version>
+                                </feature>
+
+                                <feature>
+                                    <id>org.wso2.carbon.analytics.messageconsole.feature.group</id>
+                                    <version>${carbon.analytics.version}</version>
                                 </feature>
 
                                 <!-- START - Analytics Features -->
