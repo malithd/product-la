@@ -1,4 +1,54 @@
-<div class="col-md-12">
-  <h4>Select an event from the sample </h4>
-  <p>Choose a source or source type, select a sample event, and click next to go to the next step.Field extractor will use the selected event to extract fields</p>
+<div class="row">
+	<div class="col-md-12">
+	  <h4>Select an event from the sample </h4>
+	  <p>Choose a source or source type, select a sample event, and click next to go to the next step.Field extractor will use the selected event to extract fields</p>
+	</div>
+</div>
+
+<br class="spacer"/>
+
+<div class="row">
+	<div class="col-md-3">
+	<input type="text" class="form-control" placeholder="Search for...">
+	</div>
+	<div class="col-md-1" style="text-align: right" >Sample</div>
+	<div class="col-md-3">
+		      <select class="form-control">
+		                    <option>1000Events</option>
+		                    <option>2</option>
+		                    <option>3</option>
+		                    <option>4</option>
+		                    <option>5</option>
+		       </select>
+	</div>
+</div>
+
+<br class="spacer"/>
+
+<div class="row">
+<div class="container">
+           
+  <table class="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Log</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Doe</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Doe</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Doe</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 </div>
