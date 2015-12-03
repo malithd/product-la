@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.la.core.internal;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
@@ -28,6 +29,8 @@ import org.wso2.carbon.la.database.DatabaseService;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.ConfigurationContextService;
 import org.wso2.carbon.utils.NetworkUtils;
+
+import java.io.File;
 
 /**
  * @scr.component name="la.core" immediate="true"
@@ -52,8 +55,13 @@ public class LACoreDS {
     protected void activate(ComponentContext context) {
         // Hostname
         String hostName = "localhost";
+        String tempFolderLocation = CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator + "data" + File.separator + "analyzer-logs";
         try {
             hostName = NetworkUtils.getMgtHostName();
+            File tempDir = new File(tempFolderLocation);
+            if (!tempDir.exists()) {
+                FileUtils.forceMkdir(tempDir);
+            }
         } catch (Exception ignored) {
         }
 
