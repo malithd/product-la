@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.la.core.utils;
 
+import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
 import org.wso2.carbon.event.stream.core.EventStreamService;
 import org.wso2.carbon.la.database.DatabaseService;
 import org.wso2.carbon.utils.ConfigurationContextService;
@@ -28,6 +29,7 @@ public class LACoreServiceValueHolder {
     private DatabaseService databaseService;
     private ConfigurationContextService configurationContextService;
     private EventStreamService eventStreamService;
+    private AnalyticsDataAPI analyticsDataAPI;
 
     public static LACoreServiceValueHolder getInstance(){
         if (laCoreServiceValueHolder == null) {
@@ -62,6 +64,14 @@ public class LACoreServiceValueHolder {
 
     public EventStreamService getEventStreamService() {
         return eventStreamService;
+    }
+
+    public AnalyticsDataAPI getAnalyticsDataAPI() {
+        return analyticsDataAPI;
+    }
+
+    public void setAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI) {
+        this.analyticsDataAPI = analyticsDataAPI;
     }
 }
 
