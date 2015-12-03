@@ -21,6 +21,7 @@ package org.wso2.carbon.la.core.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
+import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
 import org.wso2.carbon.event.stream.core.EventStreamService;
 import org.wso2.carbon.la.core.utils.LACoreServiceValueHolder;
 import org.wso2.carbon.la.database.DatabaseService;
@@ -39,6 +40,10 @@ import org.wso2.carbon.utils.NetworkUtils;
  *                interface="org.wso2.carbon.event.stream.core.EventStreamService"
  *                cardinality="1..1" policy="dynamic" bind="setEventStreamService"
  *                unbind="unsetEventStreamService"
+ * @scr.reference name="org.wso2.carbon.analytics.api.AnalyticsDataAPI"
+ *                interface="org.wso2.carbon.analytics.api.AnalyticsDataAPI"
+ *                cardinality="1..1" policy="dynamic" bind="setAnalyticsDataAPI"
+ *                unbind="unsetAnalyticsDataAPI"
  */
 public class LACoreDS {
 
@@ -96,5 +101,13 @@ public class LACoreDS {
 
     protected void unsetEventStreamService(EventStreamService eventStreamService) {
         LACoreServiceValueHolder.getInstance().setEventStreamService(null);
+    }
+
+    protected void setAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI){
+        LACoreServiceValueHolder.getInstance().setAnalyticsDataAPI(analyticsDataAPI);
+    }
+
+    protected void unsetAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI){
+        LACoreServiceValueHolder.getInstance().setAnalyticsDataAPI(null);
     }
 }

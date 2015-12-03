@@ -30,7 +30,6 @@ import org.wso2.carbon.la.restapi.beans.LAErrorBean;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -187,8 +186,7 @@ public class LogsApiV10 extends LARestApi {
         } catch (LogsControllerException e) {
             String msg = String.format(
                     "Error occurred while getting  the log streams  of tenant [id] %s and [user] %s for log [group] %s."
-                    , tenantId,
-                    userName, logGroupId);
+                    , tenantId, userName, logGroupId);
             logger.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
@@ -206,9 +204,11 @@ public class LogsApiV10 extends LARestApi {
         Map<String, String> event = (Map<String, String>)rawEvent;
         try {
             logsController.publishLogEvent(event,tenantId, userName);
+            return Response.ok().build();
         } catch (LogsControllerException e) {
-            logger.error("Error occured while publishing event.", e);
+            logger.error("Error occured while publishing event ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
+                    .build();
         }
-        return null;
     }
 }

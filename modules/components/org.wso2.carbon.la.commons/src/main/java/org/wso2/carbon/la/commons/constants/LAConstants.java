@@ -30,6 +30,8 @@ public class LAConstants {
     public static final String LOG_ANALYZER_STREAM_VERSION = "1.0.0";
     public static final String LOG_ANALYZER_STREAM_ID = LOG_ANALYZER_STREAM_NAME + ":" + LOG_ANALYZER_STREAM_VERSION;
 
+    public static final String ARBITRARY_FIELD_PREFIX = "_";
+
     public static final String LOG_GROUP = "loggroup";
     public static final String LOG_STREAM = "logstream";
 
