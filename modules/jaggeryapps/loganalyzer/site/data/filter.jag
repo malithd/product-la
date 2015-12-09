@@ -59,6 +59,8 @@
     });
 </script>
 <script>
+
+
     function renderSamplePage(){
         $.get("../filter/sample.jag", function(template) {
           var rendered = Mustache.render(template, {});
