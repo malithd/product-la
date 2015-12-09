@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "payloadData": [
     {
-      "name": "loggroup",
-      "type": "STRING"
-    },
-    {
       "name": "logstream",
       "type": "STRING"
     }
