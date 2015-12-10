@@ -38,6 +38,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
         <jaxrs:serviceBeans>
         	<bean class="org.wso2.carbon.la.restapi.LoginLogoutApiV10"/>
             <bean class="org.wso2.carbon.la.restapi.LogsApiV10"/>
+            <bean class="org.wso2.carbon.la.restapi.SearchApiV10"/>
             <bean class="org.wso2.carbon.la.restapi.ActivityDashboardApiV10"/>
             <bean class="org.wso2.carbon.la.restapi.FileProcessingApi"/>
         </jaxrs:serviceBeans>
