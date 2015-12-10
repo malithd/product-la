@@ -36,7 +36,7 @@ import java.util.Map;
 @Path("/logs")
 public class LogsApiV10 extends LARestApi {
 
-    private static final Log logger = LogFactory.getLog(LogsApiV10.class);
+    private static final Log log = LogFactory.getLog(LogsApiV10.class);
     private LogsController logsController;
 
     public LogsApiV10() {
@@ -77,7 +77,7 @@ public class LogsApiV10 extends LARestApi {
             String msg = String.format(
                     "Error occurred while creating [log group] %s of tenant [id] %s and [user] %s .", logGroup.getName()
                     , tenantId, username);
-            logger.error(msg, e);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -102,7 +102,7 @@ public class LogsApiV10 extends LARestApi {
             String msg = String.format(
                     "Error occurred while deleting [log group] %s of tenant [id] %s and [user] %s .", name, tenantId,
                     username);
-            logger.error(msg, e);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -127,7 +127,7 @@ public class LogsApiV10 extends LARestApi {
             String msg = String.format(
                     "Error occurred while getting  the log groups of tenant [id] %s and [user] %s .", tenantId,
                     username);
-            logger.error(msg, e);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -148,7 +148,7 @@ public class LogsApiV10 extends LARestApi {
             String msg = String.format(
                     "Error occurred while creating [log stream] %s of tenant [id] %s and [user] %s .", logStream.getName(),
                     tenantId, username);
-            logger.error(msg, e);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -168,7 +168,7 @@ public class LogsApiV10 extends LARestApi {
             String msg = String.format(
                     "Error occurred while deleting [log stream] %s of tenant [id] %s and [user] %s .", name, tenantId,
                     username);
-            logger.error(msg, e);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -188,7 +188,7 @@ public class LogsApiV10 extends LARestApi {
             String msg = String.format(
                     "Error occurred while getting  the log streams  of tenant [id] %s and [user] %s for log [group] %s."
                     , tenantId, username, logGroupId);
-            logger.error(msg, e);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -207,7 +207,7 @@ public class LogsApiV10 extends LARestApi {
             logsController.publishLogEvent(event,tenantId, username);
             return Response.ok().build();
         } catch (LogsControllerException e) {
-            logger.error("Error occured while publishing event ", e);
+            log.error("Error occured while publishing event ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }

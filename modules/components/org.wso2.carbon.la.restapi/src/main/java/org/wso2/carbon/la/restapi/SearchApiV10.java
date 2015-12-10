@@ -19,24 +19,33 @@ package org.wso2.carbon.la.restapi;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
-import org.wso2.carbon.analytics.dataservice.commons.AnalyticsDataResponse;
-import org.wso2.carbon.analytics.dataservice.commons.SearchResultEntry;
-import org.wso2.carbon.analytics.dataservice.core.AnalyticsDataServiceUtils;
 import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.la.commons.constants.LAConstants;
 import org.wso2.carbon.la.commons.domain.QueryBean;
 import org.wso2.carbon.la.commons.domain.RecordBean;
+import org.wso2.carbon.la.core.impl.SearchController;
+import org.wso2.carbon.la.restapi.beans.LAErrorBean;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/search")
-public class SearchApiV10 {
+public class SearchApiV10 extends LARestApi{
 
     private static final Log log = LogFactory.getLog(SearchApiV10.class);
+
+    private SearchController searchController;
+
+    SearchApiV10(){
+        searchController = new SearchController();
+    }
+
     /**
      * Search records.
      * @param queryBean the query bean
@@ -47,34 +56,19 @@ public class SearchApiV10 {
     @Consumes({ MediaType.APPLICATION_JSON})
     @Produces({ MediaType.APPLICATION_JSON })
     @Path("/")
-    public Response search(QueryBean queryBean) throws AnalyticsException {
-//        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-//        int tenantId = carbonContext.getTenantId();
-//        String username = carbonContext.getUsername();
-//
-//        if (log.isDebugEnabled()) {
-//            log.debug("Invoking search for tableName : " + queryBean.getTableName());
-//        }
-//        AnalyticsDataAPI analyticsDataService = Utils.getAnalyticsDataAPIs();
-//        if (queryBean != null) {
-//            List<SearchResultEntry> searchResults = analyticsDataService.search(username,
-//                    queryBean.getTableName(), queryBean.getQuery(),
-//                    queryBean.getStart(), queryBean.getCount());
-//            List<String> ids = Utils.getRecordIds(searchResults);
-//            AnalyticsDataResponse resp = analyticsDataService.get(username, queryBean.getTableName(), 1, null, ids);
-//
-//            List<RecordBean> recordBeans = Utils.createRecordBeans(AnalyticsDataServiceUtils.listRecords(analyticsDataService,
-//                    resp));
-//            if (log.isDebugEnabled()) {
-//                for (RecordBean recordBean : recordBeans) {
-//                    log.debug("Search Result -- Record Id: " + recordBean.getId() + " values :" +
-//                            recordBean.toString());
-//                }
-//            }
-//            return Response.ok(recordBeans).build();
-//        } else {
-//            throw new AnalyticsException("Search parameters not provided");
-//        }
-        return null;
+    public Response search(QueryBean queryBean) {
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        String username = carbonContext.getUsername();
+        queryBean.setTableName(LAConstants.LOG_ANALYZER_STREAM_NAME);
+        try {
+            List<RecordBean> recordBeans = searchController.search(queryBean, username);
+            return Response.ok(recordBeans).build();
+        } catch (AnalyticsException e) {
+            String msg = String.format( "Error occurred while searching");
+            log.error(msg, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
+                    .build();
+        }
     }
 }

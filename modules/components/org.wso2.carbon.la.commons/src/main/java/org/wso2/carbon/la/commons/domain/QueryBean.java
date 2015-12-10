@@ -23,54 +23,48 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Map;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "query")
+
 public class QueryBean {
     /** The table name. */
-    @XmlElement(required = true)
     private String tableName;
 
-    /** The query. */
-    @XmlElement(required = false)
     private String query;
 
-    /** The start. */
-    @XmlElement(required = false)
+
     private int start;
 
-    /** The count. */
-    @XmlElement(required = false)
+
     private int count;
 
-    /**
-     * Gets the table name.
-     * @return the table name
-     */
     public String getTableName() {
         return tableName;
     }
 
-    /**
-     * Gets the query.
-     * @return the query
-     */
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
     public String getQuery() {
         return query;
     }
 
-    /**
-     * Gets the start.
-     * @return the start
-     */
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
     public int getStart() {
         return start;
     }
 
-    /**
-     * Gets the count.
-     * @return the count
-     */
+    public void setStart(int start) {
+        this.start = start;
+    }
+
     public int getCount() {
         return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }
