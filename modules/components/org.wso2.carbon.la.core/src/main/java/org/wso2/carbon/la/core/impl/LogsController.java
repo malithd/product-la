@@ -25,8 +25,6 @@ import org.wso2.carbon.analytics.datasource.commons.AnalyticsSchema;
 import org.wso2.carbon.analytics.datasource.commons.ColumnDefinition;
 import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.databridge.commons.Event;
-import org.wso2.carbon.databridge.commons.StreamDefinition;
-import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
 import org.wso2.carbon.event.stream.core.EventStreamService;
 import org.wso2.carbon.la.commons.constants.LAConstants;
 import org.wso2.carbon.la.commons.domain.LogGroup;
@@ -113,50 +111,37 @@ public class LogsController {
     }
 
     public void publishLogEvent(Map<String, String> rawEvent, int tenantId, String username) throws LogsControllerException{
-        if(!rawEvent.containsKey(LAConstants.LOG_GROUP)){
-            log.error("loggroup doesn't exist in the event, hence avoiding event persistence");
-            return;
-        }
 
         if(!rawEvent.containsKey(LAConstants.LOG_STREAM)){
-            log.error("logstream doesn't exist in the event, hence avoiding event persistence");
-            return;
+            if(log.isDebugEnabled()){
+                log.debug("logstream doesn't exist in the event, hence publishing to default stream");
+            }
+            rawEvent.put(LAConstants.LOG_STREAM, LAConstants.DEFAULT_STREAM);
         }
 
-        String logGroup = rawEvent.get(LAConstants.LOG_GROUP);
         String logStream = rawEvent.get(LAConstants.LOG_STREAM);
-
-        rawEvent.remove(LAConstants.LOG_GROUP);
         rawEvent.remove(LAConstants.LOG_STREAM);
 
-        StreamDefinition streamDefinition = null;
-        try {
-            streamDefinition = new StreamDefinition(LAConstants.LOG_ANALYZER_STREAM_NAME, LAConstants.LOG_ANALYZER_STREAM_VERSION);
-        } catch (MalformedStreamDefinitionException e) {
-            log.error("Unable to create stream definition", e);
-        }
         Map<String, ColumnDefinition> newArbitrayColumns = getNewArbitraryFields(rawEvent,username);
         if(newArbitrayColumns.size() > 0){
            updateSchema(newArbitrayColumns, username);
            updateLogStreamMetadata(newArbitrayColumns.keySet());
         }
+        EventStreamService eventStreamService = LACoreServiceValueHolder.getInstance().getEventStreamService();
+        if (eventStreamService != null) {
+            Event tracingEvent = new Event();
+            tracingEvent.setTimeStamp(System.currentTimeMillis());
+            tracingEvent.setStreamId(LAConstants.LOG_ANALYZER_STREAM_ID);
+            tracingEvent.setTimeStamp(System.currentTimeMillis());
+            tracingEvent.setPayloadData(new Object[]{logStream});
+            tracingEvent.setArbitraryDataMap(rawEvent);
 
-        if(streamDefinition != null){
-            EventStreamService eventStreamService = LACoreServiceValueHolder.getInstance().getEventStreamService();
-            if (eventStreamService != null) {
-                Event tracingEvent = new Event();
-                tracingEvent.setTimeStamp(System.currentTimeMillis());
-                tracingEvent.setStreamId(streamDefinition.getStreamId());
-                tracingEvent.setTimeStamp(System.currentTimeMillis());
-                tracingEvent.setPayloadData(new Object[]{logGroup, logStream});
-                tracingEvent.setArbitraryDataMap(rawEvent);
-
-                eventStreamService.publish(tracingEvent);
-                if (log.isDebugEnabled()) {
-                    log.debug("Successfully published event " + tracingEvent.toString());
-                }
+            eventStreamService.publish(tracingEvent);
+            if (log.isDebugEnabled()) {
+                log.debug("Successfully published event " + tracingEvent.toString());
             }
         }
+
     }
 
     private void updateSchema(Map<String, ColumnDefinition> newArbitrayColumns, String username) throws LogsControllerException {
@@ -167,10 +152,7 @@ public class LogsController {
             Map<String, ColumnDefinition> previousColumns = analyticsSchema.getColumns();
             previousColumns.putAll(newArbitrayColumns);
 
-            List<String> primaryKeys = new ArrayList<>();
-            primaryKeys.add(LAConstants.LOG_GROUP);
-            primaryKeys.add(LAConstants.LOG_STREAM);
-            AnalyticsSchema updatedAnalyticsSchema =  new AnalyticsSchema(new ArrayList(previousColumns.values()), primaryKeys);
+            AnalyticsSchema updatedAnalyticsSchema =  new AnalyticsSchema(new ArrayList(previousColumns.values()),null);
             analyticsDataAPIService.setTableSchema(username, LAConstants.LOG_ANALYZER_STREAM_NAME, updatedAnalyticsSchema);
             if(log.isDebugEnabled()){
                 log.debug("Log Analyzer schema updated successfully");
@@ -184,13 +166,11 @@ public class LogsController {
         Map<String, ColumnDefinition> newColumns = new HashMap<>();
         AnalyticsDataAPI analyticsDataAPIService = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
         try {
-            //TODO : make getSchema inmemory operation
             AnalyticsSchema analyticsSchema = analyticsDataAPIService.getTableSchema(username, LAConstants.LOG_ANALYZER_STREAM_NAME);
-            Map<String, ColumnDefinition> indexedColumns = analyticsSchema.getColumns();
+            Map<String, ColumnDefinition> columns = analyticsSchema.getColumns();
             for(String arbitraryKey : rawEvent.keySet()){
                 String columnName = LAConstants.ARBITRARY_FIELD_PREFIX + arbitraryKey;
-                if(!indexedColumns.containsKey(columnName)){
-                    //TODO : infer the column type
+                if(!columns.containsKey(columnName)){
                     newColumns.put(columnName, new ColumnDefinition(columnName, AnalyticsSchema.ColumnType.STRING, true, false));
                 }
             }

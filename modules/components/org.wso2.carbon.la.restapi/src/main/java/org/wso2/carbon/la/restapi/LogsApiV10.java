@@ -36,7 +36,7 @@ import java.util.Map;
 @Path("/logs")
 public class LogsApiV10 extends LARestApi {
 
-    private static final Log logger = LogFactory.getLog(LogsApiV10.class);
+    private static final Log log = LogFactory.getLog(LogsApiV10.class);
     private LogsController logsController;
 
     public LogsApiV10() {
@@ -66,17 +66,18 @@ public class LogsApiV10 extends LARestApi {
     public Response createLogGroup(LogGroup logGroup) {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
-        String userName = carbonContext.getUsername();
+        String username = carbonContext.getUsername();
 
         try {
             logGroup.setTenantId(tenantId);
-            logGroup.setUsername(userName);
+            logGroup.setUsername(username);
             int logGroupId = logsController.createLogGroup(logGroup);
             return Response.ok(logGroupId).build();
         } catch (LogsControllerException e) {
             String msg = String.format(
-                    "Error occurred while creating [log group] %s of tenant [id] %s and [user] %s .", logGroup.getName(),                 tenantId, userName);
-            logger.error(msg, e);
+                    "Error occurred while creating [log group] %s of tenant [id] %s and [user] %s .", logGroup.getName()
+                    , tenantId, username);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -93,15 +94,15 @@ public class LogsApiV10 extends LARestApi {
     public Response deleteLogGroup(@PathParam("groupname") String name) {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
-        String userName = carbonContext.getUsername();
+        String username = carbonContext.getUsername();
         try {
-            logsController.deleteLogGroup(name, tenantId, userName);
+            logsController.deleteLogGroup(name, tenantId, username);
             return Response.ok().build();
         } catch (LogsControllerException e) {
             String msg = String.format(
                     "Error occurred while deleting [log group] %s of tenant [id] %s and [user] %s .", name, tenantId,
-                    userName);
-            logger.error(msg, e);
+                    username);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -118,15 +119,15 @@ public class LogsApiV10 extends LARestApi {
     public Response getAllLogGroupNames() {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
-        String userName = carbonContext.getUsername();
+        String username = carbonContext.getUsername();
         try {
-            List<String> logGroupNames = logsController.getAllLogGroupNames(tenantId, userName);
+            List<String> logGroupNames = logsController.getAllLogGroupNames(tenantId, username);
             return Response.ok(logGroupNames).build();
         } catch (LogsControllerException e) {
             String msg = String.format(
                     "Error occurred while getting  the log groups of tenant [id] %s and [user] %s .", tenantId,
-                    userName);
-            logger.error(msg, e);
+                    username);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -139,15 +140,15 @@ public class LogsApiV10 extends LARestApi {
     public Response creatLogStream(LogStream logStream) {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
-        String userName = carbonContext.getUsername();
+        String username = carbonContext.getUsername();
         try {
             logsController.createLogStream(logStream);
             return Response.ok().build();
         } catch (LogsControllerException e) {
             String msg = String.format(
                     "Error occurred while creating [log stream] %s of tenant [id] %s and [user] %s .", logStream.getName(),
-                    tenantId, userName);
-            logger.error(msg, e);
+                    tenantId, username);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -159,15 +160,15 @@ public class LogsApiV10 extends LARestApi {
     public Response deleteLogStream(@PathParam("name") String name, @PathParam("logGroupId") int logGroupId) {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
-        String userName = carbonContext.getUsername();
+        String username = carbonContext.getUsername();
         try {
             logsController.deleteLogStream(name, logGroupId);
             return Response.ok().build();
         } catch (LogsControllerException e) {
             String msg = String.format(
                     "Error occurred while deleting [log stream] %s of tenant [id] %s and [user] %s .", name, tenantId,
-                    userName);
-            logger.error(msg, e);
+                    username);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -179,15 +180,15 @@ public class LogsApiV10 extends LARestApi {
     public Response getAllLogStreams(@PathParam("logGroupId") int logGroupId) {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
-        String userName = carbonContext.getUsername();
+        String username = carbonContext.getUsername();
         try {
             List<String> logGroupNames = logsController.getAllLogStreamNames(logGroupId);
             return Response.ok(logGroupNames).build();
         } catch (LogsControllerException e) {
             String msg = String.format(
                     "Error occurred while getting  the log streams  of tenant [id] %s and [user] %s for log [group] %s."
-                    , tenantId, userName, logGroupId);
-            logger.error(msg, e);
+                    , tenantId, username, logGroupId);
+            log.error(msg, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }
@@ -200,13 +201,13 @@ public class LogsApiV10 extends LARestApi {
     public Response publishLogEvent(Object rawEvent){
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
-        String userName = carbonContext.getUsername();
+        String username = carbonContext.getUsername();
         Map<String, String> event = (Map<String, String>)rawEvent;
         try {
-            logsController.publishLogEvent(event,tenantId, userName);
+            logsController.publishLogEvent(event,tenantId, username);
             return Response.ok().build();
         } catch (LogsControllerException e) {
-            logger.error("Error occured while publishing event ", e);
+            log.error("Error occured while publishing event ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new LAErrorBean(e.getMessage()))
                     .build();
         }

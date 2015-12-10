@@ -6,73 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WSO2 Log Analyzer</title>
     <link rel="icon" href="../../images/favicon.png" type="image/x-icon" />
-    <link href="../../css/bootstrap.css" rel="stylesheet">
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
     <link href="../../css/custom.css" rel="stylesheet">
     <link href="../../css/custom-theme.css" rel="stylesheet">
-    <script src="../../js/respond.min.js"></script>
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="../../js/jquery-1.11.1.min.js"></script>
-    <script src="../../js/wso2.ml.util.js"></script>
-    <script src="../../js/bootstrap.min.js"></script>
-    <script src="../../js/operationsmenu.js"></script>
-    <script src="../../js/select2.min.js"></script>
-    <link href="../../css/select2.min.css" rel="stylesheet" />
+    <link href="../../css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet"/>
+    <link href="../../css/plugins/dataTables/dataTables.responsive.css" rel="stylesheet"/>
+    <link href="../../css/plugins/dataTables/dataTables.tableTools.min.css" rel="stylesheet"/>
 
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
-    <link rel="stylesheet" type="text/css">
-    <%
-        include("../../includes/tenantAware.jag");
-    %>
+    <% include("../../includes/tenantAware.jag"); %>
 
-    <script language="javascript" type="text/javascript">
-
-        var serverUrl = window.location.origin;
-
-        $(document).ready(function () {
-          //  $("#mytabs").tabs({ fx: {opacity: 'toggle'} });
-            $('[data-toggle="popover"]').popover({
-                html : true,
-                content: function() {
-                    return $('#timeListContent').html();
-                }
-            });
-        });
-
-        function searchActivities() {
-            jQuery.ajax({
-                type: "GET",
-                url: serverUrl + "/api/activities/getActivities?fromTime=1111&toTime=22222&searchQuery=test",
-                async: false,
-                success: function(res) {
-                    alert(res);
-
-                },
-                error: function(res) {
-                    alert(res.responseText);
-                }
-            });
-        }
-
-        function changeTime(value) {
-            //document.getElementById("time-set-btn").innerHTML = id;
-            //$('#time-set-btn').val('2');
-            $("#time-set-btn").text(value);
-        }
-
-        //$(function() {
-          //  $( "#datepicker" ).datepicker();
-        //});
-    </script>
-    
 </head>
 
 <body>
 
     <div class="container col-lg-12 col-md-12 col-sm-12">
-
         <header>
             <div class="row wr-global-header">
                 <div class="col-sm-8 app-logo">
@@ -107,20 +54,7 @@
                     <div class="wr-project">
                         <span class="title">SEARCH</span>
                     </div>
-
-                    <!--<div class="wr-select-ds">-->
-                        <!--<div id="search" style="width:190px"></div>                                        -->
-                    <!--</div>-->
-
                 </div>
-
-                <!--<div class="col-md-3">-->
-                    <!--<div class="wr-secondary-links pull-right">-->
-                        <!--&lt;!&ndash; empty &ndash;&gt;-->
-                        <!--&lt;!&ndash;a href="#" class="cu-btn btn-prev">Previous</a&ndash;&gt;-->
-                        <!--&lt;!&ndash;a href="#" class="cu-btn-reverse btn-next">Next</a&ndash;&gt;-->
-                    <!--</div>-->
-                <!--</div>-->
             </div>
         </div>
         <!-- secondary header - app bar -->
@@ -128,14 +62,6 @@
         <!-- content/body -->
         <div class="row">
             <div class="col-lg-12 wr-secondary-bar">
-
-                <!-- Wizard -->
-                <!--ul class="nav nav-pills nav-wizard">
-        <li class="active"><a href="#" data-toggle="tab"><span class="nav-wedge-step">Step 1</span>Workflow</a><div class="nav-arrow"></div></li>
-        <li><div class="nav-wedge"></div><a href="#" data-toggle="tab"><span class="nav-wedge-step">Step 2</span>Data</a><div class="nav-arrow"></div></li>
-        <li><div class="nav-wedge"></div><a href="#" data-toggle="tab"><span class="nav-wedge-step">Step 3</span>Algorithm</a><div class="nav-arrow"></div></li>
-        <li><div class="nav-wedge"></div><a href="#" data-toggle="tab"><span class="nav-wedge-step">Step 4</span>Parameters</a><div class="nav-arrow"></div></li>
-    </ul-->
 
             </div>
         </div>
@@ -217,22 +143,6 @@
                                 </div>
                             </div>
 
-
-
-                            <!--<select id="search-filters" class="drop-down-fixed">-->
-                                <!--<optgroup label="Predefined">-->
-                                    <!--<option value="all-time">All Time</option>-->
-                                    <!--<option value="today">Today</option>-->
-                                    <!--<option value="week-to-date">Week to Date</option>-->
-                                    <!--<option value="month-to-date">Month to Date</option>-->
-                                    <!--<option value="last-15-minutes">Last 15 Minutes</option>-->
-                                    <!--<option value="last-hour">Last 1 Hour</option>-->
-                                <!--</optgroup>-->
-                                <!--<optgroup label="Date Range">-->
-                                    <!--<option value="To"><p>Date: <input type="text" id="datepicker"></p></option>-->
-                                    <!--<option value="From">From</option>-->
-                                <!--</optgroup>-->
-                            <!--</select>-->
                             <div id="search-btn-area" class="btn-group-actions">
                                 <button class="btn btn-main" id="search-btn" onclick="searchActivities()">Search</button>
                             </div>
@@ -243,78 +153,34 @@
                             <div id="save-btn-area" class="btn-group-actions">
                                 <button class="btn btn-main" id="save-btn">Save As</button>
                             </div>
-                            </br></br></br></br></br></br>
-                            <ul class="nav nav-tabs">
-                                <li class="active"><a data-toggle="tab" href="#preview">Preview</a></li>
-                                <li><a data-toggle="tab" href="#feild1">Field-1</a></li>
-                            </ul>
 
-                            <div class="tab-content">
-                                <div id="preview" class="tab-pane fade in active">
-                                    <div  id="tab-preview" class="wr-form col-lg-5 col-left">
-                                        <table class="table_solid">
-                                            <th>Events</th>
-                                            <tr>
-                                                <td>Sample Event -1</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Sample Event -2</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Sample Event -3</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Sample Event -4</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Sample Event -5</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Sample Event -6</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div id="feild1" class="tab-pane fade">
-                                    <h3>Field-1</h3>
-                                </div>
+                            <div  id="tab-preview" class="wr-form col-lg-12 col-left">
+                                <table id="results-table" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                        </tr>
+                                    </thead>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
 
-		</div>
+		    </div>
                 <!-- /content -->
-
-
             </div>
         </div>
         <!-- /content/body -->
-
     </div>
 
+    <script src="../../js/jquery-2.1.1.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/plugins/jquery.dataTables.js"></script>
+    <script src="../../js/plugins/dataTables.bootstrap.js"></script>
+    <script src="../../js/plugins/dataTables.responsive.js"></script>
 
-
-
-
-<!--footer class="footer">
-    <p>&copy; 2014 WSO2 Inc. All Rights Reserved</p>
-</footer-->
-
-<!--<div id="content-asset-types" style="display: none">-->
-    <!--<div>-->
-        <!--<a class="ast-type-item" href="../project/projects.jag"><img src="../../images/icons/ico-projects.png" /><span>Projects</span></a>-->
-        <!--<a class="ast-type-item" href="../data/datasets.jag"><img src="../../images/icons/ico-datasets.png" /><span>Datasets</span></a>   -->
-    <!--</div>-->
-<!--</div>  -->
-
-<!-- modal popup template -->
-<!--<div class="wr-modalpopup">-->
-    <!--<div class="modalpopup-content">&lt;!&ndash; dynamic content &ndash;&gt;</div>-->
-    <!--<div class="modalpopup-bg"></div>-->
-<!--</div>-->
-<!-- /modal popup template -->
-
+    <script src="search.js"></script>
 </body>
 
 </html>

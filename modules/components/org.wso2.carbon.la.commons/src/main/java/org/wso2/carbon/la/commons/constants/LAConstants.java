@@ -34,6 +34,7 @@ public class LAConstants {
 
     public static final String LOG_GROUP = "loggroup";
     public static final String LOG_STREAM = "logstream";
+    public static final String DEFAULT_STREAM = "default";
 
     public static final String EVENT_STREAM_PERSIST_ADMINSERVICE = "EventStreamPersistenceAdminService";
 

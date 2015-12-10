@@ -2,18 +2,11 @@
 <EventStoreConfiguration>
     <TableSchema>
         <ColumnDefinition>
-            <Name>loggroup</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>STRING</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
             <Name>logstream</Name>
             <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
+            <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>STRING</Type>
+            <Type>FACET</Type>
         </ColumnDefinition>
     </TableSchema>
     <Source>
