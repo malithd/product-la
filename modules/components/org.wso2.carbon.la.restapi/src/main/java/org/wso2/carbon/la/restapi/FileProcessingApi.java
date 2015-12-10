@@ -31,7 +31,6 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.http.HttpHeaders;
 import org.wso2.carbon.utils.CarbonUtils;
-import org.wso2.carbon.la.commons.domain.*;
 
 import java.io.*;
 import java.util.ArrayList;

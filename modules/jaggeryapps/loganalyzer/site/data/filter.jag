@@ -33,9 +33,9 @@
   <div class="row" style="padding-top: 20px;background-color: rgba(138, 125, 136, 0.1); padding-bottom:20px;margin-top:20px;margin-bottom:20px;">
      <div class="col-md-5 col-centered" >
         <div class="btn-group btn-breadcrumb">
-            <a onclick="renderMethodPage()" class="btn btn-lg btn-default"><i class="glyphicon glyphicon-home"> Extract Fields</i></a>
+            <a href="#" class="btn btn-lg btn-default"><i class="glyphicon glyphicon-home"> Extract Fields</i></a>
             <a onclick="renderSamplePage()" class="btn btn-lg btn-default">Sample</a>
-            <a href="#" class="btn btn-lg btn-default">Method</a>
+            <a onclick="renderMethodPage()" class="btn btn-lg btn-default">Method</a>
             <a href="#" class="btn btn-lg btn-default">Fields</a>
             <a href="#" class="btn btn-lg btn-default">Validate & Save</a>
         </div>
@@ -43,13 +43,13 @@
   </div>
 
   <div id="filterContent">
-    <!--<% include("../filter/sample.jag");%>-->
-    <% include("../filter/method.jag");%>
+    <% include("../filter/sample.jag");%>
+   <!-- <% include("../filter/method.jag");%> -->
   </div>
 
 </div>
 
-
+<script src="../../js/mustache.min.js"></script>
 <script src="../../js/jquery-1.11.1.min.js"></script>
 <script src="../../js/bootstrap.min.js"></script>
 

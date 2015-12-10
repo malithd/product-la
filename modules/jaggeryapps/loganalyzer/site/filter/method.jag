@@ -40,33 +40,4 @@
         });
     }
 
-function searchActivities() {
-    var urlParams = splitUrl();
-    jQuery.ajax({
-        type: "GET",
-                url: baseUrl + "/api/files/getLogs?noOfLines=2&" + "logGroup=" + urlParams["logGroup"]+ "&logStream=" +
-            urlParams["logStream"] + "&fileName=" + urlParams["fileName"],
-                async: false,
-                success: function(res) {
-                    alert(res);
-                },
-                error: function(res) {
-                    alert(res.responseText);
-                }
-            });
-        }
-
-function splitUrl() {
-    var urlParams;
-    var match,
-        pl     = /\+/g,  // Regex for replacing addition symbol with a space
-        search = /([^&=]+)=?([^&]*)/g,
-        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-        query  = window.location.search.substring(1);
-    urlParams = {};
-    while (match = search.exec(query))
-       urlParams[decode(match[1])] = decode(match[2]);
-    return urlParams;
-}
-
 </script>

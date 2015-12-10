@@ -13,12 +13,10 @@
 	</div>
 	<div class="col-md-1" style="text-align: right" >Sample</div>
 	<div class="col-md-3">
-		      <select class="form-control">
-		                    <option>1000Events</option>
-		                    <option>2</option>
-		                    <option>3</option>
-		                    <option>4</option>
-		                    <option>5</option>
+		      <select class="form-control" onchange="searchActivities(this.value)" >
+		                    <option value="10">10 Events</option>
+		                    <option value="100">100 Events</option>
+		                    <option value="1000">1000 Events</option>
 		       </select>
 	</div>
 </div>
@@ -26,29 +24,83 @@
 <br class="spacer"/>
 
 <div class="row">
-<div class="container">
-           
-  <table class="table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Log</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1</td>
-        <td>Doe</td>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>Doe</td>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>Doe</td>
-      </tr>
-    </tbody>
-  </table>
+    <div id="SelectedLog"></div>
 </div>
+
+<br class="spacer"/>
+
+<div class="row">
+    <div id="ResultArea"></div>
 </div>
+
+<div class="btn-group-actions">
+  <button class="btn btn-main" onclick="extractFeilds()" id="submit-dataset">Extract</button>
+</div>
+
+<script src="../../js/mustache.min.js"></script>
+<script src="../../js/jquery-1.11.1.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<script src="../../js/wso2.ml.util.js"></script>
+<script src="../../js/jquery.form.min.js"></script>
+<script type="text/javascript">
+var baseUrl = getBaseUrl(window.location.href);
+$(document).ready(function () {
+});
+
+window.onload = function() {
+                searchActivities(10);
+            };
+
+        function CreateHtmlTable(logs) {
+
+            //Clear result div
+            $("#ResultArea").html("");
+
+            //Crate table html tag
+            var table = $("<table id='data' class='table'></table>").appendTo("#ResultArea");
+
+            //Create table header row
+            var rowHeader = $("<tr></tr>").appendTo(table);
+            $("<td></td>").text("Logs").appendTo(rowHeader);
+
+
+                 for (var i = 0; i < logs.length; i++) {
+                 var row = $("<tr></tr>").appendTo(table);
+                    $("<td onclick='updateLine(this)'></td>").text(logs[i]).appendTo(row);
+                 }
+        }
+
+function searchActivities(lines) {
+    var urlParams = splitUrl();
+    jQuery.ajax({
+        type: "GET",
+                url: baseUrl + "/api/files/getLogs?noOfLines=" + lines + "&" + "logGroup=" + urlParams["logGroup"]+
+                "&logStream=" + urlParams["logStream"] + "&fileName=" + urlParams["fileName"],
+                async: false,
+                success: function(res) {
+                    CreateHtmlTable(res);
+                },
+                error: function(res) {
+                    alert(res.responseText);
+                }
+            });
+        }
+
+function splitUrl() {
+    var urlParams;
+    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.search.substring(1);
+    urlParams = {};
+    while (match = search.exec(query))
+       urlParams[decode(match[1])] = decode(match[2]);
+    return urlParams;
+}
+
+function updateLine(value){
+  $("#SelectedLog").html(value);
+}
+</script>
+

@@ -63,7 +63,7 @@
 			    	</div>
 
 					<div class="btn-group-actions">
-			    		<button class="btn btn-main" type="submit" id="submit-dataset">Add</button>
+			    		<button class="btn btn-main" type="submit" id="add-log-form">Add</button>
 			    	</div>
 				</form>
 			</div>
@@ -112,21 +112,6 @@ $( document ).ready(function() {
         }
     });
 });
-
-function searchActivities() {
-    Query.ajax({
-        type: "GET",
-            url: baseUrl + "/api/files/getLogs?noOfLines=6&fileName=wso2carbon.log",
-                async: false,
-                success: function(res) {
-                    alert(res);
-
-                },
-                error: function(res) {
-                    alert(res.responseText);
-                }
-            });
-        }
 </script>
 </body>
 </html>
