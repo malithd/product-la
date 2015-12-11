@@ -528,6 +528,12 @@ a.ctrl-filter-category:hover {
     outline: 0 none
 }
 
+.datepicker {
+    width:auto !important;
+    display: block;
+    margin-bottom:10px;
+}
+
 table {
     width:1400px;
 }

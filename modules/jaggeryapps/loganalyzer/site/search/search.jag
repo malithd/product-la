@@ -12,6 +12,7 @@
     <link href="../../css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet"/>
     <link href="../../css/plugins/dataTables/dataTables.responsive.css" rel="stylesheet"/>
     <link href="../../css/plugins/dataTables/dataTables.tableTools.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
     <% include("../../includes/tenantAware.jag"); %>
 
@@ -94,11 +95,9 @@
                                 <input type="text" value="" placeholder="host='localhost' status='success'" id="search-field" name="search-field" />
                             </div>
                             <div id="drop-down-area" class="search-field text">
-                                <button type="button" id="time-set-btn" class="btn btn-main" data-toggle="popover" data-placement="bottom"
-                                 title="Popover Header">All Time</button>
+                                <button type="button" class="btn btn-main" id="date-time-select" data-placement="bottom" rel="popover"
+                                data-original-title="All Time">All Time</button>
                             </div>
-
-                            <!--<p>Date: <input type="text" id="datepicker"></p>-->
 
                             <div class="panel-group" id="timeListContent" style="display: none">
                                 <div class="panel panel-default">
@@ -108,37 +107,60 @@
                                         </h4>
                                     </div>
                                     <div id="pre-defined" class="panel-collapse collapse in">
-                                    <div class="panel-body">
-                                        <ul class="list-unstyled">
-                                            <li id="all-time" onclick="changeTime(this.innerHTML)">All Time</li>
-                                            <li id="today" onclick="changeTime(this.innerHTML)">Today</li>
-                                            <li value="week-to-date" onclick="changeTime(this.innerHTML)">Week to Date</li>
-                                            <li value="month-to-date" onclick="changeTime(this.innerHTML)">Month to Date</li>
-                                            <li value="last-15-minutes" onclick="changeTime(this.innerHTML)">Last 15 Minutes</li>
-                                            <li value="last-hour" onclick="changeTime(this.innerHTML)">Last 1 Hour</li>
-                                        </ul>
-                                    </div>
-                                    </div>
-                                    </div>
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#timeListContent" href="#date-range">Date Range</a>
-                                            </h4>
+                                        <div class="panel-body">
+                                            <ul class="list-unstyled">
+                                                <li id="all-time" onclick="changeTime(this.innerHTML)">All Time</li>
+                                                <li id="today" onclick="changeTime(this.innerHTML)">Today</li>
+                                                <li value="week-to-date" onclick="changeTime(this.innerHTML)">Week to Date</li>
+                                                <li value="month-to-date" onclick="changeTime(this.innerHTML)">Month to Date</li>
+                                                <li value="last-15-minutes" onclick="changeTime(this.innerHTML)">Last 15 Minutes</li>
+                                                <li value="last-hour" onclick="changeTime(this.innerHTML)">Last 1 Hour</li>
+                                            </ul>
                                         </div>
-                                        <div id="date-range" class="panel-collapse collapse">
-                                            <div class="panel-body">
-                                                <!--<p>Date: <input type="text" id="datepicker"></p>-->
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#timeListContent" href="#date-range">Date Range</a>
+                                        </h4>
+                                    </div>
+                                    <div id="date-range" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <div>
+                                                <label>From: </label>
+                                                <input type="text" id="datePickerFrom" class="datepicker" placeholder="Start Date of event" />
+                                            </div>
+                                            <div>
+                                                <label>To: </label>
+                                                <input type="text" id="datePickerTo" class="datepicker" placeholder="End Date of event" />
+                                            </div>
+                                            <div>
+                                                <button type="button" class="btn btn-main" id="date-range-add-btn" onclick="assignDateRange()">Add</button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="panel panel-default">
+                                </div>
+                                <div class="panel panel-default">
                                     <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                      <a data-toggle="collapse" data-parent="#timeListContent" href="#date-time-range">Date Time Range</a>
-                                    </h4>
+                                        <h4 class="panel-title">
+                                          <a data-toggle="collapse" data-parent="#timeListContent" href="#date-time-range">Date Time Range</a>
+                                        </h4>
                                     </div>
                                     <div id="date-time-range" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <div>
+                                                <label>From: </label>
+                                                <input type="text" id="dateTimePickerFrom" class="datetimepicker" placeholder="Start Date time of event" />
+                                            </div>
+                                            <div>
+                                                <label>To: </label>
+                                                <input type="text" id="dateTimePickerTo" class="datetimepicker" placeholder="End Date time of event" />
+                                            </div>
+                                            <div>
+                                                <button type="button" class="btn btn-main" id="date-range-add-btn" onclick="assignDateTimeRange()">Add</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -175,11 +197,11 @@
     </div>
 
     <script src="../../js/jquery-2.1.1.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="../../js/bootstrap.min.js"></script>
     <script src="../../js/plugins/jquery.dataTables.js"></script>
     <script src="../../js/plugins/dataTables.bootstrap.js"></script>
     <script src="../../js/plugins/dataTables.responsive.js"></script>
-
     <script src="search.js"></script>
 </body>
 
