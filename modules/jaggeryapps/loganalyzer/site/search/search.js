@@ -22,10 +22,22 @@ var resultTable =  $('#results-table').DataTable( {
 });
 
 $(document).ready(function () {
-    $('[data-toggle="popover"]').popover({
-        html : true,
+    var showPopover = $.fn.popover.Constructor.prototype.show;
+    $.fn.popover.Constructor.prototype.show = function () {
+        showPopover.call(this);
+        if (this.options.showCallback) {
+            this.options.showCallback.call(this);
+        }
+    };
+
+    $("#date-time-select").popover({
+        html: true,
         content: function() {
             return $('#timeListContent').html();
+        },
+        showCallback: function () {
+            $('.datepicker').datepicker();
+            //$('.datetimepicker').datetimepicker();
         }
     });
 });
@@ -52,7 +64,19 @@ function searchActivities2() {
 }
 
 function changeTime(value) {
-    $("#time-set-btn").text(value);
+    $("#date-time-select").text(value);
+}
+
+function assignDateRange() {
+    var dateFrom = $("#datePickerFrom").val();
+    var dateTo = $("#datePickerTo").val();
+    changeTime(dateFrom + "-" + dateTo);
+}
+
+function assignDateTimeRange() {
+    var dateTimeFrom = $("#dateTimePickerFrom").val();
+    var dateTimeTo = $("#dateTimePickerTo").val();
+    changeTime(dateTimeFrom + "-" + dateTimeTo);
 }
 
 function searchActivities(data){
