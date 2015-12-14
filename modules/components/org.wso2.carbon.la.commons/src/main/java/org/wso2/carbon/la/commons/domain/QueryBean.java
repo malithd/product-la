@@ -30,11 +30,13 @@ public class QueryBean {
 
     private String query;
 
-
     private int start;
 
-
     private int count;
+
+    private long from;
+
+    private long to;
 
     public String getTableName() {
         return tableName;
@@ -66,5 +68,21 @@ public class QueryBean {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public long getFrom() {
+        return from;
+    }
+
+    public void setFrom(long from) {
+        this.from = from;
+    }
+
+    public long getTo() {
+        return to;
+    }
+
+    public void setTo(long to) {
+        this.to = to;
     }
 }
