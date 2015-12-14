@@ -35,12 +35,12 @@
 			<artifactId>org.wso2.carbon.la.database</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.json.wso2</groupId>
-			<artifactId>json</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.h2database.wso2</groupId>
 			<artifactId>h2-database-engine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.json.wso2</groupId>
+			<artifactId>json</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -107,6 +107,9 @@
 							</adviceFile>
 							<importFeatures>
 							</importFeatures>
+							<bundles>
+								<bundleDef>org.json.wso2:json</bundleDef>
+							</bundles>
 						</configuration>
 					</execution>
 				</executions>
