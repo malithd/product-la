@@ -23,7 +23,6 @@ public abstract class LARestApi {
     protected String getTenantID() {
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         tenantID = String.valueOf(tenantId);
-
         return tenantID;
     }
 }

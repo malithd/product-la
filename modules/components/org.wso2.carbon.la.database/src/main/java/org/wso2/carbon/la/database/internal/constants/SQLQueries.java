@@ -41,6 +41,14 @@ public class SQLQueries {
 
     public static final String DELETE_LOG_STREAM = "DELETE FROM LA_LOG_STREAMS WHERE NAME=? AND LOG_GROUP_ID=?";
 
+    public static final String GET_LOG_STREAM_ID = "SELECT ID FROM LA_LOG_STREAM_METADATA WHERE STREAM_ID=? AND TENANT_ID=? AND USER_NAME=?";
+
+    public static final String GET_LOG_STREAM_FIELDS = "SELECT FIELDS FROM LA_LOG_STREAM_METADATA WHERE STREAM_ID=? AND TENANT_ID=? AND USER_NAME=?";
+
+    public static final String INSERT_LOG_STREAM_FIELDS = "INSERT INTO LA_LOG_STREAM_METADATA (FIELDS, STREAM_ID, TENANT_ID, USER_NAME) VALUES (?,?,?,?)";
+
+    public static final String UPDATE_LOG_STREAM_FIELDS = "UPDATE LA_LOG_STREAM_METADATA SET FIELDS=? WHERE STREAM_ID=? AND TENANT_ID=? AND USER_NAME=?";
+
     /*
      * private Constructor to prevent any other class from instantiating.
      */
