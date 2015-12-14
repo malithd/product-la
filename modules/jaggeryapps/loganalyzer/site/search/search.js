@@ -6,9 +6,11 @@ var resultTable =  $('#results-table').DataTable( {
         "dataType": "json",
         "contentType": "application/json; charset=utf-8",
         "data": function (payload) {
-            payload.query = $("#search-field").val()
-            payload.start = 0
-            payload.count = 100
+            payload.query = $("#search-field").val();
+            payload.start = 0;
+            payload.count = 100;
+            payload.from = $("#timestamp-from").val();
+            payload.to = $("#timestamp-to").val();
             return JSON.stringify(payload)
         },
         "dataSrc" : function(d){
@@ -37,7 +39,14 @@ $(document).ready(function () {
         },
         showCallback: function () {
             $('.datepicker').datepicker();
-            //$('.datetimepicker').datetimepicker();
+            $('.timepicker').timepicker(
+                {
+                    'step': '20',
+                    'minTime': '9:00am',
+                    'maxTime': '12:00pm',
+                    'timeFormat': 'H:i:s'
+                }
+            );
         }
     });
 });
@@ -63,20 +72,39 @@ function searchActivities2() {
     });
 }
 
-function changeTime(value) {
+function changeTime(value, timestampFrom, timestampTo) {
+    var buttonHeight = $("#date-time-select").outerHeight();
+    var buttonWidth = $("#date-time-select").outerWidth();
+    $("#date-time-select").css({ 'height': buttonHeight});
+    $("#date-time-select").css({ 'width': buttonWidth});
+    $("#timestamp-from").val(timestampFrom);
+    $("#timestamp-to").val(timestampTo);
     $("#date-time-select").text(value);
 }
 
 function assignDateRange() {
-    var dateFrom = $("#datePickerFrom").val();
-    var dateTo = $("#datePickerTo").val();
-    changeTime(dateFrom + "-" + dateTo);
+    var dateFrom = $("#dateRangeDatePickerFrom").val();
+    var dateTo = $("#dateRangeDatePickerTo").val();
+    changeTime(dateFrom + "-" + dateTo, new Date(dateFrom).getTime(), new Date(dateTo).getTime());
 }
 
 function assignDateTimeRange() {
-    var dateTimeFrom = $("#dateTimePickerFrom").val();
-    var dateTimeTo = $("#dateTimePickerTo").val();
-    changeTime(dateTimeFrom + "-" + dateTimeTo);
+    var dateFrom = $("#dateTimeRangeDatePickerFrom").val();
+    var timeFrom = $("#dateTimeRangeTimePickerFrom").val();
+    var dateTo = $("#dateTimeRangeDatePickerTo").val();
+    var timeTo = $("#dateTimeRangeTimePickerTo").val();
+    changeTime(dateFrom + ":" + timeFrom + "-" + dateTo + ":" + timeTo, new Date(dateFrom + " " + timeFrom).getTime(),
+        new Date(dateTo + " " + timeTo).getTime());
+}
+
+function getLastWeek(){
+    var today = new Date();
+    return lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+}
+
+function getLastMonth(){
+    var today = new Date();
+    return lastWeek = new Date(today.getFullYear(), today.getMonth() -1, today.getDate());
 }
 
 function searchActivities(data){
