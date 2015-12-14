@@ -34,8 +34,11 @@ public class LAConstants {
     public static final String LOGSTASH_TAGS = "tags";
 
     public static final String LOG_GROUP = "loggroup";
-    public static final String LOG_STREAM = "logstream";
+    public static final String LOG_STREAM = "@logstream";
     public static final String DEFAULT_STREAM = "default";
+    public static final String LOG_TIMESTAMP = "@timestamp";
+    public static final String LOG_TIMESTAMP_LONG = "@timestamp_long";
+    public static final String DAS_TIMESTAMP_FIELD = "_timestamp";
 
     public static final String EVENT_STREAM_PERSIST_ADMINSERVICE = "EventStreamPersistenceAdminService";
 

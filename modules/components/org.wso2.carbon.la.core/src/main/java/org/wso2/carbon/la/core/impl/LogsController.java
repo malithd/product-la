@@ -20,6 +20,7 @@ package org.wso2.carbon.la.core.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
 import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
 import org.wso2.carbon.analytics.datasource.commons.AnalyticsSchema;
 import org.wso2.carbon.analytics.datasource.commons.ColumnDefinition;
@@ -129,9 +130,14 @@ public class LogsController {
             }
             rawEvent.put(LAConstants.LOG_STREAM, LAConstants.DEFAULT_STREAM);
         }
+        long timestamp = extractTimeStamp(rawEvent);
+
         String logStreamId = (String) rawEvent.get(LAConstants.LOG_STREAM);
         rawEvent.remove(LAConstants.LOG_STREAM);
-        //TODO: build tags support
+        rawEvent.remove(LAConstants.LOG_TIMESTAMP);
+        rawEvent.remove(LAConstants.LOG_TIMESTAMP_LONG);
+
+        //TODO: add tags support
         Map<String, String> filteredEvent = getStringStringMap(rawEvent);
         Map<String, ColumnDefinition> newArbitraryColumns = getNewArbitraryFields(filteredEvent, username);
         //Update table schema and Stream metadata if new fields are present in the event
@@ -145,7 +151,7 @@ public class LogsController {
             Event logEvent = new Event();
             logEvent.setTimeStamp(System.currentTimeMillis());
             logEvent.setStreamId(LAConstants.LOG_ANALYZER_STREAM_ID);
-            logEvent.setTimeStamp(System.currentTimeMillis());
+            logEvent.setTimeStamp(timestamp);
             logEvent.setPayloadData(new Object[]{logStreamId});
             logEvent.setArbitraryDataMap(filteredEvent);
             eventStreamService.publish(logEvent);
@@ -153,6 +159,30 @@ public class LogsController {
                 log.debug("Successfully published event " + logEvent.toString());
             }
         }
+    }
+
+    private Long extractTimeStamp(Map<String, Object> rawEvent) throws LogsControllerException {
+        long logTimeStamp = 0;
+        if (rawEvent.containsKey(LAConstants.LOG_TIMESTAMP)) {
+            String timeStamp = (String) rawEvent.get(LAConstants.LOG_TIMESTAMP);
+            try {
+                DateTime dateTime = new DateTime(timeStamp);
+                logTimeStamp = dateTime.getMillis();
+            } catch (IllegalArgumentException e) {
+                throw new LogsControllerException("Invalid timestamp format : " + timeStamp
+                        + "user ISO8601 standard compatible timestamp", e);
+            }
+        } else if (rawEvent.containsKey(LAConstants.LOG_TIMESTAMP_LONG)) {
+            try {
+                logTimeStamp = (long) rawEvent.get(LAConstants.LOG_TIMESTAMP_LONG);
+            } catch (ClassCastException e) {
+                throw new LogsControllerException("Class cast exception occurred while converting LOG_TIMESTAMP_LONG"
+                        , e);
+            }
+        } else {
+            logTimeStamp = System.currentTimeMillis();
+        }
+        return logTimeStamp;
     }
 
     private void updateLogStreamMetadata(String logStreamId, Set<String> strings, int tenantId, String username)
@@ -183,17 +213,17 @@ public class LogsController {
     /**
      * Update the stream schema upon new fields
      *
-     * @param newArbitrayColumns
+     * @param newArbitraryColumns
      * @param username
      * @throws LogsControllerException
      */
-    private void updateSchema(Map<String, ColumnDefinition> newArbitrayColumns, String username) throws LogsControllerException {
+    private void updateSchema(Map<String, ColumnDefinition> newArbitraryColumns, String username) throws LogsControllerException {
         AnalyticsDataAPI analyticsDataAPIService = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
         AnalyticsSchema analyticsSchema;
         try {
             analyticsSchema = analyticsDataAPIService.getTableSchema(username, LAConstants.LOG_ANALYZER_STREAM_NAME);
             Map<String, ColumnDefinition> previousColumns = analyticsSchema.getColumns();
-            previousColumns.putAll(newArbitrayColumns);
+            previousColumns.putAll(newArbitraryColumns);
 
             AnalyticsSchema updatedAnalyticsSchema = new AnalyticsSchema(new ArrayList(previousColumns.values()), null);
             analyticsDataAPIService.setTableSchema(username, LAConstants.LOG_ANALYZER_STREAM_NAME, updatedAnalyticsSchema);
@@ -221,7 +251,8 @@ public class LogsController {
             Map<String, ColumnDefinition> columns = analyticsSchema.getColumns();
             for (String arbitraryKey : rawEvent.keySet()) {
                 String columnName = LAConstants.ARBITRARY_FIELD_PREFIX + arbitraryKey;
-                if (!columns.containsKey(columnName)) {
+                // _timestam is a reserved field in DAS, we need to omit that colum nname
+                if (!columns.containsKey(columnName) && !LAConstants.DAS_TIMESTAMP_FIELD.equalsIgnoreCase(columnName)) {
                     newColumns.put(columnName, new ColumnDefinition(columnName, AnalyticsSchema.ColumnType.STRING, true, false));
                 }
             }
