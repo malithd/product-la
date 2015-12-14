@@ -534,6 +534,12 @@ a.ctrl-filter-category:hover {
     margin-bottom:10px;
 }
 
+.timepicker {
+    width:auto !important;
+    display: block;
+    margin-bottom:10px;
+}
+
 table {
     width:1400px;
 }
