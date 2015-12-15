@@ -19,6 +19,8 @@ package org.wso2.carbon.la.database.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.wso2.carbon.la.commons.constants.LAConstants;
 import org.wso2.carbon.la.commons.domain.LogGroup;
 import org.wso2.carbon.la.commons.domain.LogStream;
@@ -30,8 +32,7 @@ import org.wso2.carbon.la.database.internal.constants.SQLQueries;
 import org.wso2.carbon.la.database.internal.ds.LocalDatabaseCreator;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class LADatabaseService implements DatabaseService {
 
@@ -207,7 +208,7 @@ public class LADatabaseService implements DatabaseService {
         Connection connection = null;
         ResultSet result = null;
         PreparedStatement statement = null;
-        List<String> groupnames = new ArrayList<String>();
+        List<String> groupnames = new ArrayList<>();
         try {
             connection = dbh.getDataSource().getConnection();
             statement = connection.prepareStatement(SQLQueries.GET_ALL_LOG_GROUP_NAMES);
@@ -292,7 +293,7 @@ public class LADatabaseService implements DatabaseService {
         Connection connection = null;
         ResultSet result = null;
         PreparedStatement statement = null;
-        List<String> groupnames = new ArrayList<String>();
+        List<String> groupnames = new ArrayList<>();
         try {
             connection = dbh.getDataSource().getConnection();
             statement = connection.prepareStatement(SQLQueries.GET_ALL_LOG_STREAM_NAMES);
@@ -308,6 +309,121 @@ public class LADatabaseService implements DatabaseService {
         } finally {
             // Close the database resources.
             LADatabaseUtils.closeDatabaseResources(connection, statement, result);
+        }
+    }
+
+    @Override
+    public boolean isStreamExists(String logStream, int tenantId, String username) throws DatabaseHandlerException {
+        Connection connection = null;
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        try {
+            connection = dbh.getDataSource().getConnection();
+            statement = connection.prepareStatement(SQLQueries.GET_LOG_STREAM_ID);
+            statement.setString(1, logStream);
+            statement.setInt(2, tenantId);
+            statement.setString(3, username);
+            result = statement.executeQuery();
+            while (result.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseHandlerException(" An error has occurred while extracting log stream names for log " , e);
+        } finally {
+            // Close the database resources.
+            LADatabaseUtils.closeDatabaseResources(connection, statement, result);
+        }
+        return false;
+    }
+
+    @Override
+    public List<String> getStreamMetaData(String logStream, int tenantId, String username) throws DatabaseHandlerException {
+        Connection connection = null;
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        List<String> fieldList = null;
+        try {
+            connection = dbh.getDataSource().getConnection();
+            statement = connection.prepareStatement(SQLQueries.GET_LOG_STREAM_FIELDS);
+            statement.setString(1, logStream);
+            statement.setInt(2, tenantId);
+            statement.setString(3, username);
+            result = statement.executeQuery();
+            while (result.next()) {
+                fieldList = new ArrayList<>();
+                JSONArray jsonArray = new JSONArray(result.getString(1));
+                for (int i=0; i<jsonArray.length(); i++) {
+                    fieldList.add( jsonArray.getString(i) );
+                }
+            }
+            return fieldList;
+        } catch (SQLException e) {
+            throw new DatabaseHandlerException(" An error has occurred while extracting log stream names for log " , e);
+        } catch (JSONException e) {
+            throw new DatabaseHandlerException(" A JSON error has occurred while extracting log stream names for log " , e);
+        } finally {
+            // Close the database resources.
+            LADatabaseUtils.closeDatabaseResources(connection, statement, result);
+        }
+    }
+
+    @Override
+    public void insertLogStreamMetadata(String logStream, Set<String> fields, int tenantId, String username)
+            throws DatabaseHandlerException {
+        Connection connection = null;
+        PreparedStatement updateLogStreamFields = null;
+        try {
+            connection = dbh.getDataSource().getConnection();
+            connection.setAutoCommit(false);
+            updateLogStreamFields = connection.prepareStatement(SQLQueries.INSERT_LOG_STREAM_FIELDS);
+            updateLogStreamFields.setString(1, fields.toString());
+            updateLogStreamFields.setString(2, logStream);
+            updateLogStreamFields.setInt(3, tenantId);
+            updateLogStreamFields.setString(4, username);
+            updateLogStreamFields.execute();
+            connection.commit();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Successfully inserted the log stream");
+            }
+        } catch (SQLException e) {
+            LADatabaseUtils.rollBack(connection);
+            throw new DatabaseHandlerException("Error occurred while inserting the field list of log stream: "
+                    + e.getMessage(), e);
+        } finally {
+            // enable auto commit
+            LADatabaseUtils.enableAutoCommit(connection);
+            // close the database resources
+            LADatabaseUtils.closeDatabaseResources(connection, updateLogStreamFields);
+        }
+    }
+
+    @Override
+    public void updateLogStreamMetadata(String logStreamId, Set<String> fields, int tenantId, String username)
+            throws DatabaseHandlerException {
+        Connection connection = null;
+        PreparedStatement updateLogStreamFields = null;
+        try {
+            connection = dbh.getDataSource().getConnection();
+            connection.setAutoCommit(false);
+            updateLogStreamFields = connection.prepareStatement(SQLQueries.UPDATE_LOG_STREAM_FIELDS);
+            updateLogStreamFields.setString(1, fields.toString());
+            updateLogStreamFields.setString(2, logStreamId);
+            updateLogStreamFields.setInt(3, tenantId);
+            updateLogStreamFields.setString(4, username);
+            updateLogStreamFields.execute();
+            connection.commit();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Successfully updated the log stream");
+            }
+        } catch (SQLException e) {
+            LADatabaseUtils.rollBack(connection);
+            throw new DatabaseHandlerException("Error occurred while updating the field list of log stream: "
+                    + e.getMessage(), e);
+        } finally {
+            // enable auto commit
+            LADatabaseUtils.enableAutoCommit(connection);
+            // close the database resources
+            LADatabaseUtils.closeDatabaseResources(connection, updateLogStreamFields);
         }
     }
 }

@@ -18,12 +18,6 @@
 
 package org.wso2.carbon.la.restapi;
 
-import javax.activation.DataHandler;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,7 +27,23 @@ import org.apache.http.HttpHeaders;
 import org.wso2.carbon.la.restapi.data.LogFileConf;
 import org.wso2.carbon.utils.CarbonUtils;
 
-import java.io.*;
+import javax.activation.DataHandler;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,22 +66,21 @@ public class FileProcessingApi {
     @Path("/upload")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadLog(@Multipart("logGroup") String logGroup, @Multipart("logStream") String logStream,
+    public Response uploadLog(@Multipart("logStream") String logStream,
                               @Multipart("description") String description, @Multipart("file") Attachment attachment){
         DataHandler dataHandler = attachment.getDataHandler();
-        String fileName=null;
+        String fileName = null;
         try {
             InputStream stream = dataHandler.getInputStream();
             MultivaluedMap<String, String> map = attachment.getHeaders();
             fileName = getFileName(map);
-            System.out.println("fileName Here" + fileName);
-            String tempFolderLocation = CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator
-                    + "data" + File.separator + "analyzer-logs" + File.separator + logGroup + "-" + logStream ;
+            String tempFolderLocation = CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator +
+                                        "data" + File.separator + "analyzer-logs" + File.separator + logStream;
 
             File tempDir = new File(tempFolderLocation);
-                if (!tempDir.exists()) {
-                    FileUtils.forceMkdir(tempDir);
-                }
+            if (!tempDir.exists()) {
+                FileUtils.forceMkdir(tempDir);
+            }
 
             OutputStream out = new FileOutputStream(new File(tempFolderLocation + File.separator + fileName));
             int read = 0;
@@ -85,7 +94,7 @@ public class FileProcessingApi {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String[] logSourceInfo = {logGroup,logStream,fileName};
+        String[] logSourceInfo = {logStream, fileName};
         return Response.ok(logSourceInfo).build();
     }
 
@@ -115,28 +124,26 @@ public class FileProcessingApi {
     @Path("getLogs")
     @Produces("application/json")
     @Consumes("application/json")
-    public Response getLogs( @QueryParam("noOfLines") int noOfLines, @QueryParam("logGroup") String logGroup,
-                             @QueryParam("logStream") String logStream, @QueryParam("fileName") String fileName) {
-        Object [] logLines;
-
-        logLines = readLogs(noOfLines, logGroup, logStream, fileName);
-
+    public Response getLogs(@QueryParam("noOfLines") int noOfLines, @QueryParam("logStream") String logStream,
+                            @QueryParam("fileName") String fileName) {
+        Object[] logLines;
+        logLines = readLogs(noOfLines, logStream, fileName);
         return Response.ok(Arrays.copyOf(logLines, logLines.length, String[].class)).build();
     }
 
-    private  Object[] readLogs(int noOfLines, String logGroup, String logStream, String fileName) {
+    private Object[] readLogs(int noOfLines, String logStream, String fileName) {
         List<String> lines = new ArrayList();
-        String tempFolderLocation = CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator
-                + "data" + File.separator + "analyzer-logs" + File.separator + logGroup + "-" + logStream;
-        File file = new File(tempFolderLocation + File.separator +  fileName);
+        String tempFolderLocation = CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator +
+                                    "data" + File.separator + "analyzer-logs" + File.separator + logStream;
+        File file = new File(tempFolderLocation + File.separator + fileName);
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
-            int offset=0;
+            int offset = 0;
             while (true) {
                 String line = br.readLine();
                 if (line != null && offset < noOfLines) {
                     lines.add(line);
-                    offset ++;
+                    offset++;
                 } else {
                     break;
                 }
@@ -145,6 +152,6 @@ public class FileProcessingApi {
         } catch (Exception ex) {
             logger.error("Error reading", ex);
         }
-        return  lines.toArray();
+        return lines.toArray();
     }
 }

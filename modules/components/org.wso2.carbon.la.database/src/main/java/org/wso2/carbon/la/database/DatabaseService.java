@@ -23,16 +23,18 @@ import org.wso2.carbon.la.commons.domain.config.LAConfiguration;
 import org.wso2.carbon.la.database.exceptions.DatabaseHandlerException;
 
 import java.util.List;
+import java.util.Set;
 
 public interface DatabaseService {
-    
+
     /**
      * Returns LA Configuration.
      */
     public LAConfiguration getLaConfiguration();
-    
+
     /**
-     * Executes the SHUTDOWN statement. 
+     * Executes the SHUTDOWN statement.
+     *
      * @throws DatabaseHandlerException
      */
     void shutdown() throws DatabaseHandlerException;
@@ -52,5 +54,15 @@ public interface DatabaseService {
     void deleteLogStream(String name, int logGroupId) throws DatabaseHandlerException;
 
     List<String> getAllLogStreamNamesOfLogGroup(int logGroupId) throws DatabaseHandlerException;
+
+    boolean isStreamExists(String logStream, int tenantId, String username) throws DatabaseHandlerException;
+
+    List<String> getStreamMetaData(String logStream, int tenantId, String username) throws DatabaseHandlerException;
+
+    void insertLogStreamMetadata(String logStream, Set<String> fields, int tenantId, String username)
+            throws DatabaseHandlerException;
+
+    void updateLogStreamMetadata(String logStream, Set<String> fields, int tenantId, String username)
+            throws DatabaseHandlerException;
 
 }

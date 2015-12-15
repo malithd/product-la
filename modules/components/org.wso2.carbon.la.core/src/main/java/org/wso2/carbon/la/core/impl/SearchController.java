@@ -22,15 +22,14 @@ public class SearchController {
     public List<RecordBean> search(QueryBean query, String username) throws AnalyticsException {
         AnalyticsDataAPI analyticsDataService = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
         if (query != null) {
-            List<SearchResultEntry> searchResults = analyticsDataService.search(username,query.getTableName(), query.getQuery(),query.getStart(), query.getCount());
-            List<String> ids = getRecordIds(searchResults);
-            AnalyticsDataResponse resp = analyticsDataService.get(username, query.getTableName(), 1, null, ids);
-
+            AnalyticsDataResponse resp = analyticsDataService.get(username, query.getTableName(), 1, null,
+                    query.getTimeFrom(), query.getTimeTo(), query.getStart(), query.getCount());
             List<RecordBean> recordBeans = createRecordBeans(AnalyticsDataServiceUtils.listRecords(analyticsDataService,
                     resp));
             if (log.isDebugEnabled()) {
                 for (RecordBean recordBean : recordBeans) {
-                    log.debug("Search Result -- Record Id: " + recordBean.getId() + " values :" + recordBean.toString());
+                    log.debug("Search Result -- Record Id: " + recordBean.getId() + " values :" +
+                            recordBean.toString());
                 }
             }
             return recordBeans;
