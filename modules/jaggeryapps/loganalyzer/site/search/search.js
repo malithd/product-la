@@ -9,8 +9,8 @@ var resultTable =  $('#results-table').DataTable( {
             payload.query = $("#search-field").val();
             payload.start = 0;
             payload.count = 100;
-            payload.from = parseInt($("#timestamp-from").val());
-            payload.to = parseInt($("#timestamp-to").val());
+            payload.timeFrom = parseInt($("#timestamp-from").val());
+            payload.timeTo = parseInt($("#timestamp-to").val());
             return JSON.stringify(payload)
         },
         "dataSrc" : function(d){
