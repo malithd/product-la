@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.http.HttpHeaders;
+import org.wso2.carbon.la.restapi.data.LogFileConf;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.*;
@@ -86,6 +87,16 @@ public class FileProcessingApi {
         }
         String[] logSourceInfo = {logGroup,logStream,fileName};
         return Response.ok(logSourceInfo).build();
+    }
+
+    @POST
+    @Path("/publish")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response publishLog(LogFileConf logFileConf) {
+
+        return Response.status(200).build();
+
     }
 
     private String getFileName(MultivaluedMap<String, String> header) {
