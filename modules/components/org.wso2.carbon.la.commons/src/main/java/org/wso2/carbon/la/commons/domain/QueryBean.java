@@ -34,9 +34,9 @@ public class QueryBean {
 
     private int count;
 
-    private long from;
+    private long timeFrom;
 
-    private long to;
+    private long timeTo;
 
     public String getTableName() {
         return tableName;
@@ -70,19 +70,19 @@ public class QueryBean {
         this.count = count;
     }
 
-    public long getFrom() {
-        return from;
+    public long getTimeFrom() {
+        return timeFrom;
     }
 
-    public void setFrom(long from) {
-        this.from = from;
+    public void setTimeFrom(long timeFrom) {
+        this.timeFrom = timeFrom;
     }
 
-    public long getTo() {
-        return to;
+    public long getTimeTo() {
+        return timeTo;
     }
 
-    public void setTo(long to) {
-        this.to = to;
+    public void setTimeTo(long timeTo) {
+        this.timeTo = timeTo;
     }
 }
