@@ -1697,3 +1697,8 @@ fieldset[disabled] .btn-primary.active {
 	background-color: #1dc5a3;
 	border-color: #1dc5a3;
 }
+
+.highlight {
+	background: greenyellow;
+	text-decoration: underline;
+}

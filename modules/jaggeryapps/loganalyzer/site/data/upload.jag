@@ -37,6 +37,12 @@
 			<div class="wr-form col-lg-5 col-centered">
 
 			   	<form id="add-log-form" method="POST" enctype="multipart/form-data">
+			   	<label class="input-label">Log Group<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Log group of the log to be uploaded."></span></label>
+ 					<span class="fld-required">*</span>
+ 					<div class="input-control text">
+ 					    <input type="text" value="" placeholder="e.g. Htttpd" id="log-group" name="logGroup"/>
+ 					    <!--span class="form-val-error">* Name for this Dataset is required.</span-->
+ 					</div>
 					<label class="input-label">Log Stream<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Stream Name of the log to be uploaded."></span></label>
 					<span class="fld-required">*</span>
 					<div class="input-control text">
@@ -95,7 +101,8 @@ $( document ).ready(function() {
 	$('#add-log-form').ajaxForm({
 	    url: baseUrl + '/api/files/upload',
         success : function(res){
-    	     window.location = baseUrl + '/loganalyzer/site/data/filter.jag?' + "logStream=" + res[0] + "&" + "fileName=" + res[1];
+			window.location = baseUrl + '/loganalyzer/site/data/filter.jag?' + "logGroup=" + res[0] + "&" +
+ 				"logStream=" + res[1] + "&" + "fileName=" + res[2];
         },
         error :  function(res){
 			var errorText = JSON.parse(res.responseText)["exception"];

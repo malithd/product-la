@@ -34,7 +34,7 @@
 </div>
 
 <div class="btn-group-actions">
-  <button class="btn btn-main" onclick="extractFeilds()" id="submit-dataset">Extract</button>
+  <button class="btn btn-main" onclick="extractFields()" id="submit-dataset">Extract</button>
 </div>
 
 <script src="../../js/mustache.min.js"></script>
@@ -101,6 +101,13 @@ function splitUrl() {
 
 function updateLine(value){
   $("#SelectedLog").html(value);
+}
+
+function extractFields(){
+var urlParams = splitUrl();
+var val = document.getElementById('SelectedLog');
+window.location = baseUrl + '/loganalyzer/site/filter/method.jag?' + "logGroup=" + urlParams["logGroup"]+
+                 "&logStream=" + urlParams["logStream"] + "&fileName=" + urlParams["fileName"];
 }
 </script>
 
