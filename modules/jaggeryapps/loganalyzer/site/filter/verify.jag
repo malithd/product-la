@@ -10,8 +10,14 @@
     <link href="../../css/custom-theme.css" rel="stylesheet">
     <link href="../../css/font-awesome.min.css" rel="stylesheet">
     <link href="../../css/dropzone.min.css" rel="stylesheet">
+    <style>
+        #ttt{
+            border: none;
+        }
+    </style>
 <script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
     <% include("../../includes/tenantAware.jag"); %>
+    <% include("../../includes/data.jag"); %>
 </head>
 
 <body>
@@ -25,33 +31,54 @@
 <!-- /header -->
 
 <!-- secondary header - app bar -->
-	<% include("../header/sourceconfiguratoinnav.jag");%>
+	<%
+        var inputTab = "";
+        var filterTab = "";
+        var verifyTab = "style='background-color:#000'";
+        include("../header/sourceconfiguratoinnav.jag");
+    %>
 <!-- secondary header - app bar -->
 
 <div class="row">
-	<div class="col-md-12">
-		<!-- content -->
-		<div class="container col-md-12 col-centered wr-content">
-		<div class="row">
-		<label class="input-label" data-placement="left">Log Group:</label>
-        <label class="input-label">d</label>
-		</div>
-		<div class="row">
-		<label class="input-label" >Log Stream:</label>
-		<label class="input-label" >d</label>
-		</div>
-		<div class="row">
-		<label class="input-label" >Log File Name:</label>
-		<label class="input-label" >d</label>
-		</div>
-		<div class="row">
+<div class="col-md-12">
+    <!-- content -->
+    <div class="container col-md-12 col-centered wr-content">
+        <div style="padding-left: 35%; padding-right: 25%">
+            <table id="ttt">
+            <tr>
+                <th width="10%" id="ttt">Log Group:</th>
+                <td id="ttt"><%=x%></td>
+            </tr>
+            <tr>
+                <th width="10%" id="ttt">Log Stream:</th>
+                <td id="ttt">sfdsfds</td>
+            </tr>
+            <tr>
+                <td colspan="2" id="ttt"><button style="margin-left: 35%;" class="btn btn-main" id="searchLog">Search</button></td>
+            </tr>
+            </table>
+        </div>
+
+        <!--<div class="row">
+        <label class="input-label" data-placement="left">Log Group:</label>
+        <label class="input-label"><%=x%></label>
+        </div>
+        <div class="row">
+        <label class="input-label" >Log Stream:</label>
+        <label class="input-label" >d</label>
+        </div>
+        <div class="row">
+        <label class="input-label" >Log File Name:</label>
+        <label class="input-label" >d</label>
+        </div>
+        <div class="row">
         <label class="input-label" >Patterns:</label>
         <div id="pattern_table"></div>
-		<button class="btn btn-main" id="searchLog">Search</button>
-		</div>
-		</div>
-		<!-- /content -->
-	</div>
+        <button class="btn btn-main" id="searchLog">Search</button>
+        </div>-->
+    </div>
+    <!-- /content -->
+</div>
 </div>
 
 </div>
@@ -65,64 +92,64 @@ var baseUrl = getBaseUrl(window.location.href);
 
 $( document ).ready(function() {
 
-	$('#nav').affix({
-	      offset: {
-	        top: $('header').height()
-	      }
-	});
+$('#nav').affix({
+      offset: {
+        top: $('header').height()
+      }
+});
 
-    $("[data-toggle=popover]").popover();
+$("[data-toggle=popover]").popover();
 
-    $(".ctrl-asset-type-switcher").popover({
-        html : true,
-        content: function() {
-            return $('#content-asset-types').html();
-        }
-    });
+$(".ctrl-asset-type-switcher").popover({
+    html : true,
+    content: function() {
+        return $('#content-asset-types').html();
+    }
+});
 });
 
 $(function(){
-    $("#searchLog").click(function(){
-    var urlParams=splitUrl();
-    var regs= urlParams["regPatterns"];
-    var regjs=JSON.parse(regs);
-    var lgGroup= urlParams["logGroup"];
-    var data = {};
-    data.logGroup = lgGroup;
-    data.logPatterns = regjs;
+$("#searchLog").click(function(){
+var urlParams=splitUrl();
+var regs= urlParams["regPatterns"];
+var regjs=JSON.parse(regs);
+var lgGroup= urlParams["logGroup"];
+var data = {};
+data.logGroup = lgGroup;
+data.logPatterns = regjs;
 
-    $.ajax({
-             type: "POST",
-             url: baseUrl + '/api/files/publish',
-             data: JSON.stringify(data),// now data come in this function
-             contentType: "application/json; charset=utf-8",
-             crossDomain: true,
-             dataType: "json",
-             success: function (data, status, jqXHR) {
-                 alert("success");// write success in " "
-             },
-             error: function (jqXHR, status) {
-                 // error handler
-                 console.log(jqXHR);
-                 alert('fail' + status.code);
-             }
-          });
+$.ajax({
+         type: "POST",
+         url: baseUrl + '/api/files/publish',
+         data: JSON.stringify(data),// now data come in this function
+         contentType: "application/json; charset=utf-8",
+         crossDomain: true,
+         dataType: "json",
+         success: function (data, status, jqXHR) {
+             alert("success");// write success in " "
+         },
+         error: function (jqXHR, status) {
+             // error handler
+             console.log(jqXHR);
+             alert('fail' + status.code);
+         }
+      });
 
 
-    } );
+} );
 });
 
 function splitUrl() {
-    var urlParams;
-    var match,
-        pl     = /\+/g,  // Regex for replacing addition symbol with a space
-        search = /([^&=]+)=?([^&]*)/g,
-        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-        query  = window.location.search.substring(1);
-    urlParams = {};
-    while (match = search.exec(query))
-       urlParams[decode(match[1])] = decode(match[2]);
-    return urlParams;
+var urlParams;
+var match,
+    pl     = /\+/g,  // Regex for replacing addition symbol with a space
+    search = /([^&=]+)=?([^&]*)/g,
+    decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+    query  = window.location.search.substring(1);
+urlParams = {};
+while (match = search.exec(query))
+   urlParams[decode(match[1])] = decode(match[2]);
+return urlParams;
 }
 
 </script>

@@ -27,29 +27,36 @@
 <!-- /header -->
 
 <!-- secondary header - app bar -->
-	<% include("../header/sourceconfiguratoinnav.jag");%>
+	<%
+        var inputTab = "";
+        var filterTab = "style='background-color:#000'";
+        var verifyTab = "";
+        include("../header/sourceconfiguratoinnav.jag");
+    %>
 <!-- secondary header - app bar -->
 
 <!-- content/body -->
 <br class="spacer"/>
 <div class="row">
 	<div class="col-md-11">
-	  <h4>Select an event from the sample </h4>
-	  <p>Choose a source or source type, select a sample event, and click next to go to the next step.Field extractor will use the selected event to extract fields</p>
+	    <div style="padding-left:15%;">
+          <h4>Select an event from the sample </h4>
+          <p>Choose a source or source type, select a sample event, and click next to go to the next step.Field extractor will use the selected event to extract fields</p>
+        </div>
 	</div>
-	<div class="btn-group-actions" class="col-md-1">
+	<!--<div class="btn-group-actions" class="col-md-1">
         <button class="btn btn-primary" id="verifyConf">Verify</button>
-    </div>
+    </div>-->
 </div>
 
 <br class="spacer"/>
 
 <div class="row">
-<div class="col-md-2"  id="ResultArea4"></div>
-    <div class="col-md-1"  style="text-align: right" id="ResultArea6">Selected Log Entry:</div>
-    <div class="col-md-8"  id="selected-log-entry"></div>
+<div class="col-md-2"  id="ResultArea4" style="margin-left: -12.5%"></div>
+    <div class="col-md-1"  style="text-align: right; margin-left: 9%;" id="ResultArea6">Selected Log Entry:</div>
+    <div class="col-md-7"  id="selected-log-entry"></div>
     <div class="col-md-1"  id="ResultArea5">
-    <button type="button" class="btn btn-primary" onclick="switchss()">Extract</button>
+    <button id="extract-btn" type="button" class="btn btn-primary" onclick="switchss()" style="display:none">Extract</button>
     </div>
 </div>
 
@@ -61,7 +68,7 @@
 	<input type="text" class="form-control" placeholder="Search for...">
 	</div-->
 	<div class="col-md-2"  id="ResultArea3"></div>
-	<div class="col-md-1" style="text-align: right" >Sample</div>
+	<div class="col-md-1" style="text-align: right; margin-left: 15%" >Sample</div>
 	<div class="col-md-2">
 		      <select class="form-control" onchange="searchActivities(this.value)" >
 		                    <option value="10">10 Events</option>
@@ -70,27 +77,27 @@
 		       </select>
 	</div>
 </div>
-<div class="row" id="bbb">
+<div class="row" id="bbb" style="padding-top: 5%; padding-left: 14.5%; padding-right: 12.5%; display: block;">
 
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#available_atterns" aria-controls="available_atterns" role="tab" data-toggle="tab">Available Patterns</a></li>
-    <li role="presentation"><a id='tab-saved-patterns' href="#saved_patterns" aria-controls="saved_patterns" role="tab" data-toggle="tab">Saved Patterns</a></li>
+    <li role="presentation" class="active" style="width:50%"><a href="#available_atterns" aria-controls="available_atterns" role="tab" data-toggle="tab">Available Patterns</a></li>
+    <li role="presentation" style="width:49.7195%"><a id='tab-saved-patterns' href="#saved_patterns" aria-controls="saved_patterns" role="tab" data-toggle="tab">Saved Patterns</a></li>
   </ul>
 
   <!-- Tab panes -->
-  <div class="tab-content">
+  <div class="tab-content" style="border-style: solid; border-width: 0px 1px 1px 1px; border-color: #000">
     <div role="tabpanel" class="tab-pane active" id="available_atterns">
     <div class="row">
             <div class="col-md-1" style="text-align:center">Regex</div>
             <div class="col-md-1">
-                 <button class="btn btn-primary dim btn-small-dim" type="button" onclick="regexDev()"><img src="../../images/icons/ico-function.png"/></button>
+                 <button class="btn btn-primary" type="button" onclick="regexDev()"><img src="../../images/ico-function.png"/></button>
             </div>
            <div class="col-md-6" id="regggg">
            <dev class="row">
            <dev class="col-md-10"><input type="text" class="form-control" id="fancy-input" placeholder="regex..."></dev>
-           <dev class="col-md-1"><button class="btn btn-primary dim btn-small-dim" type="button" id="applyReg">Apply</button></dev>
-           <dev class="col-md-1"><button class="btn btn-primary dim btn-small-dim" type="button" id="saveReg">Save</button></dev>
+           <!--<dev class="col-md-1"><button class="btn btn-primary dim btn-small-dim" type="button" id="applyReg">Apply</button></dev>-->
+           <dev class="col-md-1"><button class="btn btn-primary" type="button" id="saveReg">Save</button></dev>
            </dev>
             </div>
     </div>
@@ -98,7 +105,7 @@
     <div class="row">
             <div class="col-md-1" style="text-align:center">Delimiter</div>
             <div class="col-md-1">
-                <button class="btn btn-primary dim btn-small-dim" type="button" onclick="dellDev()"><img src="../../images/icons/ico-delimeter.png"/></button>
+                <button class="btn btn-primary" style="margin-bottom: 20%" type="button" onclick="dellDev()"><img src="../../images/ico-delimeter.png"/></button>
             </div>
             <div class="col-md-4" id="dellll">
            <dev class="row">
@@ -151,13 +158,17 @@
     </div>
   </div>
 
+    <div class="btn-group-actions" class="col-md-1" align="right">
+        <button class="btn btn-main" id="verifyConf">Next</button>
+    </div>
+
 </div>
 
 <br class="spacer"/>
 
 <div class="row" id="ccc">
-    <div class="col-md-2"  id="ResultArea1"></div>
-    <div class="col-md-9 table-responsive"  id="ResultArea">
+    <div class="col-md-2"  id="ResultArea1" style="margin-left: -12.5%"></div>
+    <div class="col-md-9 table-responsive"  id="ResultArea" style="margin-left: 9.5%">
         <table id="LogEntries">
             <thead>
                 <tr>
@@ -202,7 +213,6 @@
 <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
 var baseUrl = getBaseUrl(window.location.href);
-var myMap = new Map();
 var a = {};
 var logEntryTable;
 $(document).ready(function () {
@@ -227,6 +237,7 @@ $(document).ready(function () {
             logEntryTable = $('#LogEntries').DataTable({data:datatableFormat});
 
               $('#LogEntries tbody').on( 'click', 'tr', function () {
+                  $("#extract-btn").attr('style', 'margin-left: 50.5%');
                   if ( $(this).hasClass('selected') ) {
                         $(this).removeClass('selected');
                     }

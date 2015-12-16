@@ -47,7 +47,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import com.google.gson.Gson;
 /**
  * File Processing API
  */
@@ -103,7 +103,7 @@ public class FileProcessingApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response publishLog(LogFileConf logFileConf) {
-        return Response.status(200).build();
+        return Response.ok().build();
     }
 
     private String getFileName(MultivaluedMap<String, String> header) {
@@ -113,6 +113,8 @@ public class FileProcessingApi {
                 String[] name = filename.split("=");
                 String exactFileName = name[1].trim().replaceAll("\"", "");
                 return exactFileName;
+
+
             }
         }
         return "unknown";

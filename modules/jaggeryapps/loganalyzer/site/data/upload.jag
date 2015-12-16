@@ -25,51 +25,56 @@
 <!-- /header -->
 
 <!-- secondary header - app bar -->
-	<% include("../header/sourceconfiguratoinnav.jag");%>
+	<%
+		var inputTab = "style='background-color:#000'";
+		var filterTab = "";
+		var verifyTab = "";
+		include("../header/sourceconfiguratoinnav.jag");
+	%>
 <!-- secondary header - app bar -->
 
 <div class="row">
-	<div class="col-md-12">
-		<!-- content -->
-		<div class="container col-md-12 col-centered wr-content">
+<div class="col-md-12">
+    <!-- content -->
+    <div class="container col-md-12 col-centered wr-content">
 
-			<div id="notification-area"></div>
-			<div class="wr-form col-lg-5 col-centered">
+        <div id="notification-area"></div>
+        <div class="wr-form col-lg-5 col-centered">
 
-			   	<form id="add-log-form" method="POST" enctype="multipart/form-data">
-			   	<label class="input-label">Log Group<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Log group of the log to be uploaded."></span></label>
- 					<span class="fld-required">*</span>
- 					<div class="input-control text">
- 					    <input type="text" value="" placeholder="e.g. Htttpd" id="log-group" name="logGroup"/>
- 					    <!--span class="form-val-error">* Name for this Dataset is required.</span-->
- 					</div>
-					<label class="input-label">Log Stream<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Stream Name of the log to be uploaded."></span></label>
-					<span class="fld-required">*</span>
-					<div class="input-control text">
-					    <input type="text" value="" placeholder="e.g. node-1" placeholder="" id="log-stream" name="logStream"/>
-					</div>
+               <form id="add-log-form" method="POST" enctype="multipart/form-data">
+               <label class="input-label">Log Group<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Log group of the log to be uploaded."></span></label>
+                 <span class="fld-required">*</span>
+                 <div class="input-control text">
+                     <input type="text" value="" placeholder="e.g. Htttpd" id="log-group" name="logGroup"/>
+                     <!--span class="form-val-error">* Name for this Dataset is required.</span-->
+                 </div>
+                <label class="input-label">Log Stream<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Stream Name of the log to be uploaded."></span></label>
+                <span class="fld-required">*</span>
+                <div class="input-control text">
+                    <input type="text" value="" placeholder="e.g. node-1" placeholder="" id="log-stream" name="logStream"/>
+                </div>
 
-					<label class="input-label">Description<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Description on the Log file to be uploaded."></span></label>
-					<div class="input-control text">
-					    <textarea rows="3" id="log-desc" name="description"></textarea>
-					</div>
+                <label class="input-label">Description<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Description on the Log file to be uploaded."></span></label>
+                <div class="input-control text">
+                    <textarea rows="3" id="log-desc" name="description"></textarea>
+                </div>
 
-					<label class="input-label">Log Source<span class="File Location"></span></label>
-					<span class="fld-required">*</span>
-					<!-- input for 'File' selection -->
-					<div id="source-file" class="input-control file info-state" data-role="input-control">
-			       		<input type="file" id="fileInput" name="file"/>
-			    	</div>
+                <label class="input-label">Log Source<span class="File Location"></span></label>
+                <span class="fld-required">*</span>
+                <!-- input for 'File' selection -->
+                <div id="source-file" class="input-control file info-state" data-role="input-control">
+                       <input type="file" id="fileInput" name="file"/>
+                </div>
 
-					<div class="btn-group-actions">
-			    		<button class="btn btn-main" type="submit" id="add-log-form">Add</button>
-			    	</div>
-				</form>
-			</div>
+                <div class="btn-group-actions">
+                    <button class="btn btn-main" type="submit" id="add-log-form">Add</button>
+                </div>
+            </form>
+        </div>
 
-		</div>
-		<!-- /content -->
-	</div>
+    </div>
+    <!-- /content -->
+</div>
 </div>
 <!-- /content/body -->
 </div>
@@ -83,32 +88,32 @@ var baseUrl = getBaseUrl(window.location.href);
 
 $( document ).ready(function() {
 
-	$('#nav').affix({
-	      offset: {
-	        top: $('header').height()
-	      }
-	});
+$('#nav').affix({
+      offset: {
+        top: $('header').height()
+      }
+});
 
-    $("[data-toggle=popover]").popover();
+$("[data-toggle=popover]").popover();
 
-    $(".ctrl-asset-type-switcher").popover({
-        html : true,
-        content: function() {
-            return $('#content-asset-types').html();
-        }
-    });
+$(".ctrl-asset-type-switcher").popover({
+    html : true,
+    content: function() {
+        return $('#content-asset-types').html();
+    }
+});
 
-	$('#add-log-form').ajaxForm({
-	    url: baseUrl + '/api/files/upload',
-        success : function(res){
-			window.location = baseUrl + '/loganalyzer/site/data/filter.jag?' + "logGroup=" + res[0] + "&" +
- 				"logStream=" + res[1] + "&" + "fileName=" + res[2];
-        },
-        error :  function(res){
-			var errorText = JSON.parse(res.responseText)["exception"];
-            handleNotification(errorText, '#notification-area', 'warning');
-        }
-    });
+$('#add-log-form').ajaxForm({
+    url: baseUrl + '/api/files/upload',
+    success : function(res){
+        window.location = baseUrl + '/loganalyzer/site/data/filter.jag?' + "logGroup=" + res[0] + "&" +
+             "logStream=" + res[1] + "&" + "fileName=" + res[2];
+    },
+    error :  function(res){
+        var errorText = JSON.parse(res.responseText)["exception"];
+        handleNotification(errorText, '#notification-area', 'warning');
+    }
+});
 });
 </script>
 </body>
