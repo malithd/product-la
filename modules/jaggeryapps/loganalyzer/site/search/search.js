@@ -19,7 +19,8 @@ var resultTable =  $('#results-table').DataTable( {
     },
     "columns": [
         {"data": "values._message"}
-    ]
+    ],
+    "searching": false
 
 });
 
