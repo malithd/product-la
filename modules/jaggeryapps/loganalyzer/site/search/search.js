@@ -24,6 +24,47 @@ var resultTable =  $('#results-table').DataTable( {
 
 });
 
+/* Formatting a table to insert when a row is clicked */
+function format ( d ) {
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+        '<tr>' +
+        '<td>Log Stream: </td>' +
+        '<td>' + d.values._logstream + '</td>' +
+        '</tr>' +
+        '<tr>' +
+        '<td>Client IP: </td>' +
+        '<td>' + d.values._clientip + '</td>' +
+        '</tr>' +
+        '<tr>' +
+        '<td>Timestamp: </td>' +
+        '<td>' + d.values._timestamp + '</td>'+
+        '</tr>'+
+        '<tr>' +
+        '<td>Host: </td>' +
+        '<td>' + d.values._host + '</td>'+
+        '</tr>'+
+        '<tr>' +
+        '<td>Message: </td>' +
+        '<td>' + d.values._message + '</td>'+
+        '</tr>'+
+        '<tr>' +
+        '<td>Path: </td>' +
+        '<td>' + d.values._path + '</td>'+
+        '</tr>'+
+        '<tr>' +
+        '<td>Method: </td>' +
+        '<td>' + d.values._verb + '</td>'+
+        '</tr>'+        '<tr>' +
+        '<td>Request: </td>' +
+        '<td>' + d.values._request + '</td>'+
+        '</tr>'+        '<tr>' +
+        '<td>Agent: </td>' +
+        '<td>' + d.values._agent + '</td>'+
+        '</tr>'+
+        '</table>';
+}
+
+
 $(document).ready(function () {
     var showPopover = $.fn.popover.Constructor.prototype.show;
     $.fn.popover.Constructor.prototype.show = function () {
@@ -50,6 +91,22 @@ $(document).ready(function () {
             );
         }
     });
+
+    $('#results-table tbody').on( 'click', 'tr', function () {
+        var tr = $(this).closest('tr');
+        var row = resultTable.row( tr );
+
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    } );
 });
 
 function searchActivities2() {
