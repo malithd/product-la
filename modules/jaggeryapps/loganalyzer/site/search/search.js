@@ -25,45 +25,24 @@ var resultTable =  $('#results-table').DataTable( {
 });
 
 /* Formatting a table to insert when a row is clicked */
-function format ( d ) {
-    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+function format(data) {
+
+    var tableStr = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    for(var key in data.values) {
+        tableStr = tableStr +
         '<tr>' +
-        '<td>Log Stream: </td>' +
-        '<td>' + d.values._logstream + '</td>' +
-        '</tr>' +
-        '<tr>' +
-        '<td>Client IP: </td>' +
-        '<td>' + d.values._clientip + '</td>' +
-        '</tr>' +
-        '<tr>' +
-        '<td>Timestamp: </td>' +
-        '<td>' + d.values._timestamp + '</td>'+
-        '</tr>'+
-        '<tr>' +
-        '<td>Host: </td>' +
-        '<td>' + d.values._host + '</td>'+
-        '</tr>'+
-        '<tr>' +
-        '<td>Message: </td>' +
-        '<td>' + d.values._message + '</td>'+
-        '</tr>'+
-        '<tr>' +
-        '<td>Path: </td>' +
-        '<td>' + d.values._path + '</td>'+
-        '</tr>'+
-        '<tr>' +
-        '<td>Method: </td>' +
-        '<td>' + d.values._verb + '</td>'+
-        '</tr>'+        '<tr>' +
-        '<td>Request: </td>' +
-        '<td>' + d.values._request + '</td>'+
-        '</tr>'+        '<tr>' +
-        '<td>Agent: </td>' +
-        '<td>' + d.values._agent + '</td>'+
-        '</tr>'+
-        '</table>';
+        '<td>' + capitalizeFirstLetter(key.replace("_","")) + '</td>' +
+        '<td>' + data.values[key] + '</td>' +
+        '</tr>';
+    }
+    tableStr = tableStr + '</table>';
+    return tableStr;
 }
 
+/* Capitalize first letter of a given string*/
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 $(document).ready(function () {
     var showPopover = $.fn.popover.Constructor.prototype.show;
@@ -92,7 +71,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#results-table tbody').on( 'click', 'tr', function () {
+    $('#results-table').find('tbody').on( 'click', 'tr', function () {
         var tr = $(this).closest('tr');
         var row = resultTable.row( tr );
 
