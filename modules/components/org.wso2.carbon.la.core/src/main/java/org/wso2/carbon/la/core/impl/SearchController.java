@@ -22,8 +22,12 @@ public class SearchController {
     public List<RecordBean> search(QueryBean query, String username) throws AnalyticsException {
         AnalyticsDataAPI analyticsDataService = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
         if (query != null) {
-            AnalyticsDataResponse resp = analyticsDataService.get(username, query.getTableName(), 1, null,
-                    query.getTimeFrom(), query.getTimeTo(), query.getStart(), query.getCount());
+            query.setQuery(appendTimeRangeToSearchQuery(query.getQuery(), query.getTimeFrom(), query.getTimeTo()));
+            List<SearchResultEntry> searchResults = analyticsDataService.search(username,query.getTableName(),
+                    query.getQuery(),query.getStart(), query.getCount());
+            List<String> ids = getRecordIds(searchResults);
+            AnalyticsDataResponse resp = analyticsDataService.get(username, query.getTableName(), 1, null, ids);
+
             List<RecordBean> recordBeans = createRecordBeans(AnalyticsDataServiceUtils.listRecords(analyticsDataService,
                     resp));
             if (log.isDebugEnabled()) {
@@ -36,6 +40,14 @@ public class SearchController {
         } else {
             throw new AnalyticsException("Search parameters not provided");
         }
+    }
+
+    private String appendTimeRangeToSearchQuery(String query, long timeFrom, long timeTo) {
+        String searchQuery = "";
+        if (!"".equals(query)) {
+            searchQuery = query + " AND ";
+        }
+        return searchQuery + "_timestamp:[" + timeFrom + " TO " + timeTo + "]";
     }
 
     /**
