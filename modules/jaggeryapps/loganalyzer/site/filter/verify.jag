@@ -113,31 +113,30 @@ $("#searchLog").click(function(){
 var urlParams=splitUrl();
 var regs= urlParams["regPatterns"];
 var regjs=JSON.parse(regs);
-var lgGroup= urlParams["logGroup"];
+var lgGroup= urlParams["logStream"];
 var data = {};
 data.logGroup = lgGroup;
 data.logPatterns = regjs;
 
-$.ajax({
+jQuery.ajax({
          type: "POST",
          url: baseUrl + '/api/files/publish',
          data: JSON.stringify(data),// now data come in this function
          contentType: "application/json; charset=utf-8",
-         crossDomain: true,
          dataType: "json",
-         success: function (data, status, jqXHR) {
+         success: function (res) {
              alert("success");// write success in " "
          },
-         error: function (jqXHR, status) {
-             // error handler
-             console.log(jqXHR);
-             alert('fail' + status.code);
+         error: function (res) {
+             alert(res.error);
          }
       });
 
 
 } );
 });
+
+
 
 function splitUrl() {
 var urlParams;

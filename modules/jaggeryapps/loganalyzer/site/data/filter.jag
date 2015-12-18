@@ -272,7 +272,7 @@ function searchActivities(lines) {
     var urlParams = splitUrl();
     jQuery.ajax({
         type: "GET",
-                url: baseUrl + "/api/files/getLogs?noOfLines=" + lines + "&" + "logGroup=" + urlParams["logGroup"]+
+                url: baseUrl + "/api/files/getLogs?noOfLines=" + lines +
                 "&logStream=" + urlParams["logStream"] + "&fileName=" + urlParams["fileName"],
                 async: false,
                 success: function(res) {
@@ -288,8 +288,8 @@ $(function(){
     $("#verifyConf").click(function(){
     var urlParams = splitUrl();
     var regPatterns= JSON.stringify(a);
-        window.location = baseUrl + '/loganalyzer/site/filter/verify.jag?' + "logGroup=" + urlParams["logGroup"]+
-            "&logStream=" + urlParams["logStream"] + "&fileName=" + encodeURIComponent( urlParams["fileName"] )+ "&regPatterns=" + encodeURIComponent(regPatterns);
+        window.location = baseUrl + '/loganalyzer/site/filter/verify.jag?'+
+            "logStream=" + urlParams["logStream"] + "&fileName=" + encodeURIComponent( urlParams["fileName"] )+ "&regPatterns=" + encodeURIComponent(regPatterns);
         });
 });
 

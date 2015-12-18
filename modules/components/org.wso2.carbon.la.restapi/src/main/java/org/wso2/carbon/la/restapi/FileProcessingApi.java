@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.http.HttpHeaders;
-import org.wso2.carbon.la.restapi.data.LogFileConf;
+import org.wso2.carbon.la.commons.domain.config.LogFileConf;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.activation.DataHandler;
@@ -38,6 +38,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,6 +49,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 /**
  * File Processing API
  */
@@ -66,7 +75,7 @@ public class FileProcessingApi {
     @Path("/upload")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadLog(@Multipart("logGroup") String logGroup, @Multipart("logStream") String logStream,
+    public Response uploadLog(@Multipart("logStream") String logStream,
                               @Multipart("description") String description, @Multipart("file") Attachment attachment){
         DataHandler dataHandler = attachment.getDataHandler();
         String fileName = null;
@@ -75,7 +84,7 @@ public class FileProcessingApi {
             MultivaluedMap<String, String> map = attachment.getHeaders();
             fileName = getFileName(map);
             String tempFolderLocation = CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator +
-                                        "data" + File.separator + "analyzer-logs" + File.separator + logGroup + "-" + logStream ;
+                                        "data" + File.separator + "analyzer-logs" + File.separator + logStream ;
 
             File tempDir = new File(tempFolderLocation);
             if (!tempDir.exists()) {
@@ -94,7 +103,7 @@ public class FileProcessingApi {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String[] logSourceInfo = {logGroup,logStream,fileName};
+        String[] logSourceInfo = {logStream,fileName};
         return Response.ok(logSourceInfo).build();
     }
 
@@ -103,7 +112,12 @@ public class FileProcessingApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response publishLog(LogFileConf logFileConf) {
-        return Response.ok().build();
+        Gson gson = new Gson();
+        //String json=gson.toJson(logFileConf);
+
+        String json="{\"status\" : \"ok\"}";
+        return Response.ok(json, MediaType.APPLICATION_JSON).build();
+        //return Response.ok(json, MediaType.APPLICATION_JSON).build();
     }
 
     private String getFileName(MultivaluedMap<String, String> header) {
@@ -113,8 +127,6 @@ public class FileProcessingApi {
                 String[] name = filename.split("=");
                 String exactFileName = name[1].trim().replaceAll("\"", "");
                 return exactFileName;
-
-
             }
         }
         return "unknown";
@@ -124,17 +136,17 @@ public class FileProcessingApi {
     @Path("getLogs")
     @Produces("application/json")
     @Consumes("application/json")
-    public Response getLogs(@QueryParam("noOfLines") int noOfLines, @QueryParam("logGroup") String logGroup,
+    public Response getLogs(@QueryParam("noOfLines") int noOfLines,
                             @QueryParam("logStream") String logStream, @QueryParam("fileName") String fileName) {
         Object[] logLines;
-        logLines = readLogs(noOfLines, logGroup, logStream, fileName);
+        logLines = readLogs(noOfLines,logStream, fileName);
         return Response.ok(Arrays.copyOf(logLines, logLines.length, String[].class)).build();
     }
 
-    private Object[] readLogs(int noOfLines, String logGroup, String logStream, String fileName) {
+    private Object[] readLogs(int noOfLines, String logStream, String fileName) {
         List<String> lines = new ArrayList();
         String tempFolderLocation = CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator +
-                                    "data" + File.separator + "analyzer-logs" + File.separator + logGroup + "-" + logStream;
+                                    "data" + File.separator + "analyzer-logs" + File.separator + logStream;
         File file = new File(tempFolderLocation + File.separator + fileName);
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -153,5 +165,35 @@ public class FileProcessingApi {
             logger.error("Error reading", ex);
         }
         return lines.toArray();
+    }
+
+    private boolean publish(){
+        try {
+            URL url = new URL("http://10.100.0.88:9763/api/logs/publish");
+            String encoding = DatatypeConverter.printBase64Binary("admin:admin".getBytes("UTF-8"));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty  ("Authorization", "Basic " + encoding);
+            String input = "{\"name\": \"malith\"}";
+            OutputStream os = conn.getOutputStream();
+            os.write(input.getBytes());
+            os.flush();
+            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + conn.getResponseCode());
+            }
+            conn.disconnect();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private void createLogEvents(){
+
     }
 }
