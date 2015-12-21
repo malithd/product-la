@@ -27,6 +27,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -108,4 +110,25 @@ public class LogPatternExtractor {
         for(Future<Integer> result : results)
             System.out.println(result.get());
     }
+
+    public static Map<String,String> processRegEx(String logLine, Map<String, String> regExs) {
+        String value = null;
+        Map<String,String> logEvent = new HashMap<>();
+        for (Map.Entry<String, String> regEx : regExs.entrySet())
+        {
+            Pattern p = Pattern.compile(".*?" + regEx.getValue(),Pattern.CASE_INSENSITIVE | Pattern.DOTALL); // apply "/" "/" ???
+            Matcher m = p.matcher(logLine);
+            if (m.find())
+            {
+                value=m.group(1).toString();
+            }
+
+            if(value!=null) {
+                logEvent.put(regEx.getKey(), value);
+            }
+        }
+
+        return logEvent;
+    }
+
 }

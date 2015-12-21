@@ -25,6 +25,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.http.HttpHeaders;
 import org.wso2.carbon.la.commons.domain.config.LogFileConf;
+import org.wso2.carbon.la.core.impl.LogFileProcessor;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.activation.DataHandler;
@@ -57,6 +58,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 /**
  * File Processing API
  */
@@ -65,6 +67,12 @@ import java.net.URL;
 public class FileProcessingApi {
 
     private static final Log logger = LogFactory.getLog(FileProcessingApi.class);
+
+    private LogFileProcessor logFileProcessor;
+
+    public FileProcessingApi(){
+        logFileProcessor = new LogFileProcessor();
+    }
 
     @OPTIONS
     public Response options() {
@@ -110,13 +118,13 @@ public class FileProcessingApi {
     @POST
     @Path("/publish")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON) //"application/json"
     public Response publishLog(LogFileConf logFileConf) {
-        Gson gson = new Gson();
-        //String json=gson.toJson(logFileConf);
+
+        logFileProcessor.processLogfile(logFileConf); // try catch?
 
         String json="{\"status\" : \"ok\"}";
-        return Response.ok(json, MediaType.APPLICATION_JSON).build();
+        return Response.ok(json, MediaType.APPLICATION_JSON).build();//add correct response Response.ok().build() ???
         //return Response.ok(json, MediaType.APPLICATION_JSON).build();
     }
 
@@ -165,35 +173,5 @@ public class FileProcessingApi {
             logger.error("Error reading", ex);
         }
         return lines.toArray();
-    }
-
-    private boolean publish(){
-        try {
-            URL url = new URL("http://10.100.0.88:9763/api/logs/publish");
-            String encoding = DatatypeConverter.printBase64Binary("admin:admin".getBytes("UTF-8"));
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty  ("Authorization", "Basic " + encoding);
-            String input = "{\"name\": \"malith\"}";
-            OutputStream os = conn.getOutputStream();
-            os.write(input.getBytes());
-            os.flush();
-            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new RuntimeException("Failed : HTTP error code : "
-                        + conn.getResponseCode());
-            }
-            conn.disconnect();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
-
-    private void createLogEvents(){
-
     }
 }
