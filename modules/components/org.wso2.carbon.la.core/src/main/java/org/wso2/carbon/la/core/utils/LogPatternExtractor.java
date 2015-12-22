@@ -120,7 +120,7 @@ public class LogPatternExtractor {
             Matcher m = p.matcher(logLine);
             if (m.find())
             {
-                value=m.group(1).toString();
+                value=m.group(1).toString(); // add all the matching values
             }
 
             if(value!=null) {

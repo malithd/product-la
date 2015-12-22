@@ -45,7 +45,7 @@ public class LogFileProcessor {
         @Override
         public void run() {
             for (String name : logFileConf.getLogStream()) {
-                if (logFileDir == "") {
+                if (logFileDir.equals("")) {
                     logFileDir = name;
                 } else {
                     logFileDir = logFileDir + "-" + name;
@@ -64,6 +64,7 @@ public class LogFileProcessor {
                     }
                 }
                 br.close();
+                //TODO : delete file and dir
             } catch (Exception ex) {
                 log.error("Error reading", ex);
             }
@@ -132,8 +133,8 @@ public class LogFileProcessor {
         //set @logstream
         logEvent.put("@logstream", streamId);
 
+        //set @filename
+        logEvent.put("@filename", logFileConf.getFileName());
         return  logEvent;
     }
-
-
 }
