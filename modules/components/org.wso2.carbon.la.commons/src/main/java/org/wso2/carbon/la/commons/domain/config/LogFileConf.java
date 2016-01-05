@@ -6,7 +6,7 @@ import java.util.Map;
  * Log file upload configuration
  */
 public class LogFileConf {
-    public String[] logStream;
+    public String logStream;
     public String fileName;
     public Map logPatterns;
 
@@ -18,11 +18,11 @@ public class LogFileConf {
         this.logPatterns = logPatterns;
     }
 
-    public String[] getLogStream() {
+    public String getLogStream() {
         return logStream;
     }
 
-    public void setLogStream(String[] logStream) {
+    public void setLogStream(String logStream) {
         this.logStream = logStream;
     }
 

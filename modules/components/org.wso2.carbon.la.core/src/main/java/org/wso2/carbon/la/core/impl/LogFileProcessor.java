@@ -1,6 +1,7 @@
 package org.wso2.carbon.la.core.impl;
 
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.la.commons.domain.config.LogFileConf;
@@ -44,13 +45,12 @@ public class LogFileProcessor {
 
         @Override
         public void run() {
-            for (String name : logFileConf.getLogStream()) {
-                if (logFileDir.equals("")) {
-                    logFileDir = name;
-                } else {
-                    logFileDir = logFileDir + "-" + name;
-                }
+            String logFileDir = logFileConf.getLogStream();
+
+            if(logFileDir!=""){
+                logFileDir = logFileDir.replace(',','_');
             }
+
             File file = new File(tempFolderLocation + File.separator + logFileDir + File.separator + logFileConf.getFileName());
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
@@ -64,7 +64,7 @@ public class LogFileProcessor {
                     }
                 }
                 br.close();
-                //TODO : delete file and dir
+                //FileUtils.forceDelete(new File(tempFolderLocation + File.separator + logFileDir));//TODO : delete file and dir
             } catch (Exception ex) {
                 log.error("Error reading", ex);
             }
@@ -95,7 +95,7 @@ public class LogFileProcessor {
         @Override
         public void run() {
             while (true) {
-                while (logEvents.isEmpty()) {
+                while (!logEvents.isEmpty()) {
                     Map<String,String> logEvent = logEvents.removeLast();
                     if (logEvent != null) {
                         String logEventStream = gson.toJson(logEvent);
@@ -107,7 +107,7 @@ public class LogFileProcessor {
                                 throw new RuntimeException("Failed : HTTP error code : "
                                         + conn.getResponseCode());
                             }
-                        } catch (IOException e) {
+                        } catch (IOException e) {createLogEvent
                             e.printStackTrace();
                         }
                     }
@@ -123,11 +123,11 @@ public class LogFileProcessor {
     }
 
     private Map<String, String> createLogEvent(String logLine, LogFileConf logFileConf){
-        String streamId="[";
-        for(String subStream: logFileConf.getLogStream()){
-            streamId = streamId + "'" + subStream + "'" + ",";
+        String streamId="";
+
+        if(logFileConf.getLogStream()!=""){
+           streamId = "[" + logFileConf.getLogStream().trim() + "]";
         }
-        streamId = streamId.substring(0,streamId.length()-1) + "]";
 
         Map<String, String> logEvent = LogPatternExtractor.processRegEx(logLine, logFileConf.getLogPatterns());
         //set @logstream

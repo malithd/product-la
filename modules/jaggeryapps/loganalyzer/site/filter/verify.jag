@@ -113,10 +113,12 @@ $("#searchLog").click(function(){
 var urlParams=splitUrl();
 var regs= urlParams["regPatterns"];
 var regjs=JSON.parse(regs);
-var lgGroup= urlParams["logStream"];
+var lgStream= urlParams["logStream"];
+var fileName= urlParams["fileName"];
 var data = {};
-data.logGroup = lgGroup;
+data.logStream = lgStream;
 data.logPatterns = regjs;
+data.fileName= fileName;
 
 jQuery.ajax({
          type: "POST",

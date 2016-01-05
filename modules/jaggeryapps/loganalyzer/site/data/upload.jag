@@ -41,11 +41,13 @@
         <div id="notification-area"></div>
         <div class="wr-form col-lg-5 col-centered">
 
-               <form id="add-log-form" method="POST" enctype="multipart/form-data">
+               <form id="add-log-form" method="POST">
                 <label class="input-label">Log Stream<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Stream Name of the log to be uploaded."></span></label>
                 <span class="fld-required">*</span>
-                <div class="input-control text">
-                    <input type="text" value="" placeholder="e.g. node-1" placeholder="" id="log-stream" name="logStream"/>
+                <!--div class="input-control text"-->
+                <div class="input-append" id="fieldggg">
+                    <!--input type="text" value="" placeholder="e.g. node-1" placeholder="" id="log-stream" name="logStream"/-->
+                    <input autocomplete="off" class="input form-control" id="logStream1" name="logStream" type="text" placeholder="Type something" data-items="8"/><button id="b1" class="btn add-more" type="button">+</button>
                 </div>
 
                 <label class="input-label">Description<span class="help-tip glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Description on the Log file to be uploaded."></span></label>
@@ -59,7 +61,6 @@
                 <div id="source-file" class="input-control file info-state" data-role="input-control">
                        <input type="file" id="fileInput" name="file"/>
                 </div>
-
                 <div class="btn-group-actions">
                     <button class="btn btn-main" type="submit" id="add-log-form">Add</button>
                 </div>
@@ -82,6 +83,31 @@ var baseUrl = getBaseUrl(window.location.href);
 
 $( document ).ready(function() {
 
+ var next = 1;
+    $(".add-more").click(function(e){
+        e.preventDefault();
+        var addto = "#logStream" + next;
+        var addRemove = "#logStream" + (next);
+        next = next + 1;
+        var newIn = '<input autocomplete="off" class="input form-control" id="logStream' + next + '" name="logStream' + '" type="text">';
+        var newInput = $(newIn);
+        var removeBtn = '<button id="remove' + (next - 1) + '" class="btn btn-danger remove-me" >-</button>';
+        var removeButton = $(removeBtn);
+        $(addto).after(newInput);
+        $(addRemove).after(removeButton);
+        $("#logStream" + next).attr('data-source',$(addto).attr('data-source'));
+        $("#count").val(next);
+
+            $('.remove-me').click(function(e){
+                e.preventDefault();
+                var fieldNum = this.id.charAt(this.id.length-1);
+                var fieldID = "#logStream" + fieldNum;
+                $(this).remove();
+                $(fieldID).remove();
+            });
+    });
+
+
 $('#nav').affix({
       offset: {
         top: $('header').height()
@@ -99,9 +125,31 @@ $(".ctrl-asset-type-switcher").popover({
 
 $('#add-log-form').ajaxForm({
     url: baseUrl + '/api/files/upload',
+
+    beforeSubmit: function(arr,$form, options) {
+        var fields = [];
+        var fieldString = "";
+        $form.find(':input').each(function(){
+            if(this.type === 'text') {
+                fields.push(this.value);
+            }
+        });
+        fieldString =  fields.join(',');
+        var first=true;
+        arr = arr.filter(function(datum){
+            if((datum.name === "logStream")&&(!first)){
+                return false;
+            }
+            if(datum.name === "logStream"){
+                datum.value = fieldString;
+                first = false;
+            }
+            return true;
+        });
+        return true;
+    },
     success : function(res){
-        window.location = baseUrl + '/loganalyzer/site/data/filter.jag?' +
-             "logStream=" + res[0] + "&" + "fileName=" + res[1];
+        window.location = baseUrl + '/loganalyzer/site/data/filter.jag?' +"logStream=" + res[0] + "&" + "fileName=" + res[1];
     },
     error :  function(res){
         var errorText = JSON.parse(res.responseText)["exception"];

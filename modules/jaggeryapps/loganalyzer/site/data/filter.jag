@@ -248,24 +248,6 @@ $(document).ready(function () {
 
                     $('#selected-log-entry').html(logEntryTable.row('.selected').data()[0]);
               });
-            //var table = $('#LogEntries').DataTable({data:logs});
-
-            //table.row.add(logs).draw();
-            //Clear result div
-            //$("#ResultArea").html("");
-            //Crate table html tag
-/*            var table = $("<table id='dadddta' class='table table-hover table-bordered'></table>").appendTo("#ResultArea");
-
-            //Create table header row
-            var rowHeader = $("<tr></tr>").appendTo(table);
-            $("<td></td>").text("Logs").appendTo(rowHeader);
-
-
-                 for (var i = 0; i < logs.length; i++) {
-                // var row = $("<tr></tr>").appendTo(table);
-                   // $("<tr><td onclick='updateLine(this)'></td></tr>").text().appendTo(table);
-                    table.append("<tr><td class='line'>"+logs[i]+"</td></tr>");
-                 }*/
         }
 
 function searchActivities(lines) {

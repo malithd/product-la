@@ -83,7 +83,7 @@ public class FileProcessingApi {
     @Path("/upload")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadLog(@Multipart("logStream") String[] logStream,
+    public Response uploadLog(@Multipart("logStream") String logStream,
                               @Multipart("description") String description, @Multipart("file") Attachment attachment){
         DataHandler dataHandler = attachment.getDataHandler();
         String fileName = null;
@@ -93,23 +93,19 @@ public class FileProcessingApi {
             fileName = getFileName(map);
             String tempFolderLocation = CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator +
                     "data" + File.separator + "analyzer-logs";
-            String logFileDir = "";
+            String logFileDir = logStream;
 
-            for (String name : logStream) { //TODO: move this part to a single method
-                if (logFileDir.equals("")) {
-                    logFileDir = name;
-                } else {
-                    logFileDir = logFileDir + "-" + name;
-                }
+            if(logFileDir!=""){
+                logFileDir = logFileDir.replace(',','_');
             }
 
-            File tempDir = new File(tempFolderLocation + File.separator + logFileDir + File.separator + fileName);
+            File tempDir = new File(tempFolderLocation + File.separator + logFileDir);
 
             if (!tempDir.exists()) {
                 FileUtils.forceMkdir(tempDir);
             }
 
-            OutputStream out = new FileOutputStream(new File(tempFolderLocation + File.separator + fileName));
+            OutputStream out = new FileOutputStream(new File(tempFolderLocation + File.separator + logFileDir + File.separator + fileName));
             int read = 0;
             byte[] bytes = new byte[1024]; //TODO: refactor reading part
             while ((read = stream.read(bytes)) != -1) {
@@ -121,7 +117,7 @@ public class FileProcessingApi {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String[] logSourceInfo = {logStream,fileName};
+        Object[] logSourceInfo = {logStream,fileName};
         return Response.ok(logSourceInfo).build();
     }
 
@@ -155,24 +151,20 @@ public class FileProcessingApi {
     @Produces("application/json")
     @Consumes("application/json")
     public Response getLogs(@QueryParam("noOfLines") int noOfLines,
-                            @QueryParam("logStream") String[] logStream, @QueryParam("fileName") String fileName) {
+                            @QueryParam("logStream") String logStream, @QueryParam("fileName") String fileName) {
         Object[] logLines;
         logLines = readLogs(noOfLines,logStream, fileName);
         return Response.ok(Arrays.copyOf(logLines, logLines.length, String[].class)).build();
     }
 
-    private Object[] readLogs(int noOfLines, String[] logStream, String fileName) {
+    private Object[] readLogs(int noOfLines, String logStream, String fileName) {
         List<String> lines = new ArrayList();
         String tempFolderLocation = CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator +
                                     "data" + File.separator + "analyzer-logs";
-        String logFileDir = "";
+        String logFileDir = logStream;
 
-        for (String name : logStream) {
-            if (logFileDir.equals("")) {
-                logFileDir = name;
-            } else {
-                logFileDir = logFileDir + "-" + name;
-            }
+        if(logFileDir!=""){
+            logFileDir = logFileDir.replace(',','_');
         }
 
         File file = new File(tempFolderLocation + File.separator + logFileDir + File.separator + fileName);

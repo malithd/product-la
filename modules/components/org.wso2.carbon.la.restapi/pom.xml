@@ -48,6 +48,11 @@
             <artifactId>org.wso2.carbon.la.core</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.la</groupId>
+            <artifactId>org.wso2.carbon.la.commons</artifactId>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.wso2.carbon</groupId>
 			<artifactId>org.wso2.carbon.user.core</artifactId>
