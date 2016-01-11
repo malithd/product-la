@@ -86,6 +86,20 @@ $(document).ready(function () {
             tr.addClass('shown');
         }
     } );
+
+    $('#save-options').click(function () {
+        if ("pdf" == $("#save-options").val()) {
+            var doc = new jsPDF();
+            doc.fromHTML($('#tab-preview').html(), 15, 15, {
+                'width': 170
+            });
+            var string = doc.output('datauristring');
+            var x = window.open();
+            x.document.open();
+            x.document.location = string;
+        }
+    });
+
 });
 
 function searchActivities2() {

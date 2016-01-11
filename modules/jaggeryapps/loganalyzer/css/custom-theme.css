@@ -500,7 +500,7 @@ a.ctrl-filter-category:hover {
     height: 917px;
 }
 
-#search-field-area, #search-btn-area, #drop-down-area, #save-btn-area, #save-options{
+#search-field-area, #search-btn-area, #drop-down-area, #save-options{
     float:left;
 }
 
@@ -515,7 +515,7 @@ a.ctrl-filter-category:hover {
 
 .search-field input, .search-field textarea {
     border: 1px #999 solid;
-    width: 900px;
+    width: 1000px;
     height: 48px;
     padding: 6px 10px;
     z-index: 1;
