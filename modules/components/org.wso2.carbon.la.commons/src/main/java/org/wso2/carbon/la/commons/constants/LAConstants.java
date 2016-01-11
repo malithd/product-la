@@ -82,4 +82,10 @@ public class LAConstants {
     public static final String OUT_SUFFIX = ".out";
 
     public static final String LA_DB = "jdbc/WSO2LA_DB";
+
+    //delimiter constants
+    public static final String DELIMITER_SPACE = "\\s+";
+    public static final String DELIMITER_COMMA = "\\s*,\\s*";
+    public static final String DELIMITER_TAB = "\\t";
+    public static final String DELIMITER_PIPE = "\\|";
 }

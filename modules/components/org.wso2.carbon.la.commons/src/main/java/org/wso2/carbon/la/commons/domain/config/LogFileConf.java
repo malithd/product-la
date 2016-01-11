@@ -8,14 +8,15 @@ import java.util.Map;
 public class LogFileConf {
     public String logStream;
     public String fileName;
-    public Map logPatterns;
+    public Map regExPatterns;
+    public String delimiter;
 
-    public Map getLogPatterns() {
-        return logPatterns;
+    public Map getRegExPatterns() {
+        return regExPatterns;
     }
 
-    public void setLogPatterns(Map logPatterns) {
-        this.logPatterns = logPatterns;
+    public void setRegExPatterns(Map regExPatterns) {
+        this.regExPatterns = regExPatterns;
     }
 
     public String getLogStream() {
@@ -32,5 +33,13 @@ public class LogFileConf {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getDelimiter() {
+        return delimiter;
+    }
+
+    public void setDelimiter(String delimiter) {
+        this.delimiter = delimiter;
     }
 }

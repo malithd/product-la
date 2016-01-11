@@ -1,6 +1,5 @@
 package org.wso2.carbon.la.core.impl;
 
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,22 +10,22 @@ import org.wso2.carbon.utils.CarbonUtils;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
 
 public class LogFileProcessor {
     private static final Log log = LogFactory.getLog(LogFileProcessor.class);
-    ArrayDeque<Map> logEvents = new ArrayDeque();
+    static final ArrayDeque<Map> logEvents = new ArrayDeque();
     static final String tempFolderLocation = CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator +
             "data" + File.separator + "analyzer-logs";
 
-    public LogFileProcessor(){
+    public LogFileProcessor() {
         //read info from config
-        LogPublisher logPublisher=new LogPublisher("10.100.0.88", "9763", "admin", "admin");
+        LogPublisher logPublisher = new LogPublisher("localhost", "9763", "admin", "admin");
         new Thread(logPublisher).start();
     }
 
@@ -47,8 +46,8 @@ public class LogFileProcessor {
         public void run() {
             String logFileDir = logFileConf.getLogStream();
 
-            if(logFileDir!=""){
-                logFileDir = logFileDir.replace(',','_');
+            if (logFileDir != "") {
+                logFileDir = logFileDir.replace(',', '_');
             }
 
             File file = new File(tempFolderLocation + File.separator + logFileDir + File.separator + logFileConf.getFileName());
@@ -64,7 +63,9 @@ public class LogFileProcessor {
                     }
                 }
                 br.close();
-                //FileUtils.forceDelete(new File(tempFolderLocation + File.separator + logFileDir));//TODO : delete file and dir
+
+                //remove the temp log file
+                FileUtils.deleteDirectory(new File(tempFolderLocation + File.separator + logFileDir));//TODO : delete file and dir
             } catch (Exception ex) {
                 log.error("Error reading", ex);
             }
@@ -73,41 +74,42 @@ public class LogFileProcessor {
     }
 
     private class LogPublisher implements Runnable {
-        HttpURLConnection conn=null;
-        Gson gson = new Gson();
+        String host;
+        String port;
+        String userName;
+        String password;
 
-        public LogPublisher(String host, String port, String userName, String password){
-            try {
-                URL url = new URL("http://" + host + ":" + port + "/api/logs/publish"); //http://10.100.0.88:9763/api/logs/publish
-                String encoding = DatatypeConverter.printBase64Binary((userName + ":" + password).getBytes("UTF-8"));//parse params from a conf file
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setDoOutput(true);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Authorization", "Basic " + encoding);
-            }catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        public LogPublisher(String host, String port, String userName, String password) {
+            this.host = host;
+            this.port = port;
+            this.userName = userName;
+            this.password = password;
         }
 
         @Override
         public void run() {
             while (true) {
                 while (!logEvents.isEmpty()) {
-                    Map<String,String> logEvent = logEvents.removeLast();
+                    Map<String, String> logEvent = logEvents.removeLast();
                     if (logEvent != null) {
-                        String logEventStream = gson.toJson(logEvent);
+                        String logEventStream = new Gson().toJson(logEvent);
                         try {
+                            URL url = new URL("http://" + host + ":" + port + "/api/logs/publish"); //http://10.100.0.88:9763/api/logs/publish
+                            String encoding = DatatypeConverter.printBase64Binary((userName + ":" + password).getBytes("UTF-8"));//parse params from a conf file
+                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                            conn.setDoOutput(true);
+                            conn.setRequestMethod("POST");
+                            conn.setRequestProperty("Content-Type", "application/json");
+                            conn.setRequestProperty("Authorization", "Basic " + encoding);
                             OutputStream os = conn.getOutputStream();
                             os.write(logEventStream.getBytes());
                             os.flush();
+                            os.close();
                             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
                                 throw new RuntimeException("Failed : HTTP error code : "
                                         + conn.getResponseCode());
                             }
-                        } catch (IOException e) {createLogEvent
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
@@ -116,25 +118,32 @@ public class LogFileProcessor {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    conn.disconnect();//close connection properly
+                    //conn.disconnect();// TODO close connection properly
                 }
             }
         }
     }
 
-    private Map<String, String> createLogEvent(String logLine, LogFileConf logFileConf){
-        String streamId="";
-
-        if(logFileConf.getLogStream()!=""){
-           streamId = "[" + logFileConf.getLogStream().trim() + "]";
+    private Map<String, String> createLogEvent(String logLine, LogFileConf logFileConf) {
+        String streamId = "[";
+        Map<String, String> logEvent = new HashMap();
+        String[] logStreams = logFileConf.getLogStream().split(",");
+        if (logStreams.length > 0) {
+            for (String subStream : logStreams)
+                streamId = streamId + "'" + subStream.trim() + "'" + ",";
         }
-
-        Map<String, String> logEvent = LogPatternExtractor.processRegEx(logLine, logFileConf.getLogPatterns());
+        streamId = streamId.substring(0, (streamId.length() - 1)) + "]";
+        if(!logFileConf.getDelimiter().equals("undefined")){
+            logEvent = LogPatternExtractor.processDelimiter(logLine, logFileConf.getDelimiter());
+        }else if(logFileConf.getRegExPatterns().size()>0){
+            logEvent = LogPatternExtractor.processRegEx(logLine, logFileConf.getRegExPatterns());
+        }
         //set @logstream
         logEvent.put("@logstream", streamId);
-
         //set @filename
         logEvent.put("@filename", logFileConf.getFileName());
-        return  logEvent;
+        return logEvent;
     }
+
+
 }

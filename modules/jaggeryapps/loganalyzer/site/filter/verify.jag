@@ -110,15 +110,17 @@ $(".ctrl-asset-type-switcher").popover({
 
 $(function(){
 $("#searchLog").click(function(){
-var urlParams=splitUrl();
-var regs= urlParams["regPatterns"];
-var regjs=JSON.parse(regs);
-var lgStream= urlParams["logStream"];
-var fileName= urlParams["fileName"];
+var urlParams = splitUrl();
+var regs = urlParams["regPatterns"];
+var regjs = JSON.parse(regs);
+var lgStream = urlParams["logStream"];
+var fileName = urlParams["fileName"];
+var delimeter = urlParams["delimeter"];
 var data = {};
 data.logStream = lgStream;
-data.logPatterns = regjs;
+data.regExPatterns = regjs;
 data.fileName= fileName;
+data.delimiter = delimeter;
 
 jQuery.ajax({
          type: "POST",

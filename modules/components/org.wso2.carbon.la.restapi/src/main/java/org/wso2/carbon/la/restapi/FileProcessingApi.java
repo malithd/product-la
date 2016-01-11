@@ -162,13 +162,10 @@ public class FileProcessingApi {
         String tempFolderLocation = CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator +
                                     "data" + File.separator + "analyzer-logs";
         String logFileDir = logStream;
-
         if(logFileDir!=""){
             logFileDir = logFileDir.replace(',','_');
         }
-
         File file = new File(tempFolderLocation + File.separator + logFileDir + File.separator + fileName);
-
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             int offset = 0;

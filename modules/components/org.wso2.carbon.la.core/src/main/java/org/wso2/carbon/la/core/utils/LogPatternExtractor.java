@@ -20,6 +20,7 @@ package org.wso2.carbon.la.core.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.la.commons.constants.LAConstants;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +30,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -131,4 +133,36 @@ public class LogPatternExtractor {
         return logEvent;
     }
 
+    public static Map<String,String> processDelimiter(String logLine, String delimiter) {
+        String value = null;
+        String delemiterConf=null;
+        Map<String,String> logEvent = new HashMap<>();
+
+        switch (delimiter) {
+            case "space":  delemiterConf = LAConstants.DELIMITER_SPACE;
+                break;
+            case "comma":  delemiterConf = LAConstants.DELIMITER_COMMA;
+                break;
+            case "pipe":  delemiterConf = LAConstants.DELIMITER_PIPE;
+                break;
+            case "tab":  delemiterConf = LAConstants.DELIMITER_TAB;
+                break;
+            default: delemiterConf = delimiter;
+                break;
+        }
+            // Initialize Scanner object
+            Scanner scan = new Scanner(logLine.trim());
+            // initialize the string delimiter
+            scan.useDelimiter(delemiterConf.trim());
+
+            int fieldIndex = 0;
+            while(scan.hasNext()){
+                String fieldName = "field" + fieldIndex;
+                logEvent.put(fieldName,scan.next());
+                fieldIndex++;
+            }
+            // closing the scanner stream
+            scan.close();
+        return logEvent;
+    }
 }

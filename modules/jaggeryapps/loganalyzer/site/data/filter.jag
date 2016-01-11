@@ -82,7 +82,7 @@
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active" style="width:50%"><a href="#available_atterns" aria-controls="available_atterns" role="tab" data-toggle="tab">Available Patterns</a></li>
-    <li role="presentation" style="width:49.7195%"><a id='tab-saved-patterns' href="#saved_patterns" aria-controls="saved_patterns" role="tab" data-toggle="tab">Saved Patterns</a></li>
+    <li role="presentation" style="width:49.7195%"><a id='tab-saved-patterns' href="#saved_patterns" aria-controls="saved_patterns" role="tab" data-toggle="tab">Saved RegEx Patterns</a></li>
   </ul>
 
   <!-- Tab panes -->
@@ -107,19 +107,23 @@
             <div class="col-md-1">
                 <button class="btn btn-primary" style="margin-bottom: 20%" type="button" onclick="dellDev()"><img src="../../images/ico-delimeter.png"/></button>
             </div>
-            <div class="col-md-4" id="dellll">
+            <div class="col-md-6" id="dellll">
            <dev class="row">
-           <dev class="col-md-8"><nav>
-      <ul class="pagination">
-        <li><a href="#">Space</a></li>
-        <li><a href="#">Comma</a></li>
-        <li><a href="#">Tab</a></li>
-        <li><a href="#">Pipe</a></li>
-        <li><a href="#">Other</a></li>
-      </ul>
-    </nav></dev>
-           <dev class="col-md-2"><button class="btn btn-primary dim btn-small-dim" type="button">Apply</button></dev>
-           <dev class="col-md-2"><button class="btn btn-primary dim btn-small-dim" type="button">Save</button></dev>
+           <dev class="col-md-6">
+
+    <div class="btn-group">
+        <button class="btn" onclick="" id="del_space">Space</button>
+        <button class="btn" onclick="" id="del_comma">Comma</button>
+        <button class="btn" onclick="" id="del_tab">Tab</button>
+        <button class="btn" onclick="" id="del_pipe">Pipe</button>
+        <button class="btn" onclick="" id="del_other">Other</button>
+    </div>
+
+    </dev>
+    <dev class="col-md-2">
+    <input type="text" class="form-control" id="del_input">
+    </dev>
+        <!--dev class="col-md-1"><button class="btn btn-primary" type="button">Save</button></dev-->
            </dev>
     </div>
 
@@ -142,7 +146,7 @@
     </table>
     </div>
     </div>
-    <div class="row">
+    <!--div class="row">
     <div class="col-md-2" style="text-align:right">Delimiter Patterns</div>
     <div class="col-md-4" style="text-align:center" id="delmiter_patterns">
     <table class="table table-bordered">
@@ -154,7 +158,7 @@
     </thead>
     </table>
     </div>
-    </div>
+    </div-->
     </div>
   </div>
 
@@ -214,7 +218,9 @@
 <script type="text/javascript">
 var baseUrl = getBaseUrl(window.location.href);
 var a = {};
+var del;
 var logEntryTable;
+var other_del=false;
 $(document).ready(function () {
         logEntryTable = $('#LogEntries').DataTable();
         $('#bbb').hide();
@@ -268,10 +274,14 @@ function searchActivities(lines) {
 
 $(function(){
     $("#verifyConf").click(function(){
+        if(other_del){
+    var del=document.getElementById("del_input").value;
+    document.getElementById('del_input').value='';
+    }
     var urlParams = splitUrl();
     var regPatterns= JSON.stringify(a);
         window.location = baseUrl + '/loganalyzer/site/filter/verify.jag?'+
-            "logStream=" + urlParams["logStream"] + "&fileName=" + encodeURIComponent( urlParams["fileName"] )+ "&regPatterns=" + encodeURIComponent(regPatterns);
+            "logStream=" + urlParams["logStream"] + "&fileName=" + encodeURIComponent( urlParams["fileName"] )+ "&regPatterns=" + encodeURIComponent(regPatterns) + "&delimeter=" + encodeURIComponent(del);
         });
 });
 
@@ -311,6 +321,7 @@ $('#regggg').show();
 function dellDev(){
 $('#regggg').hide();
 $('#dellll').show();
+$('#del_input').hide();
 }
 
 $(function(){
@@ -352,6 +363,23 @@ $(function(){
                $('#selected-log-entry').highlightRegex(regex);
            }
          });
+
+    $('#del_space').click(function(){
+        del="space";
+    });
+    $('#del_comma').click(function(){
+        del="comma";
+    });
+    $('#del_pipe').click(function(){
+        del="pipe";
+    });
+    $('#del_tab').click(function(){
+        del="tab";
+    });
+    $('#del_other').click(function(){
+        other_del=true;
+        $('#del_input').show();
+    });
 
 </script>
 </body>
