@@ -176,12 +176,12 @@
                                 <button class="btn btn-main" id="search-btn" onclick="searchActivities()">Search</button>
                             </div>
                             <select id="save-options" class="drop-down-fixed">
-                                <option value="download">Download</option>
+                                <option disabled="disabled" style="display: none" selected="selected">Download As</option>
+                                <optgroup label="Download As">
+                                    <option value="pdf">PDF</option>
+                                </optgroup>
                                 <option value="alert">Alert</option>
                             </select>
-                            <div id="save-btn-area" class="btn-group-actions">
-                                <button class="btn btn-main" id="save-btn">Save As</button>
-                            </div>
 
                             <div  id="tab-preview" class="wr-form col-lg-12 col-left">
                                 <table id="results-table" class="table table-hover">
@@ -210,6 +210,12 @@
     <script src="../../js/plugins/dataTables.bootstrap.js"></script>
     <script src="../../js/plugins/dataTables.responsive.js"></script>
     <script src="../../js/plugins/jquery.timepicker.js"></script>
+    <script src="../../js/plugins/jspdf/jspdf.js"></script>
+    <script src="../../js/plugins/jspdf/FileSaver.js"></script>
+    <script src="../../js/plugins/jspdf/standard_fonts_metrics.js"></script>
+    <script src="../../js/plugins/jspdf/split_text_to_size.js"></script>
+    <script src="../../js/plugins/jspdf/from_html.js"></script>
+    <script src="../../js/plugins/jspdf/cell.js"></script>
     <script src="search.js"></script>
 </body>
 
