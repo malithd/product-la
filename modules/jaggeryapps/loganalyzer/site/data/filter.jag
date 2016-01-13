@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,184 +28,184 @@
 
 <!-- secondary header - app bar -->
 	<%
-        var inputTab = "";
-        var filterTab = "style='background-color:#000'";
-        var verifyTab = "";
-        include("../header/sourceconfiguratoinnav.jag");
-    %>
+var inputTab = "";
+var filterTab = "style='background-color:#000'";
+var verifyTab = "";
+include("../header/sourceconfiguratoinnav.jag");
+%>
 <!-- secondary header - app bar -->
 
 <!-- content/body -->
 <br class="spacer"/>
 <div class="row">
-	<div class="col-md-11">
-	    <div style="padding-left:15%;">
-          <h4>Select an event from the sample </h4>
-          <p>Choose a source or source type, select a sample event, and click next to go to the next step.Field extractor will use the selected event to extract fields</p>
-        </div>
-	</div>
-	<!--<div class="btn-group-actions" class="col-md-1">
-        <button class="btn btn-primary" id="verifyConf">Verify</button>
-    </div>-->
+<div class="col-md-11">
+    <div style="padding-left:15%;">
+      <h4>Select an event from the sample </h4>
+      <p>Choose a source or source type, select a sample event, and click next to go to the next step.Field extractor will use the selected event to extract fields</p>
+    </div>
+</div>
+<!--<div class="btn-group-actions" class="col-md-1">
+    <button class="btn btn-primary" id="verifyConf">Verify</button>
+</div>-->
 </div>
 
 <br class="spacer"/>
 
 <div class="row">
 <div class="col-md-2"  id="ResultArea4" style="margin-left: -12.5%"></div>
-    <div class="col-md-1"  style="text-align: right; margin-left: 9%;" id="ResultArea6">Selected Log Entry:</div>
-    <div class="col-md-7"  id="selected-log-entry"></div>
-    <div class="col-md-1"  id="ResultArea5">
-    <button id="extract-btn" type="button" class="btn btn-primary" onclick="switchss()" style="display:none">Extract</button>
-    </div>
+<div class="col-md-1"  style="text-align: right; margin-left: 9%;" id="ResultArea6">Selected Log Entry:</div>
+<div class="col-md-7"  id="selected-log-entry"></div>
+<div class="col-md-1"  id="ResultArea5">
+<button id="extract-btn" type="button" class="btn btn-primary" onclick="switchss()" style="display:none">Extract</button>
+</div>
 </div>
 
 
 <br class="spacer"/>
 
 <div class="row" id="aaa">
-	<!--div class="col-md-3">
-	<input type="text" class="form-control" placeholder="Search for...">
-	</div-->
-	<div class="col-md-2"  id="ResultArea3"></div>
-	<div class="col-md-1" style="text-align: right; margin-left: 15%" >Sample</div>
-	<div class="col-md-2">
-		      <select class="form-control" onchange="searchActivities(this.value)" >
-		                    <option value="10">10 Events</option>
-		                    <option value="100">100 Events</option>
-		                    <option value="1000">1000 Events</option>
-		       </select>
-	</div>
+<!--div class="col-md-3">
+<input type="text" class="form-control" placeholder="Search for...">
+</div-->
+<div class="col-md-2"  id="ResultArea3"></div>
+<div class="col-md-1" style="text-align: right; margin-left: 15%" >Sample</div>
+<div class="col-md-2">
+          <select class="form-control" onchange="searchActivities(this.value)" >
+                        <option value="10">10 Events</option>
+                        <option value="100">100 Events</option>
+                        <option value="1000">1000 Events</option>
+           </select>
+</div>
 </div>
 <div class="row" id="bbb" style="padding-top: 5%; padding-left: 14.5%; padding-right: 12.5%; display: block;">
 
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active" style="width:50%"><a href="#available_atterns" aria-controls="available_atterns" role="tab" data-toggle="tab">Available Patterns</a></li>
-    <li role="presentation" style="width:49.7195%"><a id='tab-saved-patterns' href="#saved_patterns" aria-controls="saved_patterns" role="tab" data-toggle="tab">Saved RegEx Patterns</a></li>
-  </ul>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+<li role="presentation" class="active" style="width:50%"><a href="#available_atterns" aria-controls="available_atterns" role="tab" data-toggle="tab">Available Patterns</a></li>
+<li role="presentation" style="width:49.7195%"><a id='tab-saved-patterns' href="#saved_patterns" aria-controls="saved_patterns" role="tab" data-toggle="tab">Saved RegEx Patterns</a></li>
+</ul>
 
-  <!-- Tab panes -->
-  <div class="tab-content" style="border-style: solid; border-width: 0px 1px 1px 1px; border-color: #000">
-    <div role="tabpanel" class="tab-pane active" id="available_atterns">
-    <div class="row">
-            <div class="col-md-1" style="text-align:center">Regex</div>
-            <div class="col-md-1">
-                 <button class="btn btn-primary" type="button" onclick="regexDev()"><img src="../../images/ico-function.png"/></button>
-            </div>
-           <div class="col-md-6" id="regggg">
-           <dev class="row">
-           <dev class="col-md-10"><input type="text" class="form-control" id="fancy-input" placeholder="regex..."></dev>
-           <!--<dev class="col-md-1"><button class="btn btn-primary dim btn-small-dim" type="button" id="applyReg">Apply</button></dev>-->
-           <dev class="col-md-1"><button class="btn btn-primary" type="button" id="saveReg">Save</button></dev>
-           </dev>
-            </div>
-    </div>
-    <br class="spacer"/>
-    <div class="row">
-            <div class="col-md-1" style="text-align:center">Delimiter</div>
-            <div class="col-md-1">
-                <button class="btn btn-primary" style="margin-bottom: 20%" type="button" onclick="dellDev()"><img src="../../images/ico-delimeter.png"/></button>
-            </div>
-            <div class="col-md-6" id="dellll">
-           <dev class="row">
-           <dev class="col-md-6">
-
-    <div class="btn-group">
-        <button class="btn" onclick="" id="del_space">Space</button>
-        <button class="btn" onclick="" id="del_comma">Comma</button>
-        <button class="btn" onclick="" id="del_tab">Tab</button>
-        <button class="btn" onclick="" id="del_pipe">Pipe</button>
-        <button class="btn" onclick="" id="del_other">Other</button>
-    </div>
-
-    </dev>
-    <dev class="col-md-2">
-    <input type="text" class="form-control" id="del_input">
-    </dev>
-        <!--dev class="col-md-1"><button class="btn btn-primary" type="button">Save</button></dev-->
-           </dev>
-    </div>
-
-
-    </div>
+<!-- Tab panes -->
+<div class="tab-content" style="border-style: solid; border-width: 0px 1px 1px 1px; border-color: #000">
+<div role="tabpanel" class="tab-pane active" id="available_atterns">
+<div class="row">
+        <div class="col-md-1" style="text-align:center">Regex</div>
+        <div class="col-md-1">
+             <button class="btn btn-primary" type="button" onclick="regexDev()"><img src="../../images/ico-function.png"/></button>
         </div>
-    <div role="tabpanel" class="tab-pane" id="saved_patterns">
-    <div class="row">
-    <div class="col-md-2" style="text-align:right">RegEx Patterns</div>
-    <div class="col-md-4" style="text-align:center">
-    <table class="table table-bordered" id="saved-regex-table">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-    </table>
-    </div>
-    </div>
-    <!--div class="row">
-    <div class="col-md-2" style="text-align:right">Delimiter Patterns</div>
-    <div class="col-md-4" style="text-align:center" id="delmiter_patterns">
-    <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    </table>
-    </div>
-    </div-->
-    </div>
-  </div>
+       <div class="col-md-6" id="regggg">
+       <dev class="row">
+       <dev class="col-md-10"><input type="text" class="form-control" id="fancy-input" placeholder="regex..."></dev>
+       <!--<dev class="col-md-1"><button class="btn btn-primary dim btn-small-dim" type="button" id="applyReg">Apply</button></dev>-->
+       <dev class="col-md-1"><button class="btn btn-primary" type="button" id="saveReg">Save</button></dev>
+       </dev>
+        </div>
+</div>
+<br class="spacer"/>
+<div class="row">
+        <div class="col-md-1" style="text-align:center">Delimiter</div>
+        <div class="col-md-1">
+            <button class="btn btn-primary" style="margin-bottom: 20%" type="button" onclick="dellDev()"><img src="../../images/ico-delimeter.png"/></button>
+        </div>
+        <div class="col-md-6" id="dellll">
+       <dev class="row">
+       <dev class="col-md-6">
 
-    <div class="btn-group-actions" class="col-md-1" align="right">
-        <button class="btn btn-main" id="verifyConf">Next</button>
+<div class="btn-group">
+    <button class="btn" onclick="" id="del_space">Space</button>
+    <button class="btn" onclick="" id="del_comma">Comma</button>
+    <button class="btn" onclick="" id="del_tab">Tab</button>
+    <button class="btn" onclick="" id="del_pipe">Pipe</button>
+    <button class="btn" onclick="" id="del_other">Other</button>
+</div>
+
+</dev>
+<dev class="col-md-2">
+<input type="text" class="form-control" id="del_input">
+</dev>
+    <!--dev class="col-md-1"><button class="btn btn-primary" type="button">Save</button></dev-->
+       </dev>
+</div>
+
+
+</div>
     </div>
+<div role="tabpanel" class="tab-pane" id="saved_patterns">
+<div class="row">
+<div class="col-md-2" style="text-align:right">RegEx Patterns</div>
+<div class="col-md-4" style="text-align:center">
+<table class="table table-bordered" id="saved-regex-table">
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Value</th>
+  </tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+</div>
+<!--div class="row">
+<div class="col-md-2" style="text-align:right">Delimiter Patterns</div>
+<div class="col-md-4" style="text-align:center" id="delmiter_patterns">
+<table class="table table-bordered">
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Value</th>
+  </tr>
+</thead>
+</table>
+</div>
+</div-->
+</div>
+</div>
+
+<div class="btn-group-actions" class="col-md-1" align="right">
+    <button class="btn btn-main" id="verifyConf">Next</button>
+</div>
 
 </div>
 
 <br class="spacer"/>
 
 <div class="row" id="ccc">
-    <div class="col-md-2"  id="ResultArea1" style="margin-left: -12.5%"></div>
-    <div class="col-md-9 table-responsive"  id="ResultArea" style="margin-left: 9.5%">
-        <table id="LogEntries">
-            <thead>
-                <tr>
-                    <th>Entry</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-    <div class="col-md-1"  id="ResultArea2"></div>
+<div class="col-md-2"  id="ResultArea1" style="margin-left: -12.5%"></div>
+<div class="col-md-9 table-responsive"  id="ResultArea" style="margin-left: 9.5%">
+    <table id="LogEntries">
+        <thead>
+            <tr>
+                <th>Entry</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div class="col-md-1"  id="ResultArea2"></div>
 </div>
 
 
-    <div id="myModall" class="modal fade">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">RegEx Name:</h4>
-                </div>
-                <div class="modal-body">
-                    <form role="form">
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="regEx-name">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="saveRegB">Save</button>
-                </div>
+<div id="myModall" class="modal fade">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">RegEx Name:</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="regEx-name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveRegB">Save</button>
             </div>
         </div>
-        </div>
+    </div>
+    </div>
 
 <script src="../../js/mustache.min.js"></script>
 <script src="../../js/jquery-1.11.1.min.js"></script>
@@ -215,102 +215,104 @@
 <script src="../../js/highlightRegex.js"></script>
 <script src="../../js/das-regex-save.js"></script>
 <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+<script src="../../js/highlightTest.js"></script>
 <script type="text/javascript">
 var baseUrl = getBaseUrl(window.location.href);
 var a = {};
-var del;
+var del='';
 var logEntryTable;
 var other_del=false;
 $(document).ready(function () {
-        logEntryTable = $('#LogEntries').DataTable();
-        $('#bbb').hide();
-        searchActivities(10);
-        $('#regggg').hide();
-        $('#dellll').hide();
+    logEntryTable = $('#LogEntries').DataTable();
+    $('#bbb').hide();
+    searchActivities(10);
+    $('#regggg').hide();
+    $('#dellll').hide();
 });
 
 
-        function CreateHtmlTable(logs) {
+    function CreateHtmlTable(logs) {
 
-            var datatableFormat = [];
-            var log;
-            for(var index=0; index< logs.length; index++){
-                log = logs[index];
-                datatableFormat.push([log]);
-            }
-
-            logEntryTable.destroy();
-            logEntryTable = $('#LogEntries').DataTable({data:datatableFormat});
-
-              $('#LogEntries tbody').on( 'click', 'tr', function () {
-                  $("#extract-btn").attr('style', 'margin-left: 50.5%');
-                  if ( $(this).hasClass('selected') ) {
-                        $(this).removeClass('selected');
-                    }
-                    else {
-                        logEntryTable.$('tr.selected').removeClass('selected');
-                        $(this).addClass('selected');
-                    }
-
-                    $('#selected-log-entry').html(logEntryTable.row('.selected').data()[0]);
-              });
+        var datatableFormat = [];
+        var log;
+        for(var index=0; index< logs.length; index++){
+            log = logs[index];
+            datatableFormat.push([log]);
         }
+
+        logEntryTable.destroy();
+        logEntryTable = $('#LogEntries').DataTable({data:datatableFormat});
+
+          $('#LogEntries tbody').on( 'click', 'tr', function () {
+              $("#extract-btn").attr('style', 'margin-left: 50.5%');
+              if ( $(this).hasClass('selected') ) {
+                    $(this).removeClass('selected');
+                }
+                else {
+                    logEntryTable.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+
+                $('#selected-log-entry').html(logEntryTable.row('.selected').data()[0]);
+          });
+    }
 
 function searchActivities(lines) {
-    var urlParams = splitUrl();
-    jQuery.ajax({
-        type: "GET",
-                url: baseUrl + "/api/files/getLogs?noOfLines=" + lines +
-                "&logStream=" + urlParams["logStream"] + "&fileName=" + urlParams["fileName"],
-                async: false,
-                success: function(res) {
-                    CreateHtmlTable(res);
-                },
-                error: function(res) {
-                    alert(res.responseText);
-                }
-            });
-        }
+var urlParams = splitUrl();
+jQuery.ajax({
+    type: "GET",
+            url: baseUrl + "/api/files/getLogs?noOfLines=" + lines +
+            "&logStream=" + urlParams["logStream"] + "&fileName=" + urlParams["fileName"],
+            async: false,
+            success: function(res) {
+                CreateHtmlTable(res);
+            },
+            error: function(res) {
+                alert(res.responseText);
+            }
+        });
+    }
 
 $(function(){
-    $("#verifyConf").click(function(){
-        if(other_del){
-    var del=document.getElementById("del_input").value;
-    document.getElementById('del_input').value='';
-    }
-    var urlParams = splitUrl();
-    var regPatterns= JSON.stringify(a);
-        window.location = baseUrl + '/loganalyzer/site/filter/verify.jag?'+
-            "logStream=" + urlParams["logStream"] + "&fileName=" + encodeURIComponent( urlParams["fileName"] )+ "&regPatterns=" + encodeURIComponent(regPatterns) + "&delimeter=" + encodeURIComponent(del);
-        });
+$("#verifyConf").click(function(){
+    if(other_del){
+        del=document.getElementById("del_input").value;
+        document.getElementById('del_input').value='';
+}
+var urlParams = splitUrl();
+var regPatterns= JSON.stringify(a);
+    window.location = baseUrl + '/loganalyzer/site/filter/verify.jag?'+
+        "logStream=" + urlParams["logStream"] + "&fileName=" + encodeURIComponent( urlParams["fileName"] )+ "&regPatterns=" +
+        encodeURIComponent(regPatterns) + "&delimeter=" + encodeURIComponent(del);
+    });
 });
 
 
 function splitUrl() {
-    var urlParams;
-    var match,
-        pl     = /\+/g,  // Regex for replacing addition symbol with a space
-        search = /([^&=]+)=?([^&]*)/g,
-        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-        query  = window.location.search.substring(1);
-    urlParams = {};
-    while (match = search.exec(query))
-       urlParams[decode(match[1])] = decode(match[2]);
-    return urlParams;
+var urlParams;
+var match,
+    pl     = /\+/g,  // Regex for replacing addition symbol with a space
+    search = /([^&=]+)=?([^&]*)/g,
+    decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+    query  = window.location.search.substring(1);
+urlParams = {};
+while (match = search.exec(query))
+   urlParams[decode(match[1])] = decode(match[2]);
+return urlParams;
 }
 
 function updateLine(value){
-  $("#SelectedLog").html(value);
+$("#SelectedLog").html(value);
 }
 
 $(document).on("click", ".line", function(e){
-    $("#SelectedLog").html($(this).html())
+$("#SelectedLog").html($(this).html())
 });
 
 function switchss(){
-        $('#aaa').hide();
-        $('#ccc').hide();
-        $('#bbb').show();
+    $('#aaa').hide();
+    $('#ccc').hide();
+    $('#bbb').show();
 }
 
 function regexDev(){
@@ -325,61 +327,133 @@ $('#del_input').hide();
 }
 
 $(function(){
-    $("#applyReg").click(function(){
-       $("#").highlightRegex(/[ar]/ig);
-    } );
+$("#applyReg").click(function(){
+   $("#").highlightRegex(/[ar]/ig);
+} );
 });
 
 $(function(){
-    $("#saveReg").click(function(){
+$("#saveReg").click(function(){
 $("#myModall").modal('show');
 
-    } );
+} );
 });
 
 $(function(){
-    $("#saveRegB").click(function(){
-        var regName=document.getElementById("regEx-name");
-        var regVal=document.getElementById("fancy-input");
-        if(regName.value in a){
-            alert("RegEx name already exist");
-            }else{
-                a[regName.value] = regVal.value;
-                document.getElementById('fancy-input').value='';
-                document.getElementById('regEx-name').value='';
-                $("#myModall").modal('hide');
-        }
-    });
+$("#saveRegB").click(function(){
+    var regName=document.getElementById("regEx-name");
+    var regVal=document.getElementById("fancy-input");
+    if(regName.value in a){
+        alert("RegEx name already exist");
+        }else{
+            a[regName.value] = regVal.value;
+            document.getElementById('fancy-input').value='';
+            document.getElementById('regEx-name').value='';
+            $("#myModall").modal('hide');
+    }
 });
-         $('#fancy-input').keyup(function(){
-           var regex;
-           $('#selected-log-entry').highlightRegex();
-           try { regex = new RegExp($(this).val(), 'ig') }
-           catch (e) { $('#fancy-input').addClass('error') }
+});
+     $('#fancy-input').keyup(function(){
+       var regex;
+       $('#selected-log-entry').highlightRegex();
+       try { regex = new RegExp($(this).val(), 'ig') }
+       catch (e) { $('#fancy-input').addClass('error') }
 
-           if (typeof regex !== 'undefined') {
-             $(this).removeClass('error');
-             if ($(this).val() != '')
-               $('#selected-log-entry').highlightRegex(regex);
-           }
-         });
+       if (typeof regex !== 'undefined') {
+         $(this).removeClass('error');
+         if ($(this).val() != '')
+           $('#selected-log-entry').highlightRegex(regex);
+       }
+     });
 
-    $('#del_space').click(function(){
-        del="space";
-    });
-    $('#del_comma').click(function(){
-        del="comma";
-    });
-    $('#del_pipe').click(function(){
-        del="pipe";
-    });
-    $('#del_tab').click(function(){
-        del="tab";
-    });
-    $('#del_other').click(function(){
-        other_del=true;
-        $('#del_input').show();
-    });
+$('#del_space').click(function(){
+    del="space";
+    $('#del_input').hide();
+    var str = document.getElementById('selected-log-entry').innerHTML;
+    var res = str.split(/\s+/);
+    if(res.length>1){
+        for (var i = 0; i < res.length; i++) {
+            TestTextHighlighting(res[i]);
+        }
+    }
+
+});
+$('#del_comma').click(function(){
+    del="comma";
+    $('#del_input').hide();
+    var str = document.getElementById('selected-log-entry').innerHTML;
+    var res = str.split(",");
+    if(res.length>1){
+        for (var i = 0; i < res.length; i++) {
+            TestTextHighlighting(res[i]);
+        }
+    }
+});
+$('#del_pipe').click(function(){
+    del="pipe";
+    $('#del_input').hide();
+    var str = document.getElementById('selected-log-entry').innerHTML;
+    var res = str.split("|");
+    if(res.length>1){
+        for (var i = 0; i < res.length; i++) {
+            TestTextHighlighting(res[i]);
+        }
+    }
+});
+$('#del_tab').click(function(){
+    del="tab";
+    $('#del_input').hide();
+    var str = document.getElementById('selected-log-entry').innerHTML;
+    var res = str.split('\t');
+    if(res.length>1){
+        for (var i = 0; i < res.length; i++) {
+            TestTextHighlighting(res[i]);
+        }
+    }
+});
+$('#del_other').click(function(){
+    other_del=true;
+    $('#del_input').show();
+    var str = document.getElementById('selected-log-entry').innerHTML;
+    var res = str.split('\t');
+    if(res.length>1){
+        for (var i = 0; i < res.length; i++) {
+            TestTextHighlighting(res[i]);
+        }
+    }
+});
+
+function TestTextHighlighting(highlightText)
+{
+var container = document.getElementById('selected-log-entry');
+InstantSearch.highlight(container, highlightText);
+}
+
+$('#del_input').keyup(function(){
+    var str = document.getElementById('selected-log-entry').innerHTML;
+    if($(this).val() != ""){
+    var res = str.split($(this).val());
+        if(res.length>1){
+            for (var i = 0; i < res.length; i++) {
+                TestTextHighlighting(res[i]);
+            }
+        }
+    }
+});
+
+/*    function highlight(text)
+{
+var inputText = document.getElementById("selected-log-entry");
+    var innerHTML = inputText.innerHTML;
+    var index = innerHTML.indexOf(text);
+if ( index >= 0 )
+{
+    innerHTML = innerHTML.substring(0,index) + "<span class='highlight'>" + innerHTML.substring(index,index+text.length) + "</span>" + innerHTML.substring(index + text.length);
+    inputText.innerHTML = innerHTML;
+}
+
+}*/
+
 
 </script>
 </body>

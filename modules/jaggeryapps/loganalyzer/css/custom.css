@@ -1702,3 +1702,8 @@ fieldset[disabled] .btn-primary.active {
 	background: greenyellow;
 	text-decoration: underline;
 }
+
+.light
+{
+	background-color: yellow;
+}
