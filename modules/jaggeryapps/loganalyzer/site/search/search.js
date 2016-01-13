@@ -192,7 +192,7 @@ function tableToCSV(table, tableElm) {
     var encodedUri = encodeURI(csvContent);
     var link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "my_data.csv");
+    link.setAttribute("download", "search_result.csv");
     link.click();
 }
 
