@@ -97,6 +97,8 @@ $(document).ready(function () {
             var x = window.open();
             x.document.open();
             x.document.location = string;
+        } else if ("csv" == $("#save-options").val()) {
+            tableToCSV($('#results-table').dataTable(), 'table.table');
         }
     });
 
@@ -160,5 +162,37 @@ function getLastMonth(){
 
 function searchActivities(data){
   resultTable.ajax.reload();
+}
+
+function tableToCSV(table, tableElm) {
+    var csv = [];
+
+    // Get header names
+    $(tableElm+' thead').find('th').each(function() {
+        var $th = $(this);
+        var text = $th.text();
+        if(text != "") csv.push(text);
+    });
+
+    // get table data
+    var total = table.fnSettings().fnRecordsTotal();
+    for(i = 0; i < total; i++) {
+        var row = table.fnGetData(i).values['_message'];
+        csv.push(row);
+    }
+
+    var csvContent = "data:text/csv;charset=utf-8,";
+    csv.forEach(function(infoArray, index){
+
+        var dataString = infoArray;
+        csvContent += index < csv.length ? dataString+ "\n" : dataString;
+
+    });
+
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "my_data.csv");
+    link.click();
 }
 
