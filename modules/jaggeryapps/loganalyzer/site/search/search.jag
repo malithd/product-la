@@ -179,6 +179,7 @@
                                 <option disabled="disabled" style="display: none" selected="selected">Download As</option>
                                 <optgroup label="Download As">
                                     <option value="pdf">PDF</option>
+                                    <option value="csv">CSV</option>
                                 </optgroup>
                                 <option value="alert">Alert</option>
                             </select>
