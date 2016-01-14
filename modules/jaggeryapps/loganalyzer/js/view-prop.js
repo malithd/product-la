@@ -13,7 +13,9 @@ function genTable(a) {
                 }
                 break;
             case 'regPatterns':
-                $('#ttt > tbody:last-child').append('<tr><th width="10%" id="ttt">RegEx Patterns:</th><td id="ttt">' + a[key] + '</td></tr>');
+                if( jQuery.isEmptyObject(a[key])) {
+                    $('#ttt > tbody:last-child').append('<tr><th width="10%" id="ttt">RegEx Patterns:</th><td id="ttt">' + a[key] + '</td></tr>');
+                }
                 break;
         }
     }
