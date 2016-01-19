@@ -142,8 +142,9 @@ public class LogFileProcessor {
         logEvent.put("@logstream", streamId);
         //set @filename
         logEvent.put("@filename", logFileConf.getFileName());
+        //set log message
+        logEvent.put("message", logLine.trim());
         return logEvent;
     }
-
 
 }

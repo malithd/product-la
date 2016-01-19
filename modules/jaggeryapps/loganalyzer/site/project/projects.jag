@@ -317,7 +317,7 @@
             var projectName = $(this).data('projectname');
             var datasetId = $(this).data('datasetid');
             
-            window.location.href = '../analysis/view-sample.jag?analysisId=' + analysisId + '&analysisName=' + analysisName + '&projectName=' + projectName;
+            window.location.href = '../analysis/view-analysis.jag?analysisId=' + analysisId + '&analysisName=' + analysisName + '&projectName=' + projectName;
         });        
 
         // redirects to analysis page with built models under that analysis
@@ -329,7 +329,7 @@
             var projectName = $(this).data('projectname');
             var datasetId = $(this).data('datasetid');
             
-            window.location.href = '../analysis/sample.jag?analysisId=' + analysisId + '&analysisName=' + analysisName + '&projectName=' + projectName + '&datasetId=' + datasetId;
+            window.location.href = '../analysis/analysis.jag?analysisId=' + analysisId + '&analysisName=' + analysisName + '&projectName=' + projectName + '&datasetId=' + datasetId;
         });                
 
         // compares models

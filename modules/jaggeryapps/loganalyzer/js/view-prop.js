@@ -13,7 +13,8 @@ function genTable(a) {
                 }
                 break;
             case 'regPatterns':
-                if( jQuery.isEmptyObject(a[key])) {
+                regPatterns= a[key];
+                if(regPatterns.length>2) {
                     $('#ttt > tbody:last-child').append('<tr><th width="10%" id="ttt">RegEx Patterns:</th><td id="ttt">' + a[key] + '</td></tr>');
                 }
                 break;
