@@ -1707,3 +1707,16 @@ fieldset[disabled] .btn-primary.active {
 {
 	background-color: yellow;
 }
+
+* {
+.border-radius(0) !important;
+}
+
+#field {
+	margin-bottom:20px;
+}
+
+#summery-table {
+border: none;
+}
+

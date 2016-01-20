@@ -1,5 +1,5 @@
 var baseUrl = getBaseUrl(window.location.href);
-var a = {};
+var regExValues = {};
 var del = '';
 var logEntryTable;
 var other_del = false;
@@ -53,18 +53,26 @@ function searchActivities(lines) {
 
 $(function () {
     $("#verifyConf").click(function () {
+        var urlParams = splitUrl();
+        var regPatterns = JSON.stringify(regExValues);
+        window.location = baseUrl + '/loganalyzer/site/data/verify.jag?' +
+        "logStream=" + urlParams["logStream"] + "&fileName=" + encodeURIComponent(urlParams["fileName"]) + "&regPatterns=" +
+        encodeURIComponent(regPatterns);
+    });
+});
+
+
+$(function () {
+    $("#verifyDelConf").click(function () {
         if (other_del) {
             del = document.getElementById("del_input").value;
             document.getElementById('del_input').value = '';
         }
         var urlParams = splitUrl();
-        var regPatterns = JSON.stringify(a);
         window.location = baseUrl + '/loganalyzer/site/data/verify.jag?' +
-        "logStream=" + urlParams["logStream"] + "&fileName=" + encodeURIComponent(urlParams["fileName"]) + "&regPatterns=" +
-        encodeURIComponent(regPatterns) + "&delimeter=" + encodeURIComponent(del);
+        "logStream=" + urlParams["logStream"] + "&fileName=" + encodeURIComponent(urlParams["fileName"]) + "&delimeter=" + encodeURIComponent(del);
     });
 });
-
 
 function splitUrl() {
     var urlParams;
@@ -98,14 +106,18 @@ function extractView() {
 }
 
 function regexDev() {
+    $('#extract_panel').hide();
     $('#delimeter_panel').hide();
     $('#regEx_panel').show();
+    $('#verify-reg-button').hide();
 }
 
 function delDev() {
+    $('#extract_panel').hide();
     $('#regEx_panel').hide();
     $('#delimeter_panel').show();
     $('#del_input').hide();
+    $('#verify-button').hide();
 }
 
 $(function () {
@@ -116,7 +128,7 @@ $(function () {
 
 $(function () {
     $("#saveReg").click(function () {
-        $("#myModall").modal('show');
+        $("#reg-input-dialog").modal('show');
 
     });
 });
@@ -125,18 +137,20 @@ $(function () {
     $("#saveRegB").click(function () {
         var regName = document.getElementById("regEx_name");
         var regVal = document.getElementById("regEx_input");
-        if (regName.value in a) {
+        if (regName.value in regExValues) {
             alert("RegEx name already exist");
         } else {
-            a[regName.value] = regVal.value;
+            regExValues[regName.value] = regVal.value;
             document.getElementById('regEx_input').value = '';
             document.getElementById('regEx_name').value = '';
-            $("#myModall").modal('hide');
+            $("#reg-input-dialog").modal('hide');
         }
     });
 
 });
+
 $('#regEx_input').keyup(function () {
+    $('#verify-reg-button').show();
     $('#selected-log-entry').html(selectedLogTemp);
     var regex;
     try {
@@ -156,6 +170,7 @@ $('#del_space').click(function () {
     $('#selected-log-entry').html(selectedLogTemp);
     del = "space";
     $('#del_input').hide();
+    $('#verify-button').show();
     var str = document.getElementById('selected-log-entry').innerHTML;
     var res = str.split(/\s+/);
     if (res.length > 1) {
@@ -170,6 +185,7 @@ $('#del_comma').click(function () {
     $('#selected-log-entry').html(selectedLogTemp);
     del = "comma";
     $('#del_input').hide();
+    $('#verify-button').show();
     var str = document.getElementById('selected-log-entry').innerHTML;
     var res = str.split(",");
     if (res.length > 1) {
@@ -183,6 +199,7 @@ $('#del_pipe').click(function () {
     $('#selected-log-entry').html(selectedLogTemp);
     del = "pipe";
     $('#del_input').hide();
+    $('#verify-button').show();
     var str = document.getElementById('selected-log-entry').innerHTML;
     var res = str.split("|");
     if (res.length > 1) {
@@ -196,6 +213,7 @@ $('#del_tab').click(function () {
     $('#selected-log-entry').html(selectedLogTemp);
     del = "tab";
     $('#del_input').hide();
+    $('#verify-button').show();
     var str = document.getElementById('selected-log-entry').innerHTML;
     var res = str.split('\t');
     if (res.length > 1) {
@@ -212,6 +230,7 @@ $('#del_other').click(function () {
 });
 
 $('#del_input').keyup(function () {
+    $('#verify-button').show();
     $('#selected-log-entry').html(selectedLogTemp);
     var str = document.getElementById('selected-log-entry').innerHTML;
     if ($(this).val() != "") {

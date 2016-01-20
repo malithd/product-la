@@ -1,24 +1,24 @@
-function genTable(a) {
-    for (var key in a) {
+function genTable(values) {
+    for (var key in values) {
         switch (key) {
             case 'logStream':
-                $('#ttt > tbody:last-child').append('<tr><th width="10%" id="ttt">Log Stream:</th><td id="ttt">' + a[key] + '</td></tr>');
+                $('#summery-table > tbody:last-child').append('<tr><th width="10%" id="summery-table">Log Stream:</th><td id="summery-table">' + values[key] + '</td></tr>');
                 break;
             case 'fileName':
-                $('#ttt > tbody:last-child').append('<tr><th width="10%" id="ttt">File Name:</th><td id="ttt">' + a[key] + '</td></tr>');
+                $('#summery-table > tbody:last-child').append('<tr><th width="10%" id="summery-table">File Name:</th><td id="summery-table">' + values[key] + '</td></tr>');
                 break;
             case 'delimeter':
-                if( a[key]!='') {
-                    $('#ttt > tbody:last-child').append('<tr><th width="10%" id="ttt">Delimeter:</th><td id="ttt">' + a[key] + '</td></tr>');
+                if( values[key]!='') {
+                    $('#summery-table > tbody:last-child').append('<tr><th width="10%" id="summery-table">Delimeter:</th><td id="summery-table">' + values[key] + '</td></tr>');
                 }
                 break;
             case 'regPatterns':
-                regPatterns= a[key];
+                regPatterns= values[key];
                 if(regPatterns.length>2) {
-                    $('#ttt > tbody:last-child').append('<tr><th width="10%" id="ttt">RegEx Patterns:</th><td id="ttt">' + a[key] + '</td></tr>');
+                    $('#summery-table > tbody:last-child').append('<tr><th width="10%" id="summery-table">RegEx Patterns:</th><td id="summery-table">' + values[key] + '</td></tr>');
                 }
                 break;
         }
     }
-    $('#ttt > tbody:last-child').append('<tr><td colspan="2" id="ttt"><button style="margin-left: 35%;" class="btn btn-main" id="searchLog">Search</button></td></tr>');
+    $('#summery-table > tbody:last-child').append('<tr><td colspan="2" id="summery-table"><button style="margin-left: 35%;" class="btn btn-main" id="searchLog">Search</button></td></tr>');
 }

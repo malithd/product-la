@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/html">
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,7 +66,7 @@ include("../header/sourceconfiguratoinnav.jag");
         </select>
     </div>
 </div>
-<div class="row" id="extract_panel"
+<div class="row" id="regEx_panel"
      style="padding-top: 5%; padding-left: 14.5%; padding-right: 12.5%; display: block;">
 
     <!-- Nav tabs -->
@@ -85,14 +85,14 @@ include("../header/sourceconfiguratoinnav.jag");
     <!-- Tab panes -->
     <div class="tab-content" style="border-style: solid; border-width: 0px 1px 1px 1px; border-color: #000">
         <div role="tabpanel" class="tab-pane active" id="available_atterns">
-            <div class="row">
+            <div class="row" style="margin-bottom: 3%">
                 <div class="col-md-1" style="text-align:center">Regex</div>
                 <div class="col-md-1">
                     <button class="btn btn-primary" type="button" onclick="regexDev()">
                         <img src="../../images/ico-function.png"/>
                     </button>
                 </div>
-                <div class="col-md-6" id="regEx_panel">
+                <div class="col-md-6">
                     <dev class="row">
                         <dev class="col-md-10">
                             <input type="text" class="form-control" id="regEx_input" placeholder="regex...">
@@ -103,36 +103,9 @@ include("../header/sourceconfiguratoinnav.jag");
                     </dev>
                 </div>
             </div>
-            <br class="spacer"/>
-            <div class="row">
-                <div class="col-md-1" style="text-align:center">Delimiter</div>
-                <div class="col-md-1">
-                    <button class="btn btn-primary" style="margin-bottom: 20%" type="button" onclick="delDev()">
-                        <img src="../../images/ico-delimeter.png"/>
-                    </button>
-                </div>
-                <div class="col-md-6" id="delimeter_panel">
-                    <dev class="row">
-                        <dev class="col-md-6">
-
-                            <div class="btn-group">
-                                <button class="btn" onclick="" id="del_space">Space</button>
-                                <button class="btn" onclick="" id="del_comma">Comma</button>
-                                <button class="btn" onclick="" id="del_tab">Tab</button>
-                                <button class="btn" onclick="" id="del_pipe">Pipe</button>
-                                <button class="btn" onclick="" id="del_other">Other</button>
-                            </div>
-
-                        </dev>
-                        <dev class="col-md-2">
-                            <input type="text" class="form-control" id="del_input">
-                        </dev>
-                    </dev>
-                </div>
-            </div>
         </div>
         <div role="tabpanel" class="tab-pane" id="saved_patterns">
-            <div class="row">
+            <div class="row" style="margin-bottom: 1%">
                 <div class="col-md-2" style="text-align:right">RegEx Patterns</div>
                 <div class="col-md-4" style="text-align:center">
                     <table class="table table-bordered" id="saved-regex-table">
@@ -149,14 +122,14 @@ include("../header/sourceconfiguratoinnav.jag");
             </div>
         </div>
     </div>
-    <div class="btn-group-actions" class="col-md-1" align="right">
+    <div class="btn-group-actions" class="col-md-1" align="right" id="verify-reg-button">
         <button class="btn btn-main" id="verifyConf">Next</button>
     </div>
 </div>
 <br class="spacer"/>
 <div class="row" id="log_entry_panel">
-    <div class="col-md-2" id="ResultArea1" style="margin-left: -12.5%"></div>
-    <div class="col-md-9 table-responsive" id="ResultArea" style="margin-left: 9.5%">
+    <div class="col-md-2" style="margin-left: -12.5%"></div>
+    <div class="col-md-9 table-responsive" style="margin-left: 9.5%">
         <table id="LogEntries">
             <thead>
                 <tr>
@@ -165,9 +138,8 @@ include("../header/sourceconfiguratoinnav.jag");
             </thead>
         </table>
     </div>
-    <div class="col-md-1" id="ResultArea2"></div>
 </div>
-<div id="myModall" class="modal fade">
+<div id="reg-input-dialog" class="modal fade">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
@@ -188,6 +160,56 @@ include("../header/sourceconfiguratoinnav.jag");
         </div>
     </div>
 </div>
+
+<div id="extract_panel"
+     style="padding-top: 5%; padding-left: 15%; padding-right: 0%; display: block;">
+
+    <div class="col-md-1" style="margin-left: 23%">
+        <label class="input-label" style="margin-left: 60%">RegEx</label>
+        <button class="btn btn-primary" type="button" style="height:200px; width:200px" onclick="regexDev()">
+            <img src="../../images/ico-function.png"/>
+        </button>
+    </div
+
+</div>
+<div class="col-md-1" style="margin-left: 16%">
+    <label class="input-label" style="margin-left: 60%">Delimiter</label>
+    <button class="btn btn-primary" style="height:200px; width:200px" type="button" onclick="delDev()">
+        <img src="../../images/ico-delimeter.png"/>
+    </button>
+</div>
+</div>
+<div class="row" id="delimeter_panel"
+ style="padding-top: 5%; padding-left: 14.5%; padding-right: 12.5%; display: block;">
+<div class="col-md-1" style="text-align:center">Delimiter</div>
+<div class="col-md-1">
+    <button class="btn btn-primary" style="margin-bottom: 20%" type="button" onclick="delDev()">
+        <img src="../../images/ico-delimeter.png"/>
+    </button>
+</div>
+<div class="col-md-6">
+    <dev class="row">
+        <dev class="col-md-6">
+
+            <div class="btn-group">
+                <button class="btn" onclick="" id="del_space">Space</button>
+                <button class="btn" onclick="" id="del_comma">Comma</button>
+                <button class="btn" onclick="" id="del_tab">Tab</button>
+                <button class="btn" onclick="" id="del_pipe">Pipe</button>
+                <button class="btn" onclick="" id="del_other">Other</button>
+            </div>
+
+        </dev>
+        <dev class="col-md-2">
+            <input type="text" class="form-control" id="del_input">
+        </dev>
+    </dev>
+</div>
+<div class="btn-group-actions" class="col-md-1" style="margin-top: 10%; padding-left: 94.6%" id="verify-button">
+    <button class="btn btn-main" id="verifyDelConf">Next</button>
+</div>
+</div>
+
 <script src="../../js/mustache.min.js"></script>
 <script src="../../js/jquery-1.11.1.min.js"></script>
 <script src="../../js/bootstrap.min.js"></script>
