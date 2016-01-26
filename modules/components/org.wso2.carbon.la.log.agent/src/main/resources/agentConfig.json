@@ -12,7 +12,7 @@
   },
   "groups": [
     {
-      "name": "httpd-group1",
+      "name": "org.wso2.sample.logs.group.1",
       "version": "1.0.0",
       "config": {
         "input": {

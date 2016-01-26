@@ -26,7 +26,10 @@ $(document).ready(function () {
 $(function () {
     $("#searchLog").click(function () {
         var regs = urlParams["regPatterns"];
-        var regjs = JSON.parse(regs);
+        var regjs;
+        if(typeof regs != 'undefined'){
+            regjs = JSON.parse(regs);
+        }
         var lgStream = urlParams["logStream"];
         var fileName = urlParams["fileName"];
         var delimeter = urlParams["delimeter"];

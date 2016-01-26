@@ -1,5 +1,5 @@
 {
-  "name": "org.wso2.sample.logs",
+  "name": "org.wso2.sample.logs.group.1",
   "version": "1.0.0",
   "nickName": "Log_Stream",
   "description": "Sample of logs",
@@ -10,10 +10,6 @@
     },
     {
       "name": "logMessage",
-      "type": "STRING"
-    },
-    {
-      "name": "logGroup",
       "type": "STRING"
     }
   ]

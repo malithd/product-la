@@ -133,9 +133,9 @@ public class LogFileProcessor {
                 streamId = streamId + "'" + subStream.trim() + "'" + ",";
         }
         streamId = streamId.substring(0, (streamId.length() - 1)) + "]";
-        if(!logFileConf.getDelimiter().equals("undefined")){
+        if(logFileConf.getDelimiter()!=null){
             logEvent = LogPatternExtractor.processDelimiter(logLine, logFileConf.getDelimiter());
-        }else if(logFileConf.getRegExPatterns().size()>0){
+        }else if(logFileConf.getRegExPatterns()!=null){
             logEvent = LogPatternExtractor.processRegEx(logLine, logFileConf.getRegExPatterns());
         }
         //set @logstream

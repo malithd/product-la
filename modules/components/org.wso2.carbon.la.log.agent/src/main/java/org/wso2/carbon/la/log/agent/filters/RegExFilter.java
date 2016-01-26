@@ -19,7 +19,9 @@ public class RegExFilter extends AbstractFilter {
         for (Map.Entry<String, String> match : getMatches().entrySet())
         {
             String value = processRegEx(logLine, match.getValue());
-            matchedValues.put(match.getKey(),value);
+            if(value!=null) {
+                matchedValues.put(match.getKey(), value);
+            }
         }
     }
 

@@ -27,8 +27,7 @@ import org.wso2.carbon.la.log.agent.util.PublisherUtil;
  * Reads log line by line
  */
 public class LogReader {
-    private static final String LOG_STREAM = "org.wso2.sample.logs";
-    private static final String VERSION = "1.0.0";
+
     private static final Logger logger = Logger.getLogger("LogReader");
     private final File file;
     private long offset = 0;
@@ -39,6 +38,7 @@ public class LogReader {
     private boolean readFromTop = true;
     private LogPublisher logPublisher;
     private LogGroup logGroup;
+    private String streamId;
 
     /**
      * Allows output of a file that is being updated by another process.
@@ -48,6 +48,7 @@ public class LogReader {
      */
     public LogReader(LogPublisher logPublisher, LogGroup logGroup) throws FileNotFoundException {
         this.file = new File(logGroup.getLogInput().getFilePath());
+        setStreamId(logGroup);
         this.logGroup=logGroup;
         this.logPublisher=logPublisher;
     }
@@ -76,6 +77,14 @@ public class LogReader {
             }
             watchService = null;
         }
+    }
+
+    public String getStreamId() {
+        return streamId;
+    }
+
+    public void setStreamId(LogGroup logGroup) {
+        this.streamId =DataBridgeCommonsUtils.generateStreamId(logGroup.getGroupName(),logGroup.getVersion()); ;
     }
 
     private synchronized void updateOffset() {
@@ -140,7 +149,6 @@ public class LogReader {
             while (!hasEnded()) {
                 while (linesAvailable()) {
                     //System.out.println(getLineNumber() + ": " + getLine());
-                    String streamId = DataBridgeCommonsUtils.generateStreamId(LOG_STREAM, VERSION);
                     try {
                         String logLine = getLine();
                         if (logLine != null && logLine != "") {

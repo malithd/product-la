@@ -15,8 +15,8 @@ public class AgentFactory {
 
     private AgentConfig agentConfig;
 
-    private void init(){
-        agentConfig = new AgentConfig();
+    public void init(AgentConfig agentConfig){
+        this.agentConfig = agentConfig;
         logPublisher = new LogPublisher(agentConfig.getLogOutput().getServerConfig());
         startLogPublishers();
     }
@@ -33,5 +33,4 @@ public class AgentFactory {
             }
         }
     }
-
 }
