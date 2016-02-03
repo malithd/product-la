@@ -27,10 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -113,9 +110,9 @@ public class LogPatternExtractor {
             System.out.println(result.get());
     }
 
-    public static Map<String,String> processRegEx(String logLine, Map<String, String> regExs) {
+    public static Map<String,Object> processRegEx(String logLine, Map<String, String> regExs) {
         String value = null;
-        Map<String,String> logEvent = new HashMap<>();
+        Map<String,Object> logEvent = new HashMap<>();
         for (Map.Entry<String, String> regEx : regExs.entrySet())
         {
             Pattern p = Pattern.compile(".*?" + regEx.getValue(),Pattern.CASE_INSENSITIVE | Pattern.DOTALL); // apply "/" "/" ???
@@ -133,10 +130,9 @@ public class LogPatternExtractor {
         return logEvent;
     }
 
-    public static Map<String,String> processDelimiter(String logLine, String delimiter) {
-        String value = null;
-        String delemiterConf=null;
-        Map<String,String> logEvent = new HashMap<>();
+    public static Map<String,Object> processDelimiter(String logLine, String delimiter) {
+        String delemiterConf;
+        Map<String,Object> logEvent = new HashMap<>();
 
         switch (delimiter) {
             case "space":  delemiterConf = LAConstants.DELIMITER_SPACE;
@@ -158,7 +154,8 @@ public class LogPatternExtractor {
             int fieldIndex = 0;
             while(scan.hasNext()){
                 String fieldName = "field" + fieldIndex;
-                logEvent.put(fieldName,scan.next());
+                String value = scan.next();
+                logEvent.put(fieldName, value);
                 fieldIndex++;
             }
             // closing the scanner stream
