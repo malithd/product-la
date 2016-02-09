@@ -175,6 +175,9 @@
                             <div id="search-btn-area" class="btn-group-actions">
                                 <button class="btn btn-main" id="search-btn" onclick="searchActivities()">Search</button>
                             </div>
+                            <div id="visualize-btn-area" class="btn-group-actions">
+                                <button class="btn btn-main" id="visualize-btn" onclick="openDashboard()">Visualize</button>
+                            </div>
                             <select id="save-options" class="drop-down-fixed">
                                 <option disabled="disabled" style="display: none" selected="selected">Download As</option>
                                 <optgroup label="Download As">
@@ -198,6 +201,7 @@
                 </div>
 
 		    </div>
+
                 <!-- /content -->
             </div>
         </div>
@@ -217,6 +221,7 @@
     <script src="../../js/plugins/jspdf/split_text_to_size.js"></script>
     <script src="../../js/plugins/jspdf/from_html.js"></script>
     <script src="../../js/plugins/jspdf/cell.js"></script>
+    <script src="../../js/visualize.js"></script>
     <script src="search.js"></script>
 </body>
 

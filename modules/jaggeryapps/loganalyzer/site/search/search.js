@@ -1,4 +1,5 @@
 var serverUrl = window.location.origin;
+//var baseUrl = getBaseUrl(window.location.href);
 var resultTable =  $('#results-table').DataTable( {
     "ajax" : {
         "url": serverUrl + "/api/search",
@@ -82,7 +83,7 @@ $(document).ready(function () {
         }
         else {
             // Open this row
-            row.child( format(row.data()) ).show();
+            row.child( format(row.data()) ).show();v
             tr.addClass('shown');
         }
     } );
