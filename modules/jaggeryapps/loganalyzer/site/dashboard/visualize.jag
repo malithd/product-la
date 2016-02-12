@@ -71,9 +71,21 @@
                     <a href="#">Link 3</a>
                 </div>
             </div-->
-            <select id="fieldsName" onchange="selectField2()">
+            <br>
+            <select id="fieldsName" name="Fields" onchange="selectField2()">
 
             </select>
+            <style>
+                select{
+                    width: 200px;
+            }
+            </style>
+            <form action="">
+                <br>
+                Filter: <input type="text" name="filterText" id="ftexte">
+                <input type="button" value="Filter" onclick="filter()">
+            </form>
+            <button type="button" onclick="timeData()">Run!</button>
             <div  id="tab-preview" class="wr-form col-lg-12 col-left">
                 <table id="data-table" class="table table-hover">
                     <thead>
@@ -88,7 +100,13 @@
                    <div class="container-fluid">
 <p id="json_string"></p>
                        <p id="json_string2"></p>
-
+                       <p id="json_string3"></p>
+                       <div class="panel-body">
+                           <div id="timeChart"></div>
+                       </div><br><br>
+                       <div class="panel-body">
+                           <div id="dChart"></div>
+                       </div>
 
 
 </div>
@@ -122,6 +140,10 @@
     <script src="../../js/plugins/jspdf/split_text_to_size.js"></script>
     <script src="../../js/plugins/jspdf/from_html.js"></script>
     <script src="../../js/plugins/jspdf/cell.js"></script>
+    <script src="../../js/d3.min.js"></script>
+    <script src="../../js/vega.js"></script>
+<script src="../../js/VizGrammar.js"></script>
+
 </body>
 
 </html>

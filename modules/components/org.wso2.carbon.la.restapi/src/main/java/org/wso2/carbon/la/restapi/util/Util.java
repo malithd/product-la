@@ -2,6 +2,7 @@ package org.wso2.carbon.la.restapi.util;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.wso2.carbon.analytics.dataservice.commons.AnalyticsDataResponse;
+import org.wso2.carbon.analytics.dataservice.commons.SearchResultEntry;
 import org.wso2.carbon.analytics.dataservice.core.SecureAnalyticsDataService;
 import org.wso2.carbon.analytics.datasource.commons.Record;
 import org.wso2.carbon.analytics.datasource.commons.RecordGroup;
@@ -35,5 +36,13 @@ public class Util {
         recordBean.setTimestamp(record.getTimestamp());
         recordBean.setValues(record.getValues());
         return recordBean;
+    }
+
+    public static List<String> getRecordIds(List<SearchResultEntry> searchResults) {
+        List<String> ids = new ArrayList<>();
+        for (SearchResultEntry searchResult : searchResults) {
+            ids.add(searchResult.getId());
+        }
+        return ids;
     }
 }

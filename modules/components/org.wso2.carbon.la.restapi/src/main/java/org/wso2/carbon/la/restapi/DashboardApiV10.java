@@ -12,6 +12,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.http.HttpHeaders;
 import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
 import org.wso2.carbon.analytics.dataservice.commons.AnalyticsDataResponse;
+import org.wso2.carbon.analytics.dataservice.commons.SearchResultEntry;
 import org.wso2.carbon.analytics.datasource.commons.AnalyticsSchema;
 import org.wso2.carbon.analytics.datasource.commons.ColumnDefinition;
 import org.wso2.carbon.analytics.datasource.commons.Record;
@@ -36,6 +37,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.google.gson.Gson;
@@ -151,7 +154,9 @@ public class DashboardApiV10 {
                     int i=1;
                     for(Map.Entry<String,Integer> entry:counter.entrySet()){
 
-                        recordWriter.write("\""+entry.getKey()+" : "+entry.getValue()+"||%\"");
+                        recordWriter.write("[[\""+entry.getKey()+"\"],[\""+entry.getValue()+"\"]]");
+
+                       // recordWriter.write("\""+entry.getKey()+" : "+entry.getValue()+"||%\"");
                         if(i<counter.size()) {
                             recordWriter.write(",");
                             i++;
@@ -177,6 +182,408 @@ public class DashboardApiV10 {
 
 
     }
+
+    @POST
+    @Path("/filterData")
+    @Produces("application/json")
+    @Consumes("application/json")
+    public StreamingOutput filterData(final QueryBean query) throws AnalyticsException {
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        String username = carbonContext.getUsername();
+        AnalyticsDataAPI analyticsDataAPI;
+        AnalyticsDataResponse analyticsDataResponse;
+        //RecordGroup recordGroup [] ;
+        analyticsDataAPI = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
+        if(query!=null){
+            String q[] = query.getQuery().split(",,");
+            String searchQuery = q[0];
+            final String col = q[1];
+            List<String> column = new ArrayList<>();
+            column.add(col);
+
+            List<SearchResultEntry> searchResults = analyticsDataAPI.search(username,
+                    query.getTableName(), searchQuery,
+                    query.getStart(), query.getCount());
+            List<String> ids = Util.getRecordIds(searchResults);
+            analyticsDataResponse = analyticsDataAPI.get(username,query.getTableName(),1,column,ids);
+            final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse,analyticsDataAPI);
+            return new StreamingOutput() {
+                @Override
+                public void write(OutputStream outputStream)
+                        throws IOException, WebApplicationException {
+                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+                    Map<String, Object> values;
+                    Map<String,Integer> counter = new HashMap<String,Integer>();
+
+                    int count=0;
+                    String val;
+                    recordWriter.write("[");
+                    for (Iterator<Record> iterator : iterators) {
+                        while (iterator.hasNext()) {
+                            RecordBean recordBean = Util.createRecordBean(iterator.next());
+                            values = recordBean.getValues();
+
+                            if(values.get(col)==null) {
+
+                                if (!counter.containsKey("NULLVALUE")) {
+                                    counter.put("NULLVALUE", 1);
+                                } else {
+                                    count = counter.get("NULLVALUE");
+                                    count++;
+                                    counter.put("NULLVALUE", count);
+                                }
+
+                            }
+                            else {
+                                val=values.get(col).toString();
+                                if (!counter.containsKey(val)) {
+                                    counter.put(val, 1);
+                                } else {
+                                    count = counter.get(val);
+                                    count++;
+                                    counter.put(val, count);
+                                }
+                            }
+                            //values.get(query.getQuery());
+
+                            // recordWriter.write(gson.toJson(values.get(query.getQuery())));
+
+                            // recordWriter.write(recordBean.toString());
+                            // if (iterator.hasNext()) {
+                            //recordWriter.write(",");
+                            //}
+                            if (log.isDebugEnabled()) {
+                                log.debug("Retrieved -- Record Id: " + recordBean.getId() + " values :" +
+                                        recordBean.toString());
+                            }
+                        }
+                    }
+                    int i=1;
+                    for(Map.Entry<String,Integer> entry:counter.entrySet()){
+
+                        recordWriter.write("[[\""+entry.getKey()+"\"],[\""+entry.getValue()+"\"]]");
+                        //recordWriter.write("\""+entry.getKey()+" : "+entry.getValue()+"||%\"");
+                        if(i<counter.size()) {
+                            recordWriter.write(",");
+                            i++;
+                        }
+                    }
+                    recordWriter.write("]");
+                    recordWriter.flush();
+                }
+            };
+        }
+        else{
+            String msg = String.format( "Error occurred while retrieving field data");
+            log.error(msg);
+            return new StreamingOutput() {
+                @Override
+                public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+                    recordWriter.write("Error in reading records");
+                    recordWriter.flush();
+                }
+            };
+        }
+    }
+
+    @POST
+    @Path("/timeData")
+    @Produces("application/json")
+    @Consumes("application/json")
+    public StreamingOutput timeData(final QueryBean query) throws AnalyticsException {
+
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        String username = carbonContext.getUsername();
+        AnalyticsDataAPI analyticsDataAPI;
+        AnalyticsDataResponse analyticsDataResponse;
+        //RecordGroup recordGroup [] ;
+        analyticsDataAPI = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
+        if(query!=null){
+            String q[] = query.getQuery().split(",,");
+            String searchQuery = q[0];
+            final String col = q[1];
+            final String timestamp="_timestamp2";
+            List<String> column = new ArrayList<>();
+            column.add(col);
+            column.add(timestamp);
+
+            List<SearchResultEntry> searchResults = analyticsDataAPI.search(username,
+                    query.getTableName(), searchQuery,
+                    query.getStart(), query.getCount());
+            List<String> ids = Util.getRecordIds(searchResults);
+            analyticsDataResponse = analyticsDataAPI.get(username,query.getTableName(),1,column,ids);
+            final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse,analyticsDataAPI);
+            return new StreamingOutput() {
+                @Override
+                public void write(OutputStream outputStream)
+                        throws IOException, WebApplicationException {
+                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+                    Map<String, Object> values;
+
+                    Map<String,Map<String,Integer>> stamper= new HashMap<>();
+                    int count=0;
+                    String val;
+                    String time;
+                    recordWriter.write("[");
+                    for (Iterator<Record> iterator : iterators) {
+                        while (iterator.hasNext()) {
+                            RecordBean recordBean = Util.createRecordBean(iterator.next());
+                            values = recordBean.getValues();
+                            String temp[];
+                            time = values.get(timestamp).toString();
+                            temp = time.split(" ");
+                            time = temp[0];
+                            if (values.get(col) != null){
+                                val = values.get(col).toString();
+
+                            if (!stamper.containsKey(time)) {
+                                Map<String, Integer> counter = new HashMap<String, Integer>();
+                                counter.put(val, 1);
+                                stamper.put(time, counter);
+                            } else {
+                                Map<String, Integer> counter = stamper.get(time);
+                                if(!counter.containsKey(val)){
+                                    counter.put(val,1);
+                                    stamper.put(time,counter);
+                                }
+                                else {
+                                    count = counter.get(val);
+                                    count++;
+                                    counter.put(val, count);
+                                    stamper.put(time, counter);
+                                }
+                            }
+
+                        }
+                            if (log.isDebugEnabled()) {
+                                log.debug("Retrieved -- Record Id: " + recordBean.getId() + " values :" +
+                                        recordBean.toString());
+                            }
+                        }
+                    }
+                    int i=1;
+                    int j=1;
+                    for(Map.Entry<String,Map<String,Integer>> entry:stamper.entrySet()){
+                        Map<String, Integer> counter = entry.getValue();
+                        for(Map.Entry<String,Integer> infom:counter.entrySet()){
+                            recordWriter.write("[[\""+entry.getKey()+"\"],[\""+infom.getKey()+"\"],[\""+infom.getValue()+"\"]]");
+                            if(i<counter.size()) {
+                                recordWriter.write(",");
+                                i++;
+                            }
+                        }
+                        i=1;
+                        if(j<stamper.size()){
+                            recordWriter.write(",");
+                            j++;
+                        }
+                        //recordWriter.write("[[\""+entry.getKey()+"\"],[\""+entry.getValue()+"\"]]");
+                        //recordWriter.write("\""+entry.getKey()+" : "+entry.getValue()+"||%\"");
+
+                    }
+                    recordWriter.write("]");
+                    recordWriter.flush();
+                }
+            };
+        }
+        else{
+            String msg = String.format("Error occurred while retrieving field data");
+            log.error(msg);
+            return new StreamingOutput() {
+                @Override
+                public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+                    recordWriter.write("Error in reading records");
+                    recordWriter.flush();
+                }
+            };
+        }
+
+    }
+
+    @POST
+    @Path("/epochTimeData")
+    @Produces("application/json")
+    @Consumes("application/json")
+    public StreamingOutput EpochtimeData(final QueryBean query) throws AnalyticsException {
+
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        String username = carbonContext.getUsername();
+        AnalyticsDataAPI analyticsDataAPI;
+        AnalyticsDataResponse analyticsDataResponse;
+        //RecordGroup recordGroup [] ;
+        analyticsDataAPI = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
+        if(query!=null){
+            String q[] = query.getQuery().split(",,");
+            String searchQuery = q[0];
+            final String col = q[1];
+            final String timestamp="_timestamp2";
+            final long dayGap =86400000;
+            final String pattern = "yyyy-MM-dd";
+            final SimpleDateFormat format = new SimpleDateFormat(pattern);
+            List<String> column = new ArrayList<>();
+            column.add(col);
+            column.add(timestamp);
+
+            List<SearchResultEntry> searchResults = analyticsDataAPI.search(username,
+                    query.getTableName(), searchQuery,
+                    query.getStart(), query.getCount());
+            List<String> ids = Util.getRecordIds(searchResults);
+            analyticsDataResponse = analyticsDataAPI.get(username,query.getTableName(),1,column,ids);
+            final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse,analyticsDataAPI);
+            return new StreamingOutput() {
+                @Override
+                public void write(OutputStream outputStream)
+                        throws IOException, WebApplicationException {
+                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+                    Map<String, Object> values;
+
+                    Map<Long,Map<String,Integer>> stamper= new HashMap<>();
+                    int count=0;
+                    String val;
+                    String time;
+                    recordWriter.write("[");
+                    for (Iterator<Record> iterator : iterators) {
+                        while (iterator.hasNext()) {
+                            RecordBean recordBean = Util.createRecordBean(iterator.next());
+                            values = recordBean.getValues();
+                            String temp[];
+                            time = values.get(timestamp).toString();
+                            temp = time.split(" ");
+                            time = temp[0];
+
+                            Date date = null;
+                            try {
+                                date = format.parse(time);
+                                //System.out.println(date);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            long epoch = date.getTime();
+                            if (values.get(col) != null){
+                                val = values.get(col).toString();
+
+                                if (!stamper.containsKey(epoch)) {
+                                    Map<String, Integer> counter = new HashMap<String, Integer>();
+                                    counter.put(val, 1);
+                                    stamper.put(epoch, counter);
+                                } else {
+                                    Map<String, Integer> counter = stamper.get(epoch);
+                                    if(!counter.containsKey(val)){
+                                        counter.put(val,1);
+                                        stamper.put(epoch,counter);
+                                    }
+                                    else {
+                                        count = counter.get(val);
+                                        count++;
+                                        counter.put(val, count);
+                                        stamper.put(epoch, counter);
+                                    }
+                                }
+
+                            }
+                            if (log.isDebugEnabled()) {
+                                log.debug("Retrieved -- Record Id: " + recordBean.getId() + " values :" +
+                                        recordBean.toString());
+                            }
+                        }
+                    }
+
+                    Map <Long,Map<String,Integer>> sortedMap = new TreeMap<Long,Map<String,Integer>>(stamper);
+                    int i=1;
+                    int j=1;
+                    long lastDay =0;
+                    long presentDay=0;
+                    long k=1;
+                    for(Map.Entry<Long,Map<String,Integer>> entry:sortedMap.entrySet()) {
+
+                        /*
+                        Map<String, Integer> countero = entry.getValue();
+                        for(Map.Entry<String,Integer> ing:countero.entrySet()){
+                            long temp = entry.getKey()/1000L;
+                            Date expiry = new Date(temp*1000L);
+                            String str_date = format.format(expiry);
+                            recordWriter.write("[\"" + str_date + "\"],[\""+ing.getValue()+"\"]");
+                        }
+                        if (j < sortedMap.size()) {
+                            recordWriter.write(",");
+                            j++;
+                        }
+                        */
+
+
+
+                        if (j > 1) {
+                            presentDay = entry.getKey();
+                            long dif = presentDay - lastDay;
+                            k = dif / dayGap;
+
+                        }
+                        if(k>1){
+                            int m = (int)k;
+                            long newDate = lastDay;
+                            while(k>1){
+                                newDate = newDate+dayGap;
+                                long temp = newDate/1000L;
+                                Date expiry = new Date(temp*1000L);
+                                String str_date = format.format(expiry);
+                                recordWriter.write("[[\"" + str_date + "\"],[\"" + "No Entry" + "\"],[\"" + 0 + "\"]]");
+                                k--;
+                                if(k!=1){
+                                    recordWriter.write(",");
+                                }
+                            }
+                            recordWriter.write(",");
+                            k=1;
+                            lastDay=newDate;
+                        }
+                        if (k == 1){
+                            Map<String, Integer> counter = entry.getValue();
+                        for (Map.Entry<String, Integer> infom : counter.entrySet()) {
+                            long temp = entry.getKey()/1000L;
+                            Date expiry = new Date(temp*1000L);
+                            String str_date = format.format(expiry);
+                            recordWriter.write("[[\"" + str_date + "\"],[\"" + infom.getKey() + "\"],[\"" + infom.getValue() + "\"]]");
+                            if (i < counter.size()) {
+                                recordWriter.write(",");
+                                i++;
+                            }
+                        }
+                        i = 1;
+                        if (j < sortedMap.size()) {
+                            recordWriter.write(",");
+                            j++;
+                        }
+                        lastDay = entry.getKey();
+                        //recordWriter.write("[[\""+entry.getKey()+"\"],[\""+entry.getValue()+"\"]]");
+                        //recordWriter.write("\""+entry.getKey()+" : "+entry.getValue()+"||%\"");
+                    }
+
+                    }
+                    recordWriter.write("]");
+                    recordWriter.flush();
+                }
+            };
+        }
+        else{
+            String msg = String.format("Error occurred while retrieving field data");
+            log.error(msg);
+            return new StreamingOutput() {
+                @Override
+                public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+                    recordWriter.write("Error in reading records");
+                    recordWriter.flush();
+                }
+            };
+        }
+
+    }
+
 }
 
 

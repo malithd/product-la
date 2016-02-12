@@ -1286,6 +1286,10 @@ a.cu-level3-btn:hover {
 	width:250px !important;
 	font-weight:100 !important;
 }
+.select{
+    width:250px !important;
+    font-weight:100 !important;
+}
 
 .select2-container--default .select2-selection--single {
 	border-radius:0px !important;	
