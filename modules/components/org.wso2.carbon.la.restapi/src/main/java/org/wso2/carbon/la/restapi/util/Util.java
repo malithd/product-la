@@ -9,14 +9,19 @@ import org.wso2.carbon.analytics.datasource.commons.RecordGroup;
 import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.la.commons.domain.RecordBean;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by vithulan on 2/3/16.
  */
 public class Util {
+    private static final String day = "day";
+    private static final String week = "week";
+    private static final String month = "month";
+    private static final String year = "year";
+    private static final String auto = "auto";
+
     public static List<Iterator<Record>> getRecordIterators(AnalyticsDataResponse resp,
                                                             SecureAnalyticsDataService analyticsDataService)
             throws AnalyticsException {
@@ -44,5 +49,195 @@ public class Util {
             ids.add(searchResult.getId());
         }
         return ids;
+    }
+
+    public static Map<String,Map<String,Integer>> getGrouping(Map<Long,Map<String,Integer>> allDayMap,String method){
+        Map<String,Map<String,Integer>> grouped = new HashMap<>();
+        switch (method){
+            case auto: grouped=groupbyAuto(allDayMap);
+                        break;
+            case day:grouped=groupbyDay(allDayMap);
+                break;
+            case week:grouped=groupbyWeek(allDayMap);
+                break;
+            case month : grouped = groupbyMonth(allDayMap);
+                break;
+            case year : grouped = groupbyYear(allDayMap);
+                break;
+
+        }
+
+        return grouped;
+    }
+
+    public static Map<String,Map<String,Integer>> groupbyAuto(Map<Long,Map<String,Integer>> allDayMap){
+        Map<String,Map<String,Integer>> grouped = new HashMap<>();
+        int days = allDayMap.size();
+        if(days<=10){
+            grouped = groupbyDay(allDayMap);
+        }
+        else if(days>10 && days<=70){
+            grouped = groupbyWeek(allDayMap);
+        }
+        else if(days>70 && days<=365*3){
+            grouped = groupbyMonth(allDayMap);
+        }
+        else{
+            grouped = groupbyYear(allDayMap);
+        }
+        return grouped;
+    }
+
+    public static Map<String,Map<String,Integer>> groupbyDay(Map<Long,Map<String,Integer>> allDayMap){
+        Map<String,Map<String,Integer>> grouped = new HashMap<>();
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        //long temp = epoch/1000L;
+
+        for(Map.Entry<Long,Map<String,Integer>> entry:allDayMap.entrySet()){
+            Date expiry = new Date(entry.getKey());
+            String str_week = format.format(expiry);
+            grouped.put(str_week,entry.getValue());
+        }
+
+        return grouped;
+    }
+
+    public static Map<String,Map<String,Integer>> groupbyWeek(Map<Long,Map<String,Integer>> allDayMap){
+
+        String pattern = "Y/MM:W";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        //long temp = epoch/1000L;
+        Map<String,List<Map<String,Integer>>> grouped = new HashMap<>();
+        for(Map.Entry<Long,Map<String,Integer>> entry:allDayMap.entrySet()){
+            Date expiry = new Date(entry.getKey());
+            String str_week = format.format(expiry);
+            if(!grouped.containsKey(str_week)){
+                List<Map<String,Integer>> list = new ArrayList<>();
+                list.add(entry.getValue());
+                grouped.put(str_week,list);
+            }
+            else{
+                List<Map<String,Integer>> list = grouped.get(str_week);
+                list.add(entry.getValue());
+                grouped.put(str_week,list);
+            }
+            //grouped.put(str_week,entry.getValue());
+
+        }
+
+        Map<String,Map<String,Integer>> Fgrouped = new HashMap<>();
+        for(Map.Entry<String,List<Map<String,Integer>>> entry:grouped.entrySet()){
+            List<Map<String,Integer>> list = entry.getValue();
+            Map<String,Integer> data = new HashMap<>();
+            //Map<String,Integer> counter = entry.getValue();
+
+            for(Map<String,Integer> dataMap : list){
+                for(Map.Entry<String,Integer> entrr:dataMap.entrySet()){
+                    if(!data.containsKey(entrr.getKey())){
+                        data.put(entrr.getKey(),entrr.getValue());
+                    }
+                    else{
+                        int k = data.get(entrr.getKey());
+                        data.put(entrr.getKey(),k+entrr.getValue());
+                    }
+                }
+            }
+            Fgrouped.put(entry.getKey(),data);
+        }
+
+        return Fgrouped;
+    }
+
+    public static Map<String,Map<String,Integer>> groupbyMonth(Map<Long,Map<String,Integer>> allDayMap){
+
+        String pattern = "Y-MM";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        //long temp = epoch/1000L;
+        Map<String,List<Map<String,Integer>>> grouped = new HashMap<>();
+        for(Map.Entry<Long,Map<String,Integer>> entry:allDayMap.entrySet()){
+            Date expiry = new Date(entry.getKey());
+            String str_week = format.format(expiry);
+            if(!grouped.containsKey(str_week)){
+                List<Map<String,Integer>> list = new ArrayList<>();
+                list.add(entry.getValue());
+                grouped.put(str_week,list);
+            }
+            else{
+                List<Map<String,Integer>> list = grouped.get(str_week);
+                list.add(entry.getValue());
+                grouped.put(str_week,list);
+            }
+            //grouped.put(str_week,entry.getValue());
+
+        }
+
+        Map<String,Map<String,Integer>> Fgrouped = new HashMap<>();
+        for(Map.Entry<String,List<Map<String,Integer>>> entry:grouped.entrySet()){
+            List<Map<String,Integer>> list = entry.getValue();
+            Map<String,Integer> data = new HashMap<>();
+            //Map<String,Integer> counter = entry.getValue();
+
+            for(Map<String,Integer> dataMap : list){
+                for(Map.Entry<String,Integer> entrr:dataMap.entrySet()){
+                    if(!data.containsKey(entrr.getKey())){
+                        data.put(entrr.getKey(),entrr.getValue());
+                    }
+                    else{
+                        int k = data.get(entrr.getKey());
+                        data.put(entrr.getKey(),k+entrr.getValue());
+                    }
+                }
+            }
+            Fgrouped.put(entry.getKey(),data);
+        }
+
+        return Fgrouped;
+    }
+
+    public static Map<String,Map<String,Integer>> groupbyYear(Map<Long,Map<String,Integer>> allDayMap){
+
+        String pattern = "YYYY";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        //long temp = epoch/1000L;
+        Map<String,List<Map<String,Integer>>> grouped = new HashMap<>();
+        for(Map.Entry<Long,Map<String,Integer>> entry:allDayMap.entrySet()){
+            Date expiry = new Date(entry.getKey());
+            String str_week = format.format(expiry);
+            if(!grouped.containsKey(str_week)){
+                List<Map<String,Integer>> list = new ArrayList<>();
+                list.add(entry.getValue());
+                grouped.put(str_week,list);
+            }
+            else{
+                List<Map<String,Integer>> list = grouped.get(str_week);
+                list.add(entry.getValue());
+                grouped.put(str_week,list);
+            }
+            //grouped.put(str_week,entry.getValue());
+
+        }
+
+        Map<String,Map<String,Integer>> Fgrouped = new HashMap<>();
+        for(Map.Entry<String,List<Map<String,Integer>>> entry:grouped.entrySet()){
+            List<Map<String,Integer>> list = entry.getValue();
+            Map<String,Integer> data = new HashMap<>();
+            //Map<String,Integer> counter = entry.getValue();
+
+            for(Map<String,Integer> dataMap : list){
+                for(Map.Entry<String,Integer> entrr:dataMap.entrySet()){
+                    if(!data.containsKey(entrr.getKey())){
+                        data.put(entrr.getKey(),entrr.getValue());
+                    }
+                    else{
+                        int k = data.get(entrr.getKey());
+                        data.put(entrr.getKey(),k+entrr.getValue());
+                    }
+                }
+            }
+            Fgrouped.put(entry.getKey(),data);
+        }
+
+        return Fgrouped;
     }
 }
