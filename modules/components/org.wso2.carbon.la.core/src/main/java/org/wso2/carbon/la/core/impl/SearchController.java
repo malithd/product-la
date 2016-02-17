@@ -24,7 +24,7 @@ public class SearchController {
         if (query != null) {
             query.setQuery(appendTimeRangeToSearchQuery(query.getQuery(), query.getTimeFrom(), query.getTimeTo()));
             List<SearchResultEntry> searchResults = analyticsDataService.search(username,query.getTableName(),
-                    query.getQuery(),query.getStart(), query.getCount());
+                    query.getQuery(),query.getStart(), query.getLength());
             List<String> ids = getRecordIds(searchResults);
             AnalyticsDataResponse resp = analyticsDataService.get(username, query.getTableName(), 1, null, ids);
 
@@ -92,6 +92,16 @@ public class SearchController {
         recordBean.setTimestamp(record.getTimestamp());
         recordBean.setValues(record.getValues());
         return recordBean;
+    }
+
+    public int getRecordCount(String userName, QueryBean query) throws AnalyticsException {
+        AnalyticsDataAPI analyticsDataService = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
+        if(query!=null){
+            long recordCount = analyticsDataService.getRecordCount(userName, query.getTableName(), query.getTimeFrom(), query.getTimeTo());
+            return (int)recordCount;
+        }else{
+            throw new AnalyticsException("Search parameters not provided");
+        }
     }
 
 }
