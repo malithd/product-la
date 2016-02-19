@@ -46,6 +46,7 @@ function capitalizeFirstLetter(string) {
 }
 
 $(document).ready(function () {
+    addLogstream1();
     var showPopover = $.fn.popover.Constructor.prototype.show;
     $.fn.popover.Constructor.prototype.show = function () {
         showPopover.call(this);
@@ -197,3 +198,146 @@ function tableToCSV(table, tableElm) {
     link.click();
 }
 
+
+function addLogstream1() {
+    var payload = {};
+    var logstream = "logstream";
+    var seperator = ",,";
+    payload.query = logstream + seperator + " ";
+    payload.start = 0;
+    payload.count = 100;
+    payload.timeFrom = 0;
+    payload.tableName = "LOGANALYZER";
+    payload.timeTo = 8640000000000000;
+    var jsonnn = JSON.stringify(payload);
+
+
+    jQuery.ajax({
+        url: serverUrl + "/api/dashboard/logStreamData",
+        type: "POST",
+        contentType: "application/json",
+        dataType: "json",
+        data: jsonnn,
+        success: function (res) {
+            //console.log(response);
+            //document.getElementById("json_string3").innerHTML=res.length;
+            var select = document.getElementById("0");
+            for (var i = 0; i < res.length; i++) {
+                var option = document.createElement('option');
+                option.text = option.value = res[i];
+                option.id=-1;
+                select.add(option, 0);
+            }
+
+        },
+        error: function (res) {
+            var response = JSON.stringify(res);
+            alert(res.error);
+        }
+    });
+}
+var facetCount =0;
+
+var facetObj = {};
+var testObj ={};
+
+function addChildLogStream1(val,idVal) {
+
+        var idInt = parseInt(idVal);
+
+        //if(testObj.hasOwnProperty(idVal)){
+        for (var key in testObj) {
+            if (key > idVal) {
+                $("#" + key).remove();
+                delete testObj[key];
+            }
+        }
+    if (val != "None") {
+        // }
+        if (!facetObj.hasOwnProperty(idVal)) {
+            facetObj[idVal] = val;
+
+
+            //facetData.push(val);
+
+        }
+        else {
+            for (var key in facetObj) {
+                if (key >= idInt) {
+                    delete facetObj[key];
+                    //delete facetObj;
+                    if (key != idInt) {
+
+                        $("#" + key).remove();
+                    }
+                }
+            }
+
+            facetCount = idInt;
+            facetObj[idInt] = val;
+            //facetData.push(val);
+
+        }
+        //document.getElementById("logTest").innerHTML = "Val "+val+"  idVal"+idVal+"  facetObj "+JSON.stringify(facetObj)+"  testObj "+JSON.stringify(testObj);
+
+        var facetData = [];
+        for (var key in facetObj) {
+            facetData.push(facetObj[key]);
+        }
+        var facetpath = facetData;
+        //document.getElementById("json_string3").innerHTML=facetpath +"  "+JSON.stringify(facetObj);
+
+        var payload = {};
+        var logstream = "logstream";
+        var seperator = ",,";
+        payload.query = logstream + seperator + facetpath;
+        payload.start = 0;
+        payload.count = 100;
+        payload.timeFrom = 0;
+        payload.tableName = "LOGANALYZER";
+        payload.timeTo = 8640000000000000;
+        var jsonnn = JSON.stringify(payload);
+
+
+        jQuery.ajax({
+            url: serverUrl + "/api/dashboard/logStreamData",
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json",
+            data: jsonnn,
+            success: function (res) {
+                //console.log(response);
+                //document.getElementById("json_string3").innerHTML=res.length;
+                //var select = document.getElementById("logstreamSelect");
+
+                facetCount++;
+                if (!testObj.hasOwnProperty(facetCount)) {
+                    var streamDiv = document.getElementById("logStreamData");
+                    var selectList = document.createElement("select");
+                    selectList.id = facetCount;
+                    testObj[facetCount] = "test";
+                    //document.getElementById("json_string3").innerHTML = JSON.stringify(facetObj);
+                    //selectList.onchange = addChildLogStream(this.value,this.id);
+                    selectList.setAttribute("onchange", "addChildLogStream1(this.value,this.id)");
+                    streamDiv.appendChild(selectList);
+                    var option1 = document.createElement('option');
+                     option1.value = "None";
+                    option1.text ="Select a category"
+                    selectList.add(option1);
+                    for (var i = 0; i < res.length; i++) {
+                        var option = document.createElement('option');
+                        option.text = option.value = res[i];
+                        selectList.add(option, 0);
+                    }
+                }
+            },
+            error: function (res) {
+                var response = JSON.stringify(res);
+                alert(res.error);
+            }
+        });
+
+        //document.getElementById("logTest").innerHTML = facetpath;
+    }
+
+}

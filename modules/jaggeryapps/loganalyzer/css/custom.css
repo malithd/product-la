@@ -1706,6 +1706,24 @@ fieldset[disabled] .btn-primary.active {
 	background: greenyellow;
 	text-decoration: underline;
 }
+.logstreamTest{
+    float:left;
+}
+.logstreamTest select{
+    margin: 0px 0px 20px;
+    background-color: ghostwhite;
+    width:200px;
+    border: 1px solid #C0C0C0;
+}
+
+.logstreamTest label{
+    font-family: "Open Sans";
+    margin: 0px 0px 20px;
+    padding:25px 25px;
+    font-weight: 400;
+    font-size: 16px;
+    color: #533565;
+}
 
 .light
 {

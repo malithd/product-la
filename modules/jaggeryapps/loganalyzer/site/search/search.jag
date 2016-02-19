@@ -185,8 +185,12 @@
                                     <option value="csv">CSV</option>
                                 </optgroup>
                                 <option value="alert">Alert</option>
-                            </select>
-
+                            </select><br>
+                            <div id="logStreamData" class="logstreamTest">
+                                <label>Logstream</label>
+                                <select id="0" name="logstreamSelect1" onchange="addChildLogStream1(this.value,this.id)"><option value="all">All</option></select>
+                            </div>
+                            <p id="logTest"></p>
                             <div  id="tab-preview" class="wr-form col-lg-12 col-left">
                                 <table id="results-table" class="table table-hover">
                                     <thead>
@@ -197,9 +201,10 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
-                </div>
 
+                    </div>
+
+                </div>
 		    </div>
 
                 <!-- /content -->
@@ -221,7 +226,7 @@
     <script src="../../js/plugins/jspdf/split_text_to_size.js"></script>
     <script src="../../js/plugins/jspdf/from_html.js"></script>
     <script src="../../js/plugins/jspdf/cell.js"></script>
-    <script src="../../js/visualize.js"></script>
+    <!--script src="../../js/visualize.js"></script-->
     <script src="search.js"></script>
 </body>
 

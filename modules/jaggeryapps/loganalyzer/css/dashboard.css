@@ -5,7 +5,7 @@
     width:20%;
     float:left;
     padding:20px 15px;
-    position: fixed;
+    position: absolute;
     clear:both;
 
 }

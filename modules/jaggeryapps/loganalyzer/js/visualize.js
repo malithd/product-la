@@ -9,6 +9,8 @@ var trem;
 var chartType;
 window.onload = function () {
     checkApi();
+    addLogstream();
+
     //console.log("Hello world");
 }
 
@@ -78,13 +80,15 @@ function addFields() {
     var j = fields.length;
 
     for (i = 0; i < j; i++) {
-        fields[i] = fields[i].replace("\"", "")
-        fields[i] = fields[i].replace("\"", "")
-        fields[i] = capitalizeFirstLetter(fields[i].replace("_", ""));
 
-        var option = document.createElement('option');
-        option.text = option.value = fields[i];
-        select.add(option, 0);
+            fields[i] = fields[i].replace("\"", "")
+            fields[i] = fields[i].replace("\"", "")
+            fields[i] = capitalizeFirstLetter(fields[i].replace("_", ""));
+        if(fields[i]!="Message") {
+            var option = document.createElement('option');
+            option.text = option.value = fields[i];
+            select.add(option, 0);
+        }
     }
 
 }
@@ -179,7 +183,7 @@ function filter() {
         var payload = {};
         payload.query = query;
         payload.start = 0;
-        payload.count = 100;
+        payload.count = 1000000;
         payload.timeFrom = 0;
         payload.tableName = "LOGANALYZER";
         payload.timeTo = 8640000000000000;
@@ -247,10 +251,11 @@ function draw() {
     var lineChart = new vizg(data, config);
     lineChart.draw("#dChart");
 }
-function test() {
+function test(val) {
     // var res = JSON.parse(arguments);
-    var res = arguments[0];
-    document.getElementById("json_string").innerHTML = arguments[0];
+    //var res = arguments[0];
+    var id = val;
+    document.getElementById("json_string3").innerHTML = id;
 }
 
 function drawTime() {
@@ -368,3 +373,144 @@ function visualize() {
     selectField2(fieldName);
     //document.getElementById("json_string3").innerHTML=fieldN;
 }
+
+function addLogstream() {
+    var payload = {};
+    var logstream = "logstream";
+    var seperator = ",,";
+    payload.query = logstream + seperator + " ";
+    payload.start = 0;
+    payload.count = 100;
+    payload.timeFrom = 0;
+    payload.tableName = "LOGANALYZER";
+    payload.timeTo = 8640000000000000;
+    var jsonnn = JSON.stringify(payload);
+
+
+    jQuery.ajax({
+        url: serverUrl + "/api/dashboard/logStreamData",
+        type: "POST",
+        contentType: "application/json",
+        dataType: "json",
+        data: jsonnn,
+        success: function (res) {
+            //console.log(response);
+            //document.getElementById("json_string3").innerHTML=res.length;
+            var select = document.getElementById("0");
+            for (var i = 0; i < res.length; i++) {
+                var option = document.createElement('option');
+                option.text = option.value = res[i];
+                option.id=-1;
+                select.add(option, 0);
+            }
+
+        },
+        error: function (res) {
+            var response = JSON.stringify(res);
+            alert(res.error);
+        }
+    });
+}
+var facetCount =0;
+
+var facetObj = {};
+var testObj ={};
+
+function addChildLogStream(val,idVal){
+    var idInt= parseInt(idVal);
+    //document.getElementById("json_string3").innerHTML = val;
+
+    if(testObj.hasOwnProperty(idVal)){
+        for(var key in testObj){
+            if(key>idVal){
+               // $("#"+key).remove();
+                delete testObj[key];
+            }
+        }
+    }
+    if(!facetObj.hasOwnProperty(idVal)){
+        facetObj[idVal] = val ;
+
+
+
+        //facetData.push(val);
+
+    }
+    else{
+        for(var key in facetObj){
+            if(key>=idInt) {
+                delete facetObj[key];
+                //delete facetObj;
+                if(key!=idInt) {
+
+                    $("#"+key).remove();
+                }
+            }
+        }
+
+        facetCount = idInt;
+        facetObj[idInt] = val ;
+        //facetData.push(val);
+
+    }
+
+    var facetData = [] ;
+    for(var key in facetObj){
+        facetData.push(facetObj[key]);
+    }
+    var facetpath = facetData;
+    document.getElementById("json_string3").innerHTML = JSON.stringify(facetObj)+"  "+idVal+"  "+val+"  "+facetpath ;
+    //document.getElementById("json_string3").innerHTML=facetpath +"  "+JSON.stringify(facetObj);
+
+    var payload = {};
+    var logstream = "logstream";
+    var seperator =",,";
+    payload.query = logstream+seperator+facetpath;
+    payload.start = 0;
+    payload.count = 100;
+    payload.timeFrom = 0;
+    payload.tableName = "LOGANALYZER";
+    payload.timeTo = 8640000000000000;
+    var jsonnn = JSON.stringify(payload);
+
+
+    jQuery.ajax({
+        url: serverUrl + "/api/dashboard/logStreamData",
+        type: "POST",
+        contentType: "application/json",
+        dataType: "json",
+        data: jsonnn,
+        success: function (res) {
+            //console.log(response);
+            //document.getElementById("json_string3").innerHTML=res.length;
+            //var select = document.getElementById("logstreamSelect");
+            var streamDiv = document.getElementById("logStreamDiv");
+            var selectList = document.createElement("select");
+            facetCount++;
+            if (!testObj.hasOwnProperty(facetCount)){
+                selectList.id = facetCount;
+            testObj[facetCount] = "test";
+
+            //selectList.onchange = addChildLogStream(this.value,this.id);
+            selectList.setAttribute("onchange", "addChildLogStream(this.value,this.id)");
+            streamDiv.appendChild(selectList);
+            var option1 = document.createElement('option');
+            option1.text = option1.value = "None";
+            selectList.add(option1);
+            for (var i = 0; i < res.length; i++) {
+                var option = document.createElement('option');
+                option.text = option.value = res[i];
+                selectList.add(option, 0);
+            }
+        }
+        },
+        error: function (res) {
+            var response = JSON.stringify(res);
+            alert(res.error);
+        }
+    });
+
+
+}
+
+

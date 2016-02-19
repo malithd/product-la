@@ -87,6 +87,10 @@
                     <a href="#">Link 3</a>
                 </div>
             </div-->
+            <div class = "logstreamDiv" id="logStreamDiv">
+            <p>Logstream</p>
+            <select id="0" name="logstreamSelect" onchange="addChildLogStream(this.value,this.id)"><option value="all">All</option><option value="all1">All1</option></select>
+            </div>
             <p>Visualize</p>
             <label>Fileds</label>
             <select id="fieldsName" name="Fields"></select>
@@ -100,8 +104,15 @@
             <button type="btn button" id="visulaize" onclick="visualize()">Visualize</button>
             <form action="">
                 <p>Filter</p>
+                <label>Basic filters</label>
+                <select id="filterType" name="filterType">
+                    <option>Error Logs</option>
+                    <option>Warning Logs</option>
+                    <option>Debuging logs</option>
+                </select>
+                <label>Custom filters</label>
                 <input type="text" name="filterText" id="ftexte"
-                       title="Use lucene queries for filtering eg: _level:ERROR _level:INFO">
+                       title="If you put custom filter it will overide the basic filters. Use lucene queries for filtering eg: _level:ERROR _level:INFO">
                 <button type="button" value="Filter" onclick="filter()">Filter</button>
             </form>
             <p>Timely Chart</p>

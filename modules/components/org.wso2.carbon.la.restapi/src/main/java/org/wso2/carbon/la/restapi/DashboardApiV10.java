@@ -12,8 +12,8 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.http.HttpHeaders;
 import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
-import org.wso2.carbon.analytics.dataservice.commons.AnalyticsDataResponse;
-import org.wso2.carbon.analytics.dataservice.commons.SearchResultEntry;
+import org.wso2.carbon.analytics.dataservice.commons.*;
+import org.wso2.carbon.analytics.dataservice.core.AnalyticsDataServiceUtils;
 import org.wso2.carbon.analytics.datasource.commons.AnalyticsSchema;
 import org.wso2.carbon.analytics.datasource.commons.ColumnDefinition;
 import org.wso2.carbon.analytics.datasource.commons.Record;
@@ -745,7 +745,66 @@ public class DashboardApiV10 {
         }
 
     }
+    @POST
+    @Path("/logStreamData")
+    @Produces("application/json")
+    @Consumes("application/json")
+    public StreamingOutput logStreamData(final QueryBean query) {
 
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        AnalyticsDataAPI analyticsDataAPI;
+        String q[] = query.getQuery().split(",,");
+        String path[] =null;
+        if(!q[1].equals(" ")) {
+            String pathName = q[1];
+            path = pathName.split(",");
+        }
+        String fieldName = q[0];
+
+        CategoryDrillDownRequest categoryDrillDownRequest = new CategoryDrillDownRequest();
+        categoryDrillDownRequest.setTableName(query.getTableName());
+        categoryDrillDownRequest.setFieldName(fieldName);
+        categoryDrillDownRequest.setPath(path);
+        final List<CategorySearchResultEntry> list;
+        analyticsDataAPI = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
+        try {
+            SubCategories subCategories = analyticsDataAPI.drillDownCategories(tenantId, categoryDrillDownRequest);
+            list = subCategories.getCategories();
+
+            return new StreamingOutput() {
+                @Override
+                public void write(OutputStream outputStream)
+                        throws IOException, WebApplicationException {
+                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+                    recordWriter.write("[");
+                    int i = 1;
+                    for (CategorySearchResultEntry lister : list) {
+                        recordWriter.write("\"" + lister.getCategoryValue() + "\"");
+                        if (i < list.size()) {
+                            recordWriter.write(",");
+                            i++;
+                        }
+                    }
+                    recordWriter.write("]");
+                    recordWriter.flush();
+                }
+            };
+
+        } catch (AnalyticsException e) {
+            String msg = String.format("Error occurred while retrieving field data");
+            log.error(msg, e);
+            return new StreamingOutput() {
+                @Override
+                public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+                    recordWriter.write("Error in reading records");
+                    recordWriter.flush();
+                }
+            };
+        }
+
+    }
 }
 
 
