@@ -1,6 +1,8 @@
 var serverUrl = window.location.origin;
 //var baseUrl = getBaseUrl(window.location.href);
 var resultTable =  $('#results-table').DataTable( {
+    "processing": false,
+    "serverSide": true,
     "ajax" : {
         "url": serverUrl + "/api/search",
         "type": "POST",
@@ -8,21 +10,15 @@ var resultTable =  $('#results-table').DataTable( {
         "contentType": "application/json; charset=utf-8",
         "data": function (payload) {
             payload.query = $("#search-field").val();
-            payload.start = 0;
-            payload.count = 100;
             payload.timeFrom = parseInt($("#timestamp-from").val());
             payload.timeTo = parseInt($("#timestamp-to").val());
             return JSON.stringify(payload)
-        },
-        "dataSrc" : function(d){
-            return d
         }
     },
     "columns": [
         {"data": "values._message"}
     ],
     "searching": false
-
 });
 
 /* Formatting a table to insert when a row is clicked */
