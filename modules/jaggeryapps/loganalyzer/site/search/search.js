@@ -1,4 +1,10 @@
 var serverUrl = window.location.origin;
+var facetPath ="None" ;
+function openDashboard() {
+    //window.location= baseUrl +'/loganalyzer/site/visualize.jag';
+    // retrieveColum();
+    window.open(serverUrl + '/loganalyzer/site/dashboard/visualize.jag');
+}
 //var baseUrl = getBaseUrl(window.location.href);
 var resultTable =  $('#results-table').DataTable( {
     "processing": false,
@@ -10,8 +16,15 @@ var resultTable =  $('#results-table').DataTable( {
         "contentType": "application/json; charset=utf-8",
         "data": function (payload) {
             payload.query = $("#search-field").val();
-            payload.timeFrom = parseInt($("#timestamp-from").val());
-            payload.timeTo = parseInt($("#timestamp-to").val());
+           // payload.timeFrom = parseInt($("#timestamp-from").val());
+           // payload.timeTo = parseInt($("#timestamp-to").val());
+            //document.getElementById("logpath").innerHTML = facetPath;
+            payload.facetPath =$("#facetPath").val();
+            payload.timeFrom = 0;
+            payload.timeTo = 8640000000000000;
+            //payload.tableName="LOGANALYZER";
+            //payload.length = 100;
+            payload.start =0;
             return JSON.stringify(payload)
         }
     },
@@ -159,6 +172,7 @@ function getLastMonth(){
 }
 
 function searchActivities(data){
+
   resultTable.ajax.reload();
 }
 
@@ -201,7 +215,7 @@ function addLogstream1() {
     var seperator = ",,";
     payload.query = logstream + seperator + " ";
     payload.start = 0;
-    payload.count = 100;
+    payload.length = 10000;
     payload.timeFrom = 0;
     payload.tableName = "LOGANALYZER";
     payload.timeTo = 8640000000000000;
@@ -280,15 +294,15 @@ function addChildLogStream1(val,idVal) {
         for (var key in facetObj) {
             facetData.push(facetObj[key]);
         }
-        var facetpath = facetData;
+        facetPath = facetData;
         //document.getElementById("json_string3").innerHTML=facetpath +"  "+JSON.stringify(facetObj);
-
+        $("#facetPath").val(facetPath);
         var payload = {};
         var logstream = "logstream";
         var seperator = ",,";
-        payload.query = logstream + seperator + facetpath;
+        payload.query = logstream + seperator + facetPath;
         payload.start = 0;
-        payload.count = 100;
+        payload.length = 10000;
         payload.timeFrom = 0;
         payload.tableName = "LOGANALYZER";
         payload.timeTo = 8640000000000000;

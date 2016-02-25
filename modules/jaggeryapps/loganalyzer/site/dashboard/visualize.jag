@@ -87,10 +87,6 @@
                     <a href="#">Link 3</a>
                 </div>
             </div-->
-            <div class = "logstreamDiv" id="logStreamDiv">
-            <p>Logstream</p>
-            <select id="0" name="logstreamSelect" onchange="addChildLogStream(this.value,this.id)"><option value="all">All</option><option value="all1">All1</option></select>
-            </div>
             <p>Visualize</p>
             <label>Fileds</label>
             <select id="fieldsName" name="Fields"></select>
@@ -102,13 +98,24 @@
                 <option value="area">Area chart</option>
             </select>
             <button type="btn button" id="visulaize" onclick="visualize()">Visualize</button>
+
+            <p>Logstream</p>
+            <select id="0" name="logstreamSelect" onchange="addChildLogStream(this.value,this.id)">
+                <option value="None">All</option>
+            </select>
+
+            <div class="logstreamDiv" id="logStreamDiv">
+
+            </div>
+
             <form action="">
                 <p>Filter</p>
                 <label>Basic filters</label>
-                <select id="filterType" name="filterType">
-                    <option>Error Logs</option>
-                    <option>Warning Logs</option>
-                    <option>Debuging logs</option>
+                <select id="FilterType" name="filterType">
+                    <option value="None">Select a filter</option>
+                    <option value="_level:ERROR">Error Logs</option>
+                    <option value="_level:WARN">Warning Logs</option>
+                    <option value="_level:DEBUG">Debuging logs</option>
                 </select>
                 <label>Custom filters</label>
                 <input type="text" name="filterText" id="ftexte"

@@ -81,10 +81,10 @@ function addFields() {
 
     for (i = 0; i < j; i++) {
 
-            fields[i] = fields[i].replace("\"", "")
-            fields[i] = fields[i].replace("\"", "")
-            fields[i] = capitalizeFirstLetter(fields[i].replace("_", ""));
-        if(fields[i]!="Message") {
+        fields[i] = fields[i].replace("\"", "")
+        fields[i] = fields[i].replace("\"", "")
+        fields[i] = capitalizeFirstLetter(fields[i].replace("_", ""));
+        if (fields[i] != "Message") {
             var option = document.createElement('option');
             option.text = option.value = fields[i];
             select.add(option, 0);
@@ -101,7 +101,10 @@ function simpleFirstLetter(string) {
 }
 
 function selectField2() {
-
+    if ($("#0").val() == "None") {
+        facetPath = "None";
+    }
+    // document.getElementById("json_string2").innerHTML=facetPath;
     fieldName = arguments[0];
     var charttype = arguments[1];
     trem = fieldName;
@@ -113,7 +116,7 @@ function selectField2() {
     var payload = {};
     payload.query = fieldName;
     payload.start = 0;
-    payload.count = 100;
+    payload.length = 100000;
     payload.timeFrom = 0;
     payload.tableName = "LOGANALYZER";
     payload.timeTo = 8640000000000000;
@@ -148,7 +151,7 @@ function addRow() {
     var i;
     var j = arguments[0].length;
     //var tester;
-    document.getElementById("json_string").innerHTML = j;
+    //  document.getElementById("json_string").innerHTML = j;
     for (i = 0; i < j; i++) {
         $("#data-table").append('<tr><td>' + reslt[i][0] + '</td><td>' + reslt[i][1] + '</td></tr>');
     }
@@ -164,29 +167,42 @@ function addRow() {
  });*/
 
 function filter() {
+    if ($("#0").val() == "None") {
+        facetPath = "None";
+    }
     $("#dsWelcome").hide();
     var query = $('#ftexte').val();
     var fieldN = $("#fieldsName").val();
+    var filterSelect = $("#FilterType").val();
     fieldN = simpleFirstLetter(fieldN);
     if (fieldN != "logstream") {
         fieldN = "_" + fieldN;
     }
 
-    if (query == "") {
-        selectField2();
+    if (query == "" && filterSelect == "None") {
+        selectField2($("#fieldsName").val());
     }
     else {
         //document.getElementById("json_string2").innerHTML=fieldName;
-        query = query + ",," + fieldN;
+        var quer;
+        if (query == "") {
+            quer = filterSelect;
+        }
+        else {
+            quer = query;
+        }
+        query = quer + ",," + fieldN;
 
         //
         var payload = {};
+        // document.getElementById("json_string2").innerHTML = facetPath.toString();
         payload.query = query;
         payload.start = 0;
-        payload.count = 1000000;
+        payload.length = 1000000;
         payload.timeFrom = 0;
         payload.tableName = "LOGANALYZER";
         payload.timeTo = 8640000000000000;
+        payload.facetPath = facetPath.toString();
         var jsonnn = JSON.stringify(payload);
         //document.getElementById("json_string2").innerHTML = "You selected:!!" + query+"!!";
 
@@ -224,7 +240,16 @@ function draw() {
     //var charttype=arguments[2];
     for (var i = 0; i < json.length; i++) {
         var temp = [];
-        temp.push(json[i][0], parseInt(json[i][1]));
+        var xVal = json[i][0];
+        var xArr = [];
+        xArr = json[i][0].toString().split(".");
+        var vall = xArr[xArr.length - 1];
+        if (vall.length > 11) {
+            vall = vall.slice(0, 11);
+        }
+        // var xArr = json[i][0].split(".");
+        //document.getElementById("json_string").innerHTML=xArr[xArr.length-1]+" ";
+        temp.push(vall, parseInt(json[i][1]));
         dataValue.push(temp);
     }
     //document.getElementById("json_string").innerHTML=JSON.stringify(dataValue);
@@ -255,7 +280,7 @@ function test(val) {
     // var res = JSON.parse(arguments);
     //var res = arguments[0];
     var id = val;
-    document.getElementById("json_string3").innerHTML = id;
+    // document.getElementById("json_string3").innerHTML = id;
 }
 
 function drawTime() {
@@ -291,6 +316,9 @@ function drawTime() {
     lineChart.draw("#timeChart");
 }
 function timeData() {
+    if ($("#0").val() == "None") {
+        facetPath = "None";
+    }
     $("#dsWelcome").hide();
     $("#timeChart").show();
     var query = $('#ftexte').val();
@@ -305,16 +333,17 @@ function timeData() {
     }
     else {
         //document.getElementById("json_string2").innerHTML=fieldName;
-        query = query + ",," + fieldN+",,"+ interval;
+        query = query + ",," + fieldN + ",," + interval;
 
         //
         var payload = {};
         payload.query = query;
         payload.start = 0;
-        payload.count = 100;
+        payload.length = 100000;
         payload.timeFrom = 0;
         payload.tableName = "LOGANALYZER";
         payload.timeTo = 8640000000000000;
+        payload.facetPath = facetPath.toString();
         var jsonnn = JSON.stringify(payload);
         //document.getElementById("json_string2").innerHTML = "You selected:!!" + query+"!!";
 
@@ -380,7 +409,7 @@ function addLogstream() {
     var seperator = ",,";
     payload.query = logstream + seperator + " ";
     payload.start = 0;
-    payload.count = 100;
+    payload.length = 100000;
     payload.timeFrom = 0;
     payload.tableName = "LOGANALYZER";
     payload.timeTo = 8640000000000000;
@@ -400,7 +429,7 @@ function addLogstream() {
             for (var i = 0; i < res.length; i++) {
                 var option = document.createElement('option');
                 option.text = option.value = res[i];
-                option.id=-1;
+                option.id = -1;
                 select.add(option, 0);
             }
 
@@ -411,106 +440,108 @@ function addLogstream() {
         }
     });
 }
-var facetCount =0;
+var facetCount = 0;
 
 var facetObj = {};
-var testObj ={};
+var testObj = {};
 
-function addChildLogStream(val,idVal){
-    var idInt= parseInt(idVal);
-    //document.getElementById("json_string3").innerHTML = val;
+function addChildLogStream(val, idVal) {
+    var idInt = parseInt(idVal);
 
-    if(testObj.hasOwnProperty(idVal)){
-        for(var key in testObj){
-            if(key>idVal){
-               // $("#"+key).remove();
-                delete testObj[key];
-            }
+    //if(testObj.hasOwnProperty(idVal)){
+    for (var key in testObj) {
+        if (key > idVal) {
+            $("#" + key).remove();
+            delete testObj[key];
         }
     }
-    if(!facetObj.hasOwnProperty(idVal)){
-        facetObj[idVal] = val ;
+    if (val != "None") {
+        // }
+        if (!facetObj.hasOwnProperty(idVal)) {
+            facetObj[idVal] = val;
 
 
+            //facetData.push(val);
 
-        //facetData.push(val);
+        }
+        else {
+            for (var key in facetObj) {
+                if (key >= idInt) {
+                    delete facetObj[key];
+                    //delete facetObj;
+                    if (key != idInt) {
 
-    }
-    else{
-        for(var key in facetObj){
-            if(key>=idInt) {
-                delete facetObj[key];
-                //delete facetObj;
-                if(key!=idInt) {
-
-                    $("#"+key).remove();
+                        $("#" + key).remove();
+                    }
                 }
             }
+
+            facetCount = idInt;
+            facetObj[idInt] = val;
+            //facetData.push(val);
+
         }
+        //document.getElementById("logTest").innerHTML = "Val "+val+"  idVal"+idVal+"  facetObj "+JSON.stringify(facetObj)+"  testObj "+JSON.stringify(testObj);
 
-        facetCount = idInt;
-        facetObj[idInt] = val ;
-        //facetData.push(val);
-
-    }
-
-    var facetData = [] ;
-    for(var key in facetObj){
-        facetData.push(facetObj[key]);
-    }
-    var facetpath = facetData;
-    document.getElementById("json_string3").innerHTML = JSON.stringify(facetObj)+"  "+idVal+"  "+val+"  "+facetpath ;
-    //document.getElementById("json_string3").innerHTML=facetpath +"  "+JSON.stringify(facetObj);
-
-    var payload = {};
-    var logstream = "logstream";
-    var seperator =",,";
-    payload.query = logstream+seperator+facetpath;
-    payload.start = 0;
-    payload.count = 100;
-    payload.timeFrom = 0;
-    payload.tableName = "LOGANALYZER";
-    payload.timeTo = 8640000000000000;
-    var jsonnn = JSON.stringify(payload);
+        var facetData = [];
+        for (var key in facetObj) {
+            facetData.push(facetObj[key]);
+        }
+        facetPath = facetData;
+        //document.getElementById("json_string3").innerHTML=facetpath +"  "+JSON.stringify(facetObj);
+        // $("#facetPath").val(facetPath);
+        var payload = {};
+        var logstream = "logstream";
+        var seperator = ",,";
+        payload.query = logstream + seperator + facetPath;
+        payload.start = 0;
+        payload.length = 10000;
+        payload.timeFrom = 0;
+        payload.tableName = "LOGANALYZER";
+        payload.timeTo = 8640000000000000;
+        var jsonnn = JSON.stringify(payload);
 
 
-    jQuery.ajax({
-        url: serverUrl + "/api/dashboard/logStreamData",
-        type: "POST",
-        contentType: "application/json",
-        dataType: "json",
-        data: jsonnn,
-        success: function (res) {
-            //console.log(response);
-            //document.getElementById("json_string3").innerHTML=res.length;
-            //var select = document.getElementById("logstreamSelect");
-            var streamDiv = document.getElementById("logStreamDiv");
-            var selectList = document.createElement("select");
-            facetCount++;
-            if (!testObj.hasOwnProperty(facetCount)){
-                selectList.id = facetCount;
-            testObj[facetCount] = "test";
+        jQuery.ajax({
+            url: serverUrl + "/api/dashboard/logStreamData",
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json",
+            data: jsonnn,
+            success: function (res) {
+                //console.log(response);
+                //document.getElementById("json_string3").innerHTML=res.length;
+                //var select = document.getElementById("logstreamSelect");
 
-            //selectList.onchange = addChildLogStream(this.value,this.id);
-            selectList.setAttribute("onchange", "addChildLogStream(this.value,this.id)");
-            streamDiv.appendChild(selectList);
-            var option1 = document.createElement('option');
-            option1.text = option1.value = "None";
-            selectList.add(option1);
-            for (var i = 0; i < res.length; i++) {
-                var option = document.createElement('option');
-                option.text = option.value = res[i];
-                selectList.add(option, 0);
+                facetCount++;
+                if (!testObj.hasOwnProperty(facetCount)) {
+                    var LogstreamDiv = document.getElementById("logStreamDiv");
+                    var selectList = document.createElement("select");
+                    selectList.id = facetCount;
+                    testObj[facetCount] = "test";
+                    //document.getElementById("json_string3").innerHTML = JSON.stringify(facetObj);
+                    //selectList.onchange = addChildLogStream(this.value,this.id);
+                    selectList.setAttribute("onchange", "addChildLogStream(this.value,this.id)");
+                    LogstreamDiv.appendChild(selectList);
+                    var option1 = document.createElement('option');
+                    option1.value = "None";
+                    option1.text = "Select a category"
+                    selectList.add(option1);
+                    for (var i = 0; i < res.length; i++) {
+                        var option = document.createElement('option');
+                        option.text = option.value = res[i];
+                        selectList.add(option, 0);
+                    }
+                }
+            },
+            error: function (res) {
+                var response = JSON.stringify(res);
+                alert(res.error);
             }
-        }
-        },
-        error: function (res) {
-            var response = JSON.stringify(res);
-            alert(res.error);
-        }
-    });
+        });
 
-
+        //document.getElementById("logTest").innerHTML = facetpath;
+    }
 }
 
 

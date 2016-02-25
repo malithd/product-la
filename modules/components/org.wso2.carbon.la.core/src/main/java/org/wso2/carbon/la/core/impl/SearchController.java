@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
 import org.wso2.carbon.analytics.dataservice.commons.AnalyticsDataResponse;
+import org.wso2.carbon.analytics.dataservice.commons.AnalyticsDrillDownRequest;
 import org.wso2.carbon.analytics.dataservice.commons.SearchResultEntry;
 import org.wso2.carbon.analytics.dataservice.core.AnalyticsDataServiceUtils;
 import org.wso2.carbon.analytics.datasource.commons.Record;
@@ -13,18 +14,41 @@ import org.wso2.carbon.la.commons.domain.RecordBean;
 import org.wso2.carbon.la.core.utils.LACoreServiceValueHolder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SearchController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);
-
+    private final String logstream = "logstream";
     public List<RecordBean> search(QueryBean query, String username) throws AnalyticsException {
+        AnalyticsDrillDownRequest analyticsDrillDownRequest = new AnalyticsDrillDownRequest();
+
         AnalyticsDataAPI analyticsDataService = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
         if (query != null) {
+            String facetPath = query.getFacetPath();
+            Map<String,List<String>> categoryPath = new HashMap<>();
+            List<String> pathList = new ArrayList<>();
+            if(facetPath.equals("None")){
+                categoryPath.put(logstream,pathList);
+            }
+            else {
+                String pathArray[] = facetPath.split(",");
+                for (String path : pathArray) {
+                    pathList.add(path);
+                }
+                categoryPath.put(logstream, pathList);
+            }
+            analyticsDrillDownRequest.setTableName(query.getTableName());
             query.setQuery(appendTimeRangeToSearchQuery(query.getQuery(), query.getTimeFrom(), query.getTimeTo()));
-            List<SearchResultEntry> searchResults = analyticsDataService.search(username,query.getTableName(),
-                    query.getQuery(),query.getStart(), query.getLength());
+            analyticsDrillDownRequest.setQuery(query.getQuery());
+            analyticsDrillDownRequest.setRecordCount(query.getLength());
+            analyticsDrillDownRequest.setRecordStartIndex(query.getStart());
+            analyticsDrillDownRequest.setCategoryPaths(categoryPath);
+            List<SearchResultEntry> searchResults = analyticsDataService.drillDownSearch(username,analyticsDrillDownRequest);
+            //List<SearchResultEntry> searchResults = analyticsDataService.search(username,query.getTableName(),
+             //       query.getQuery(),query.getStart(), query.getLength());
             List<String> ids = getRecordIds(searchResults);
             AnalyticsDataResponse resp = analyticsDataService.get(username, query.getTableName(), 1, null, ids);
 

@@ -138,14 +138,6 @@ public class DashboardApiV10 {
                                     counter.put(val, count);
                                 }
                             }
-                            //values.get(query.getQuery());
-
-                            // recordWriter.write(gson.toJson(values.get(query.getQuery())));
-
-                            // recordWriter.write(recordBean.toString());
-                            // if (iterator.hasNext()) {
-                            //recordWriter.write(",");
-                            //}
                             if (log.isDebugEnabled()) {
                                 log.debug("Retrieved -- Record Id: " + recordBean.getId() + " values :" +
                                         recordBean.toString());
@@ -157,7 +149,6 @@ public class DashboardApiV10 {
 
                         recordWriter.write("[[\"" + entry.getKey() + "\"],[\"" + entry.getValue() + "\"]]");
 
-                        // recordWriter.write("\""+entry.getKey()+" : "+entry.getValue()+"||%\"");
                         if (i < counter.size()) {
                             recordWriter.write(",");
                             i++;
@@ -194,7 +185,9 @@ public class DashboardApiV10 {
         String username = carbonContext.getUsername();
         AnalyticsDataAPI analyticsDataAPI;
         AnalyticsDataResponse analyticsDataResponse;
+        String logstream = "logstream";
         //RecordGroup recordGroup [] ;
+        AnalyticsDrillDownRequest analyticsDrillDownRequest = new AnalyticsDrillDownRequest();
         analyticsDataAPI = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
         if (query != null) {
             String q[] = query.getQuery().split(",,");
@@ -203,9 +196,25 @@ public class DashboardApiV10 {
             List<String> column = new ArrayList<>();
             column.add(col);
 
-            List<SearchResultEntry> searchResults = analyticsDataAPI.search(username,
-                    query.getTableName(), searchQuery,
-                    query.getStart(), query.getCount());
+            String facetPath = query.getFacetPath();
+            Map<String, List<String>> categoryPath = new HashMap<>();
+            List<String> pathList = new ArrayList<>();
+            if (facetPath.equals("None")) {
+                categoryPath.put(logstream, pathList);
+            } else {
+                String pathArray[] = facetPath.split(",");
+                for (String path : pathArray) {
+                    pathList.add(path);
+                }
+                categoryPath.put(logstream, pathList);
+            }
+            analyticsDrillDownRequest.setTableName(query.getTableName());
+            analyticsDrillDownRequest.setQuery(searchQuery);
+            analyticsDrillDownRequest.setRecordCount(query.getLength());
+            analyticsDrillDownRequest.setRecordStartIndex(query.getStart());
+            analyticsDrillDownRequest.setCategoryPaths(categoryPath);
+            List<SearchResultEntry> searchResults = analyticsDataAPI.drillDownSearch(username, analyticsDrillDownRequest);
+
             List<String> ids = Util.getRecordIds(searchResults);
             analyticsDataResponse = analyticsDataAPI.get(username, query.getTableName(), 1, column, ids);
             final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse, analyticsDataAPI);
@@ -245,14 +254,7 @@ public class DashboardApiV10 {
                                     counter.put(val, count);
                                 }
                             }
-                            //values.get(query.getQuery());
 
-                            // recordWriter.write(gson.toJson(values.get(query.getQuery())));
-
-                            // recordWriter.write(recordBean.toString());
-                            // if (iterator.hasNext()) {
-                            //recordWriter.write(",");
-                            //}
                             if (log.isDebugEnabled()) {
                                 log.debug("Retrieved -- Record Id: " + recordBean.getId() + " values :" +
                                         recordBean.toString());
@@ -263,7 +265,6 @@ public class DashboardApiV10 {
                     for (Map.Entry<String, Integer> entry : counter.entrySet()) {
 
                         recordWriter.write("[[\"" + entry.getKey() + "\"],[\"" + entry.getValue() + "\"]]");
-                        //recordWriter.write("\""+entry.getKey()+" : "+entry.getValue()+"||%\"");
                         if (i < counter.size()) {
                             recordWriter.write(",");
                             i++;
@@ -286,7 +287,7 @@ public class DashboardApiV10 {
             };
         }
     }
-
+/*
     @POST
     @Path("/timeData")
     @Produces("application/json")
@@ -311,7 +312,7 @@ public class DashboardApiV10 {
 
             List<SearchResultEntry> searchResults = analyticsDataAPI.search(username,
                     query.getTableName(), searchQuery,
-                    query.getStart(), query.getCount());
+                    query.getStart(), query.getLength());
             List<String> ids = Util.getRecordIds(searchResults);
             analyticsDataResponse = analyticsDataAPI.get(username, query.getTableName(), 1, column, ids);
             final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse, analyticsDataAPI);
@@ -378,8 +379,6 @@ public class DashboardApiV10 {
                             recordWriter.write(",");
                             j++;
                         }
-                        //recordWriter.write("[[\""+entry.getKey()+"\"],[\""+entry.getValue()+"\"]]");
-                        //recordWriter.write("\""+entry.getKey()+" : "+entry.getValue()+"||%\"");
 
                     }
                     recordWriter.write("]");
@@ -428,7 +427,7 @@ public class DashboardApiV10 {
 
             List<SearchResultEntry> searchResults = analyticsDataAPI.search(username,
                     query.getTableName(), searchQuery,
-                    query.getStart(), query.getCount());
+                    query.getStart(), query.getLength());
             List<String> ids = Util.getRecordIds(searchResults);
             analyticsDataResponse = analyticsDataAPI.get(username, query.getTableName(), 1, column, ids);
             final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse, analyticsDataAPI);
@@ -497,21 +496,6 @@ public class DashboardApiV10 {
                     long k = 1;
                     for (Map.Entry<Long, Map<String, Integer>> entry : sortedMap.entrySet()) {
 
-                        /*
-                        Map<String, Integer> countero = entry.getValue();
-                        for(Map.Entry<String,Integer> ing:countero.entrySet()){
-                            long temp = entry.getKey()/1000L;
-                            Date expiry = new Date(temp*1000L);
-                            String str_date = format.format(expiry);
-                            recordWriter.write("[\"" + str_date + "\"],[\""+ing.getValue()+"\"]");
-                        }
-                        if (j < sortedMap.size()) {
-                            recordWriter.write(",");
-                            j++;
-                        }
-                        */
-
-
                         if (j > 1) {
                             presentDay = entry.getKey();
                             long dif = presentDay - lastDay;
@@ -554,8 +538,6 @@ public class DashboardApiV10 {
                                 j++;
                             }
                             lastDay = entry.getKey();
-                            //recordWriter.write("[[\""+entry.getKey()+"\"],[\""+entry.getValue()+"\"]]");
-                            //recordWriter.write("\""+entry.getKey()+" : "+entry.getValue()+"||%\"");
                         }
 
                     }
@@ -576,7 +558,7 @@ public class DashboardApiV10 {
             };
         }
 
-    }
+    } */
 
     @POST
     @Path("/epochTimeDataFinal")
@@ -590,6 +572,8 @@ public class DashboardApiV10 {
         AnalyticsDataAPI analyticsDataAPI;
         AnalyticsDataResponse analyticsDataResponse;
         //RecordGroup recordGroup [] ;
+        AnalyticsDrillDownRequest analyticsDrillDownRequest = new AnalyticsDrillDownRequest();
+        String logstream = "logstream";
         analyticsDataAPI = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
         if (query != null) {
             String q[] = query.getQuery().split(",,");
@@ -604,9 +588,26 @@ public class DashboardApiV10 {
             column.add(col);
             column.add(timestamp);
 
-            List<SearchResultEntry> searchResults = analyticsDataAPI.search(username,
-                    query.getTableName(), searchQuery,
-                    query.getStart(), query.getCount());
+            String facetPath = query.getFacetPath();
+            Map<String, List<String>> categoryPath = new HashMap<>();
+            List<String> pathList = new ArrayList<>();
+            if (facetPath.equals("None")) {
+                categoryPath.put(logstream, pathList);
+            } else {
+                String pathArray[] = facetPath.split(",");
+                for (String path : pathArray) {
+                    pathList.add(path);
+                }
+                categoryPath.put(logstream, pathList);
+            }
+            analyticsDrillDownRequest.setTableName(query.getTableName());
+            analyticsDrillDownRequest.setQuery(searchQuery);
+            analyticsDrillDownRequest.setRecordCount(query.getLength());
+            analyticsDrillDownRequest.setRecordStartIndex(query.getStart());
+            analyticsDrillDownRequest.setCategoryPaths(categoryPath);
+            List<SearchResultEntry> searchResults = analyticsDataAPI.drillDownSearch(username, analyticsDrillDownRequest);
+
+
             List<String> ids = Util.getRecordIds(searchResults);
             analyticsDataResponse = analyticsDataAPI.get(username, query.getTableName(), 1, column, ids);
             final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse, analyticsDataAPI);
@@ -685,9 +686,9 @@ public class DashboardApiV10 {
                             long newDate = lastDay;
                             while (k > 1) {
                                 newDate = newDate + dayGap;
-                                Map<String,Integer> tempMap = new HashMap<>();
-                                tempMap.put("No Entry",0);
-                                allDayMap.put(newDate,tempMap);
+                                Map<String, Integer> tempMap = new HashMap<>();
+                                tempMap.put("No Entry", 0);
+                                allDayMap.put(newDate, tempMap);
                                 k--;
                             }
                             k = 1;
@@ -699,22 +700,22 @@ public class DashboardApiV10 {
                                 j++;
                             }
                             lastDay = entry.getKey();
-                           allDayMap.put(lastDay,counter);
+                            allDayMap.put(lastDay, counter);
                         }
 
                     }
-                    allDayMap = new TreeMap<Long,Map<String,Integer>>(allDayMap);
-                    Map<String,Map<String,Integer>> grouped = Util.getGrouping(allDayMap,groupBy);
+                    allDayMap = new TreeMap<Long, Map<String, Integer>>(allDayMap);
+                    Map<String, Map<String, Integer>> grouped = Util.getGrouping(allDayMap, groupBy);
                     grouped = new TreeMap<>(grouped);
 
                     int i = 1;
                     int l = 1;
                     recordWriter.write("[");
-                    for (Map.Entry<String,Map<String,Integer>> entry : grouped.entrySet()) {
+                    for (Map.Entry<String, Map<String, Integer>> entry : grouped.entrySet()) {
                         Map<String, Integer> counter = entry.getValue();
                         for (Map.Entry<String, Integer> infom : counter.entrySet()) {
 
-                            recordWriter.write("[[\"" + entry.getKey()+ "\"],[\"" + infom.getKey() + "\"],[\"" + infom.getValue() + "\"]]");
+                            recordWriter.write("[[\"" + entry.getKey() + "\"],[\"" + infom.getKey() + "\"],[\"" + infom.getValue() + "\"]]");
                             if (i < counter.size()) {
                                 recordWriter.write(",");
                                 i++;
@@ -745,6 +746,7 @@ public class DashboardApiV10 {
         }
 
     }
+
     @POST
     @Path("/logStreamData")
     @Produces("application/json")
@@ -755,8 +757,8 @@ public class DashboardApiV10 {
         int tenantId = carbonContext.getTenantId();
         AnalyticsDataAPI analyticsDataAPI;
         String q[] = query.getQuery().split(",,");
-        String path[] =null;
-        if(!q[1].equals(" ")) {
+        String path[] = null;
+        if (!q[1].equals(" ")) {
             String pathName = q[1];
             path = pathName.split(",");
         }

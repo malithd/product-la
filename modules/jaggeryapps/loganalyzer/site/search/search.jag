@@ -186,9 +186,12 @@
                                 </optgroup>
                                 <option value="alert">Alert</option>
                             </select><br>
+                            <p id="logpath" value="None"></p>
+                            <input type="hidden" id="facetPath" value="None">
+
                             <div id="logStreamData" class="logstreamTest">
                                 <label>Logstream</label>
-                                <select id="0" name="logstreamSelect1" onchange="addChildLogStream1(this.value,this.id)"><option value="all">All</option></select>
+                                <select id="0" name="logstreamSelect1" onchange="addChildLogStream1(this.value,this.id)"><option value="None">All</option></select>
                             </div>
                             <p id="logTest"></p>
                             <div  id="tab-preview" class="wr-form col-lg-12 col-left">
