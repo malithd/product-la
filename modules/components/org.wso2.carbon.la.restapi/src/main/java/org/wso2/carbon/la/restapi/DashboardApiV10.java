@@ -117,7 +117,6 @@ public class DashboardApiV10 {
                         while (iterator.hasNext()) {
                             RecordBean recordBean = Util.createRecordBean(iterator.next());
                             values = recordBean.getValues();
-
                             if (values.get(query.getQuery()) == null) {
 
                                 if (!counter.containsKey("NULLVALUE")) {
@@ -192,6 +191,7 @@ public class DashboardApiV10 {
         if (query != null) {
             String q[] = query.getQuery().split(",,");
             String searchQuery = q[0];
+            searchQuery = Util.appendTimeStamp(searchQuery,query.getStr_timeFrom(),query.getStr_timeTo());
             final String col = q[1];
             List<String> column = new ArrayList<>();
             column.add(col);
@@ -578,9 +578,10 @@ public class DashboardApiV10 {
         if (query != null) {
             String q[] = query.getQuery().split(",,");
             String searchQuery = q[0];
+            searchQuery = Util.appendTimeStamp(searchQuery,query.getStr_timeFrom(),query.getStr_timeTo());
             final String col = q[1];
             final String groupBy = q[2];
-            final String timestamp = "_timestamp2";
+            final String timestamp = "_eventTimeStamp";
             final long dayGap = 86400000;
             final String pattern = "yyyy-MM-dd";
             final SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -626,11 +627,11 @@ public class DashboardApiV10 {
                         while (iterator.hasNext()) {
                             RecordBean recordBean = Util.createRecordBean(iterator.next());
                             values = recordBean.getValues();
-                            String temp[];
+
+                            /*String temp[];
                             time = values.get(timestamp).toString();
                             temp = time.split(" ");
                             time = temp[0];
-
                             Date date = null;
                             try {
                                 date = format.parse(time);
@@ -638,7 +639,23 @@ public class DashboardApiV10 {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
+                            long epoch = date.getTime();*/
+
+                            long epoch1 = Long.parseLong(values.get(timestamp).toString());
+                            //String pattern = "yyyy-MM-dd";
+                           // SimpleDateFormat format = new SimpleDateFormat(pattern);
+                            Date expiry = new Date(epoch1);
+                            String str_date = format.format(expiry);
+
+                            Date date = null;
+                            try {
+                                date = format.parse(str_date);
+                                //System.out.println(date);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                             long epoch = date.getTime();
+
                             if (values.get(col) != null) {
                                 val = values.get(col).toString();
 

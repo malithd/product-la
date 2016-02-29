@@ -1,6 +1,8 @@
 package org.wso2.carbon.la.restapi.util;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.analytics.dataservice.commons.AnalyticsDataResponse;
 import org.wso2.carbon.analytics.dataservice.commons.SearchResultEntry;
 import org.wso2.carbon.analytics.dataservice.core.SecureAnalyticsDataService;
@@ -9,6 +11,7 @@ import org.wso2.carbon.analytics.datasource.commons.RecordGroup;
 import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.la.commons.domain.RecordBean;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -16,6 +19,7 @@ import java.util.*;
  * Created by vithulan on 2/3/16.
  */
 public class Util {
+    private static final Log log = LogFactory.getLog(Util.class);
     private static final String day = "day";
     private static final String week = "week";
     private static final String month = "month";
@@ -235,5 +239,26 @@ public class Util {
         }
 
         return Fgrouped;
+    }
+
+    public static String appendTimeStamp(String query, String timeFrom, String timeTo){
+        String pattern = "MM/dd/yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        Date fromDate =null;
+        Date toDate = null;
+        try {
+            fromDate = format.parse(timeFrom);
+            toDate = format.parse(timeTo);
+        } catch (ParseException e) {
+            log.error(e);
+            e.printStackTrace();
+        }
+        long timeFromEpoch = fromDate.getTime();
+        long timeToEpoch = toDate.getTime();
+        String searchQuery = "";
+        if (!"".equals(query)) {
+            searchQuery = query + " AND ";
+        }
+        return searchQuery + "_eventTimeStamp:[" + timeFromEpoch + " TO " + timeToEpoch + "]";
     }
 }

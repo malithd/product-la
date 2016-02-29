@@ -164,7 +164,7 @@
                 </p>
             </div>
             <div class="c-right container wr-content">
-                <div class="container-fluid">
+                <div class="container-fluid" id="graphsDiv">
                     <p id="json_string"></p>
 
                     <p id="json_string2"></p>
@@ -173,12 +173,12 @@
 
 
                     <div class="panel-body" id="dChart" style="display:none;">
-
+                        <h4 id="countDisc"></h4>
                     </div>
                     <br><br>
 
                     <div class="panel-body" id="timeChart" style="display:none;">
-
+                        <h4 id="timeDisc"></h4>
 
                     </div>
 

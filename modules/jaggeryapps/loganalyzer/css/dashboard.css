@@ -90,6 +90,10 @@
 .dashboardNav form{
     margin: 0px 0px 20px;
 }
+
+.graphsDiv h4{
+    color: #533565;
+}
 .dashboardNav h2{
     font-family: "Georgia,serif";
     alignn : center;

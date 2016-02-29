@@ -84,7 +84,7 @@ function addFields() {
         fields[i] = fields[i].replace("\"", "")
         fields[i] = fields[i].replace("\"", "")
         fields[i] = capitalizeFirstLetter(fields[i].replace("_", ""));
-        if (fields[i] != "Message") {
+        if (fields[i] != "Trace"){
             var option = document.createElement('option');
             option.text = option.value = fields[i];
             select.add(option, 0);
@@ -100,11 +100,29 @@ function simpleFirstLetter(string) {
     return string.charAt(0).toLowerCase() + string.slice(1);
 }
 
+function getTimeFrom(){
+    if($("#fromTime").val()==""){
+        return "01/01/1970";
+    }
+    else{
+        return $("#fromTime").val();
+    }
+}
+
+function getTimeTo(){
+    if($("#toTime").val()==""){
+        return "17/10/2243";
+    }
+    else{
+        return $("#toTime").val();
+    }
+}
+
 function selectField2() {
     if ($("#0").val() == "None") {
         facetPath = "None";
     }
-    // document.getElementById("json_string2").innerHTML=facetPath;
+    //document.getElementById("json_string2").innerHTML=$("#fromTime").val();
     fieldName = arguments[0];
     var charttype = arguments[1];
     trem = fieldName;
@@ -114,17 +132,18 @@ function selectField2() {
     }
 
     var payload = {};
-    payload.query = fieldName;
+    payload.query = ",,"+fieldName;
     payload.start = 0;
     payload.length = 100000;
-    payload.timeFrom = 0;
+    payload.str_timeFrom= getTimeFrom();
     payload.tableName = "LOGANALYZER";
-    payload.timeTo = 8640000000000000;
+    payload.str_timeTo = getTimeTo();
+    payload.facetPath = facetPath.toString();
     var jsonnn = JSON.stringify(payload);
 
 
     jQuery.ajax({
-        url: serverUrl + "/api/dashboard/fieldData",
+        url: serverUrl + "/api/dashboard/filterData",
         type: "POST",
         contentType: "application/json",
         dataType: "json",
@@ -199,9 +218,9 @@ function filter() {
         payload.query = query;
         payload.start = 0;
         payload.length = 1000000;
-        payload.timeFrom = 0;
+        payload.str_timeFrom = getTimeFrom();
         payload.tableName = "LOGANALYZER";
-        payload.timeTo = 8640000000000000;
+        payload.str_timeTo = getTimeTo();
         payload.facetPath = facetPath.toString();
         var jsonnn = JSON.stringify(payload);
         //document.getElementById("json_string2").innerHTML = "You selected:!!" + query+"!!";
@@ -233,6 +252,7 @@ function filter() {
     }
 }
 function draw() {
+    $("#countDisc").html("Number of Hits vs "+$("#fieldsName").val());
     var chartType = $('#chartType').val();
     var dataValue = [];
     var temp = [];
@@ -340,9 +360,9 @@ function timeData() {
         payload.query = query;
         payload.start = 0;
         payload.length = 100000;
-        payload.timeFrom = 0;
+        payload.str_timeFrom = getTimeFrom();
         payload.tableName = "LOGANALYZER";
-        payload.timeTo = 8640000000000000;
+        payload.str_timeTo = getTimeTo();
         payload.facetPath = facetPath.toString();
         var jsonnn = JSON.stringify(payload);
         //document.getElementById("json_string2").innerHTML = "You selected:!!" + query+"!!";
@@ -360,6 +380,9 @@ function timeData() {
                 //  var rr = datas.find("values");
                 //tableResults=response.split("||%\",\"");
                 // $("#data-table").empty();
+                $("#timeDisc").html($("#fieldsName").val()+" hits vs Time");
+                //$("<h2></h2>").appendTo("#timeChart");
+                //("#timeChart h2").html("Hello");
                 drawTime(res, fieldName);
                 //addRow(res, fieldName);
                 // document.getElementById("json_string3").innerHTML=res[0];
@@ -525,7 +548,7 @@ function addChildLogStream(val, idVal) {
                     LogstreamDiv.appendChild(selectList);
                     var option1 = document.createElement('option');
                     option1.value = "None";
-                    option1.text = "Select a category"
+                    option1.text = "Select a category";
                     selectList.add(option1);
                     for (var i = 0; i < res.length; i++) {
                         var option = document.createElement('option');
