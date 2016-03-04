@@ -10,9 +10,7 @@ var chartType;
 window.onload = function () {
     checkApi();
     addLogstream();
-
-    //console.log("Hello world");
-}
+};
 
 function openDashboard() {
     //window.location= baseUrl +'/loganalyzer/site/visualize.jag';
@@ -177,14 +175,6 @@ function addRow() {
 
     draw(reslt, arguments[1]);
 }
-/*
- $(document).ready(function(){
- $("form").submit(function(){
- var query = $('#ftexte').val();
- document.getElementById("json_string").innerHTML=query;
- });
- });*/
-
 function filter() {
     if ($("#0").val() == "None") {
         facetPath = "None";
@@ -243,9 +233,6 @@ function filter() {
                 //document.getElementById("json_string").innerHTML=response;
             },
             error: function (res) {
-                var response = JSON.stringify(res);
-                // console.log(response);
-                //document.getElementById("json_string").innerHTML=response;
                 alert(res.error);
             }
         });
@@ -257,7 +244,6 @@ function draw() {
     var dataValue = [];
     var temp = [];
     var json = arguments[0];
-    //var charttype=arguments[2];
     for (var i = 0; i < json.length; i++) {
         var temp = [];
         var xVal = json[i][0];

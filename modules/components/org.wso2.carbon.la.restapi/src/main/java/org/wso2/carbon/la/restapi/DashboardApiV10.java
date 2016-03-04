@@ -24,7 +24,9 @@ import org.wso2.carbon.la.commons.constants.LAConstants;
 import org.wso2.carbon.la.commons.domain.QueryBean;
 import org.wso2.carbon.la.commons.domain.RecordBean;
 import org.wso2.carbon.la.commons.domain.config.LogFileConf;
+import org.wso2.carbon.la.core.impl.DrilldownController;
 import org.wso2.carbon.la.core.impl.LogFileProcessor;
+import org.wso2.carbon.la.core.impl.TimeAggregator;
 import org.wso2.carbon.la.core.utils.LACoreServiceValueHolder;
 import org.wso2.carbon.la.restapi.beans.LAErrorBean;
 import org.wso2.carbon.la.restapi.util.Util;
@@ -55,8 +57,12 @@ import java.net.URL;
 public class DashboardApiV10 {
 
     private static final Log log = LogFactory.getLog(DashboardApiV10.class);
-    private static final Gson gson = new Gson();
 
+    /**
+     * GET method
+     * @return Returns all the column names in DAS, LOGANALYZER Table
+     * @throws AnalyticsException
+     */
     @GET
     @Path("getFields")
     @Produces("application/json")
@@ -64,7 +70,6 @@ public class DashboardApiV10 {
     public Response getFields() throws AnalyticsException {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
-        //String username = carbonContext.getUsername();
         Map<String, ColumnDefinition> columns;
         List<String> fields = new ArrayList<String>();
         AnalyticsDataAPI analyticsDataAPI;
@@ -79,6 +84,11 @@ public class DashboardApiV10 {
         return Response.ok(fields).build();
     }
 
+    /**
+     * POST method
+     * @param query QueryBean object from front end
+     * @return Returns all the elements in selected column with number of Hits
+     */
     @POST
     @Path("/fieldData")
     @Produces("application/json")
@@ -87,62 +97,22 @@ public class DashboardApiV10 {
 
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
-        //String username = carbonContext.getUsername();
         List<String> column = new ArrayList<String>();
         column.add(query.getQuery());
         AnalyticsDataAPI analyticsDataAPI;
         AnalyticsDataResponse analyticsDataResponse;
-        //RecordGroup recordGroup [] ;
-
-
         analyticsDataAPI = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
         try {
             analyticsDataResponse = analyticsDataAPI.get(tenantId, LAConstants.LOG_ANALYZER_STREAM_NAME.toUpperCase(), 1,
                     column, query.getTimeFrom(), query.getTimeTo(), query.getStart(), -1);
-            // recordGroup = analyticsDataResponse.getRecordGroups();
-            final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse, analyticsDataAPI);
-
+            List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse, analyticsDataAPI);
+            final Map<String, Integer> counter = Util.getCountGroup(iterators, query.getQuery());
             return new StreamingOutput() {
                 @Override
                 public void write(OutputStream outputStream)
                         throws IOException, WebApplicationException {
                     Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-                    Map<String, Object> values;
-                    Map<String, Integer> counter = new HashMap<String, Integer>();
-
-                    int count = 0;
-                    String val;
                     recordWriter.write("[");
-                    for (Iterator<Record> iterator : iterators) {
-                        while (iterator.hasNext()) {
-                            RecordBean recordBean = Util.createRecordBean(iterator.next());
-                            values = recordBean.getValues();
-                            if (values.get(query.getQuery()) == null) {
-
-                                if (!counter.containsKey("NULLVALUE")) {
-                                    counter.put("NULLVALUE", 1);
-                                } else {
-                                    count = counter.get("NULLVALUE");
-                                    count++;
-                                    counter.put("NULLVALUE", count);
-                                }
-
-                            } else {
-                                val = values.get(query.getQuery()).toString();
-                                if (!counter.containsKey(val)) {
-                                    counter.put(val, 1);
-                                } else {
-                                    count = counter.get(val);
-                                    count++;
-                                    counter.put(val, count);
-                                }
-                            }
-                            if (log.isDebugEnabled()) {
-                                log.debug("Retrieved -- Record Id: " + recordBean.getId() + " values :" +
-                                        recordBean.toString());
-                            }
-                        }
-                    }
                     int i = 1;
                     for (Map.Entry<String, Integer> entry : counter.entrySet()) {
 
@@ -170,28 +140,25 @@ public class DashboardApiV10 {
                 }
             };
         }
-
-
     }
 
+    /**
+     * POST method
+     * @param query QueryBean object from front end
+     * @return Returns filtered data from a specified column
+     */
     @POST
     @Path("/filterData")
     @Produces("application/json")
     @Consumes("application/json")
-    public StreamingOutput filterData(final QueryBean query) throws AnalyticsException {
+    public StreamingOutput filterData(final QueryBean query) {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        int tenantId = carbonContext.getTenantId();
         String username = carbonContext.getUsername();
-        AnalyticsDataAPI analyticsDataAPI;
-        AnalyticsDataResponse analyticsDataResponse;
-        String logstream = "logstream";
-        //RecordGroup recordGroup [] ;
-        AnalyticsDrillDownRequest analyticsDrillDownRequest = new AnalyticsDrillDownRequest();
-        analyticsDataAPI = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
+        DrilldownController drilldownController = new DrilldownController();
         if (query != null) {
             String q[] = query.getQuery().split(",,");
             String searchQuery = q[0];
-            searchQuery = Util.appendTimeStamp(searchQuery,query.getStr_timeFrom(),query.getStr_timeTo());
+            searchQuery = Util.appendTimeStamp(searchQuery, query.getStr_timeFrom(), query.getStr_timeTo());
             final String col = q[1];
             List<String> column = new ArrayList<>();
             column.add(col);
@@ -200,70 +167,25 @@ public class DashboardApiV10 {
             Map<String, List<String>> categoryPath = new HashMap<>();
             List<String> pathList = new ArrayList<>();
             if (facetPath.equals("None")) {
-                categoryPath.put(logstream, pathList);
+                categoryPath.put(LAConstants.LOGSTREAM, pathList);
             } else {
                 String pathArray[] = facetPath.split(",");
                 for (String path : pathArray) {
                     pathList.add(path);
                 }
-                categoryPath.put(logstream, pathList);
+                categoryPath.put(LAConstants.LOGSTREAM, pathList);
             }
-            analyticsDrillDownRequest.setTableName(query.getTableName());
-            analyticsDrillDownRequest.setQuery(searchQuery);
-            analyticsDrillDownRequest.setRecordCount(query.getLength());
-            analyticsDrillDownRequest.setRecordStartIndex(query.getStart());
-            analyticsDrillDownRequest.setCategoryPaths(categoryPath);
-            List<SearchResultEntry> searchResults = analyticsDataAPI.drillDownSearch(username, analyticsDrillDownRequest);
-
-            List<String> ids = Util.getRecordIds(searchResults);
-            analyticsDataResponse = analyticsDataAPI.get(username, query.getTableName(), 1, column, ids);
-            final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse, analyticsDataAPI);
+            List<Iterator<Record>> iterators = drilldownController.getResults(query.getTableName(), searchQuery,
+                    query.getLength(), query.getStart(), categoryPath, username, column);
+            final Map<String, Integer> counter = Util.getCountGroup(iterators, col);
             return new StreamingOutput() {
                 @Override
                 public void write(OutputStream outputStream)
                         throws IOException, WebApplicationException {
                     Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-                    Map<String, Object> values;
-                    Map<String, Integer> counter = new HashMap<String, Integer>();
-
-                    int count = 0;
-                    String val;
                     recordWriter.write("[");
-                    for (Iterator<Record> iterator : iterators) {
-                        while (iterator.hasNext()) {
-                            RecordBean recordBean = Util.createRecordBean(iterator.next());
-                            values = recordBean.getValues();
-
-                            if (values.get(col) == null) {
-
-                                if (!counter.containsKey("NULLVALUE")) {
-                                    counter.put("NULLVALUE", 1);
-                                } else {
-                                    count = counter.get("NULLVALUE");
-                                    count++;
-                                    counter.put("NULLVALUE", count);
-                                }
-
-                            } else {
-                                val = values.get(col).toString();
-                                if (!counter.containsKey(val)) {
-                                    counter.put(val, 1);
-                                } else {
-                                    count = counter.get(val);
-                                    count++;
-                                    counter.put(val, count);
-                                }
-                            }
-
-                            if (log.isDebugEnabled()) {
-                                log.debug("Retrieved -- Record Id: " + recordBean.getId() + " values :" +
-                                        recordBean.toString());
-                            }
-                        }
-                    }
                     int i = 1;
                     for (Map.Entry<String, Integer> entry : counter.entrySet()) {
-
                         recordWriter.write("[[\"" + entry.getKey() + "\"],[\"" + entry.getValue() + "\"]]");
                         if (i < counter.size()) {
                             recordWriter.write(",");
@@ -275,471 +197,80 @@ public class DashboardApiV10 {
                 }
             };
         } else {
-            String msg = String.format("Error occurred while retrieving field data");
+            String msg = String.format("Query cannot be NULL");
             log.error(msg);
             return new StreamingOutput() {
                 @Override
                 public void write(OutputStream outputStream) throws IOException, WebApplicationException {
                     Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-                    recordWriter.write("Error in reading records");
+                    recordWriter.write("Query is null");
                     recordWriter.flush();
                 }
             };
         }
     }
-/*
-    @POST
-    @Path("/timeData")
-    @Produces("application/json")
-    @Consumes("application/json")
-    public StreamingOutput timeData(final QueryBean query) throws AnalyticsException {
 
-        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        int tenantId = carbonContext.getTenantId();
-        String username = carbonContext.getUsername();
-        AnalyticsDataAPI analyticsDataAPI;
-        AnalyticsDataResponse analyticsDataResponse;
-        //RecordGroup recordGroup [] ;
-        analyticsDataAPI = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
-        if (query != null) {
-            String q[] = query.getQuery().split(",,");
-            String searchQuery = q[0];
-            final String col = q[1];
-            final String timestamp = "_timestamp2";
-            List<String> column = new ArrayList<>();
-            column.add(col);
-            column.add(timestamp);
-
-            List<SearchResultEntry> searchResults = analyticsDataAPI.search(username,
-                    query.getTableName(), searchQuery,
-                    query.getStart(), query.getLength());
-            List<String> ids = Util.getRecordIds(searchResults);
-            analyticsDataResponse = analyticsDataAPI.get(username, query.getTableName(), 1, column, ids);
-            final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse, analyticsDataAPI);
-            return new StreamingOutput() {
-                @Override
-                public void write(OutputStream outputStream)
-                        throws IOException, WebApplicationException {
-                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-                    Map<String, Object> values;
-
-                    Map<String, Map<String, Integer>> stamper = new HashMap<>();
-                    int count = 0;
-                    String val;
-                    String time;
-                    recordWriter.write("[");
-                    for (Iterator<Record> iterator : iterators) {
-                        while (iterator.hasNext()) {
-                            RecordBean recordBean = Util.createRecordBean(iterator.next());
-                            values = recordBean.getValues();
-                            String temp[];
-                            time = values.get(timestamp).toString();
-                            temp = time.split(" ");
-                            time = temp[0];
-                            if (values.get(col) != null) {
-                                val = values.get(col).toString();
-
-                                if (!stamper.containsKey(time)) {
-                                    Map<String, Integer> counter = new HashMap<String, Integer>();
-                                    counter.put(val, 1);
-                                    stamper.put(time, counter);
-                                } else {
-                                    Map<String, Integer> counter = stamper.get(time);
-                                    if (!counter.containsKey(val)) {
-                                        counter.put(val, 1);
-                                        stamper.put(time, counter);
-                                    } else {
-                                        count = counter.get(val);
-                                        count++;
-                                        counter.put(val, count);
-                                        stamper.put(time, counter);
-                                    }
-                                }
-
-                            }
-                            if (log.isDebugEnabled()) {
-                                log.debug("Retrieved -- Record Id: " + recordBean.getId() + " values :" +
-                                        recordBean.toString());
-                            }
-                        }
-                    }
-                    int i = 1;
-                    int j = 1;
-                    for (Map.Entry<String, Map<String, Integer>> entry : stamper.entrySet()) {
-                        Map<String, Integer> counter = entry.getValue();
-                        for (Map.Entry<String, Integer> infom : counter.entrySet()) {
-                            recordWriter.write("[[\"" + entry.getKey() + "\"],[\"" + infom.getKey() + "\"],[\"" + infom.getValue() + "\"]]");
-                            if (i < counter.size()) {
-                                recordWriter.write(",");
-                                i++;
-                            }
-                        }
-                        i = 1;
-                        if (j < stamper.size()) {
-                            recordWriter.write(",");
-                            j++;
-                        }
-
-                    }
-                    recordWriter.write("]");
-                    recordWriter.flush();
-                }
-            };
-        } else {
-            String msg = String.format("Error occurred while retrieving field data");
-            log.error(msg);
-            return new StreamingOutput() {
-                @Override
-                public void write(OutputStream outputStream) throws IOException, WebApplicationException {
-                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-                    recordWriter.write("Error in reading records");
-                    recordWriter.flush();
-                }
-            };
-        }
-
-    }
-
-    @POST
-    @Path("/epochTimeData")
-    @Produces("application/json")
-    @Consumes("application/json")
-    public StreamingOutput EpochtimeData(final QueryBean query) throws AnalyticsException {
-
-        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        int tenantId = carbonContext.getTenantId();
-        String username = carbonContext.getUsername();
-        AnalyticsDataAPI analyticsDataAPI;
-        AnalyticsDataResponse analyticsDataResponse;
-        //RecordGroup recordGroup [] ;
-        analyticsDataAPI = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
-        if (query != null) {
-            String q[] = query.getQuery().split(",,");
-            String searchQuery = q[0];
-            final String col = q[1];
-            final String timestamp = "_timestamp2";
-            final long dayGap = 86400000;
-            final String pattern = "yyyy-MM-dd";
-            final SimpleDateFormat format = new SimpleDateFormat(pattern);
-            List<String> column = new ArrayList<>();
-            column.add(col);
-            column.add(timestamp);
-
-            List<SearchResultEntry> searchResults = analyticsDataAPI.search(username,
-                    query.getTableName(), searchQuery,
-                    query.getStart(), query.getLength());
-            List<String> ids = Util.getRecordIds(searchResults);
-            analyticsDataResponse = analyticsDataAPI.get(username, query.getTableName(), 1, column, ids);
-            final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse, analyticsDataAPI);
-            return new StreamingOutput() {
-                @Override
-                public void write(OutputStream outputStream)
-                        throws IOException, WebApplicationException {
-                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-                    Map<String, Object> values;
-
-                    Map<Long, Map<String, Integer>> stamper = new HashMap<>();
-                    int count = 0;
-                    String val;
-                    String time;
-                    recordWriter.write("[");
-                    for (Iterator<Record> iterator : iterators) {
-                        while (iterator.hasNext()) {
-                            RecordBean recordBean = Util.createRecordBean(iterator.next());
-                            values = recordBean.getValues();
-                            String temp[];
-                            time = values.get(timestamp).toString();
-                            temp = time.split(" ");
-                            time = temp[0];
-
-                            Date date = null;
-                            try {
-                                date = format.parse(time);
-                                //System.out.println(date);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            long epoch = date.getTime();
-                            if (values.get(col) != null) {
-                                val = values.get(col).toString();
-
-                                if (!stamper.containsKey(epoch)) {
-                                    Map<String, Integer> counter = new HashMap<String, Integer>();
-                                    counter.put(val, 1);
-                                    stamper.put(epoch, counter);
-                                } else {
-                                    Map<String, Integer> counter = stamper.get(epoch);
-                                    if (!counter.containsKey(val)) {
-                                        counter.put(val, 1);
-                                        stamper.put(epoch, counter);
-                                    } else {
-                                        count = counter.get(val);
-                                        count++;
-                                        counter.put(val, count);
-                                        stamper.put(epoch, counter);
-                                    }
-                                }
-
-                            }
-                            if (log.isDebugEnabled()) {
-                                log.debug("Retrieved -- Record Id: " + recordBean.getId() + " values :" +
-                                        recordBean.toString());
-                            }
-                        }
-                    }
-
-                    Map<Long, Map<String, Integer>> sortedMap = new TreeMap<Long, Map<String, Integer>>(stamper);
-                    int i = 1;
-                    int j = 1;
-                    long lastDay = 0;
-                    long presentDay = 0;
-                    long k = 1;
-                    for (Map.Entry<Long, Map<String, Integer>> entry : sortedMap.entrySet()) {
-
-                        if (j > 1) {
-                            presentDay = entry.getKey();
-                            long dif = presentDay - lastDay;
-                            k = dif / dayGap;
-
-                        }
-                        if (k > 1) {
-                            int m = (int) k;
-                            long newDate = lastDay;
-                            while (k > 1) {
-                                newDate = newDate + dayGap;
-                                long temp = newDate / 1000L;
-                                Date expiry = new Date(temp * 1000L);
-                                String str_date = format.format(expiry);
-                                recordWriter.write("[[\"" + str_date + "\"],[\"" + "No Entry" + "\"],[\"" + 0 + "\"]]");
-                                k--;
-                                if (k != 1) {
-                                    recordWriter.write(",");
-                                }
-                            }
-                            recordWriter.write(",");
-                            k = 1;
-                            lastDay = newDate;
-                        }
-                        if (k == 1) {
-                            Map<String, Integer> counter = entry.getValue();
-                            for (Map.Entry<String, Integer> infom : counter.entrySet()) {
-                                long temp = entry.getKey() / 1000L;
-                                Date expiry = new Date(temp * 1000L);
-                                String str_date = format.format(expiry);
-                                recordWriter.write("[[\"" + str_date + "\"],[\"" + infom.getKey() + "\"],[\"" + infom.getValue() + "\"]]");
-                                if (i < counter.size()) {
-                                    recordWriter.write(",");
-                                    i++;
-                                }
-                            }
-                            i = 1;
-                            if (j < sortedMap.size()) {
-                                recordWriter.write(",");
-                                j++;
-                            }
-                            lastDay = entry.getKey();
-                        }
-
-                    }
-                    recordWriter.write("]");
-                    recordWriter.flush();
-                }
-            };
-        } else {
-            String msg = String.format("Error occurred while retrieving field data");
-            log.error(msg);
-            return new StreamingOutput() {
-                @Override
-                public void write(OutputStream outputStream) throws IOException, WebApplicationException {
-                    Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-                    recordWriter.write("Error in reading records");
-                    recordWriter.flush();
-                }
-            };
-        }
-
-    } */
-
+    /**
+     * POST method
+     * @param query QueryBean object from front end
+     * @return Returns data in specific column by grouping it by time
+     */
     @POST
     @Path("/epochTimeDataFinal")
     @Produces("application/json")
     @Consumes("application/json")
-    public StreamingOutput EpochtimeDataFinal(final QueryBean query) throws AnalyticsException {
+    public StreamingOutput EpochtimeDataFinal(final QueryBean query) {
 
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        int tenantId = carbonContext.getTenantId();
         String username = carbonContext.getUsername();
-        AnalyticsDataAPI analyticsDataAPI;
-        AnalyticsDataResponse analyticsDataResponse;
-        //RecordGroup recordGroup [] ;
-        AnalyticsDrillDownRequest analyticsDrillDownRequest = new AnalyticsDrillDownRequest();
-        String logstream = "logstream";
-        analyticsDataAPI = LACoreServiceValueHolder.getInstance().getAnalyticsDataAPI();
+        DrilldownController drilldownController = new DrilldownController();
+        TimeAggregator timeAggregator = new TimeAggregator();
         if (query != null) {
             String q[] = query.getQuery().split(",,");
             String searchQuery = q[0];
-            searchQuery = Util.appendTimeStamp(searchQuery,query.getStr_timeFrom(),query.getStr_timeTo());
-            final String col = q[1];
+            searchQuery = Util.appendTimeStamp(searchQuery, query.getStr_timeFrom(), query.getStr_timeTo());
+            final String columnName = q[1];
             final String groupBy = q[2];
-            final String timestamp = "_eventTimeStamp";
-            final long dayGap = 86400000;
-            final String pattern = "yyyy-MM-dd";
-            final SimpleDateFormat format = new SimpleDateFormat(pattern);
             List<String> column = new ArrayList<>();
-            column.add(col);
-            column.add(timestamp);
+            column.add(columnName);
+            column.add(LAConstants.TIMESTAMP_FIELD);
 
             String facetPath = query.getFacetPath();
             Map<String, List<String>> categoryPath = new HashMap<>();
             List<String> pathList = new ArrayList<>();
             if (facetPath.equals("None")) {
-                categoryPath.put(logstream, pathList);
+                categoryPath.put(LAConstants.LOGSTREAM, pathList);
             } else {
                 String pathArray[] = facetPath.split(",");
                 for (String path : pathArray) {
                     pathList.add(path);
                 }
-                categoryPath.put(logstream, pathList);
+                categoryPath.put(LAConstants.LOGSTREAM, pathList);
             }
-            analyticsDrillDownRequest.setTableName(query.getTableName());
-            analyticsDrillDownRequest.setQuery(searchQuery);
-            analyticsDrillDownRequest.setRecordCount(query.getLength());
-            analyticsDrillDownRequest.setRecordStartIndex(query.getStart());
-            analyticsDrillDownRequest.setCategoryPaths(categoryPath);
-            List<SearchResultEntry> searchResults = analyticsDataAPI.drillDownSearch(username, analyticsDrillDownRequest);
 
-
-            List<String> ids = Util.getRecordIds(searchResults);
-            analyticsDataResponse = analyticsDataAPI.get(username, query.getTableName(), 1, column, ids);
-            final List<Iterator<Record>> iterators = Util.getRecordIterators(analyticsDataResponse, analyticsDataAPI);
+            final List<Iterator<Record>> iterators = drilldownController.getResults(query.getTableName(), searchQuery,
+                    query.getLength(), query.getStart(), categoryPath, username, column);
+            final Map<String, Map<String, Integer>> aggregatedMap = timeAggregator.getGrouped(iterators, columnName, groupBy);
             return new StreamingOutput() {
                 @Override
                 public void write(OutputStream outputStream)
                         throws IOException, WebApplicationException {
                     Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-                    Map<String, Object> values;
-
-                    Map<Long, Map<String, Integer>> stamper = new HashMap<>();
-                    int count = 0;
-                    String val;
-                    String time;
-                    for (Iterator<Record> iterator : iterators) {
-                        while (iterator.hasNext()) {
-                            RecordBean recordBean = Util.createRecordBean(iterator.next());
-                            values = recordBean.getValues();
-
-                            /*String temp[];
-                            time = values.get(timestamp).toString();
-                            temp = time.split(" ");
-                            time = temp[0];
-                            Date date = null;
-                            try {
-                                date = format.parse(time);
-                                //System.out.println(date);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            long epoch = date.getTime();*/
-
-                            long epoch1 = Long.parseLong(values.get(timestamp).toString());
-                            //String pattern = "yyyy-MM-dd";
-                           // SimpleDateFormat format = new SimpleDateFormat(pattern);
-                            Date expiry = new Date(epoch1);
-                            String str_date = format.format(expiry);
-
-                            Date date = null;
-                            try {
-                                date = format.parse(str_date);
-                                //System.out.println(date);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            long epoch = date.getTime();
-
-                            if (values.get(col) != null) {
-                                val = values.get(col).toString();
-
-                                if (!stamper.containsKey(epoch)) {
-                                    Map<String, Integer> counter = new HashMap<String, Integer>();
-                                    counter.put(val, 1);
-                                    stamper.put(epoch, counter);
-                                } else {
-                                    Map<String, Integer> counter = stamper.get(epoch);
-                                    if (!counter.containsKey(val)) {
-                                        counter.put(val, 1);
-                                        stamper.put(epoch, counter);
-                                    } else {
-                                        count = counter.get(val);
-                                        count++;
-                                        counter.put(val, count);
-                                        stamper.put(epoch, counter);
-                                    }
-                                }
-
-                            }
-                            if (log.isDebugEnabled()) {
-                                log.debug("Retrieved -- Record Id: " + recordBean.getId() + " values :" +
-                                        recordBean.toString());
-                            }
-                        }
-                    }
-
-                    Map<Long, Map<String, Integer>> sortedMap = new TreeMap<Long, Map<String, Integer>>(stamper);
-                    Map<Long, Map<String, Integer>> allDayMap = new HashMap<>();
-                    int j = 1;
-                    long lastDay = 0;
-                    long presentDay = 0;
-                    long k = 1;
-
-                    for (Map.Entry<Long, Map<String, Integer>> entry : sortedMap.entrySet()) {
-
-                        if (j > 1) {
-                            presentDay = entry.getKey();
-                            long dif = presentDay - lastDay;
-                            k = dif / dayGap;
-
-                        }
-                        if (k > 1) {
-                            long newDate = lastDay;
-                            while (k > 1) {
-                                newDate = newDate + dayGap;
-                                Map<String, Integer> tempMap = new HashMap<>();
-                                tempMap.put("No Entry", 0);
-                                allDayMap.put(newDate, tempMap);
-                                k--;
-                            }
-                            k = 1;
-                            lastDay = newDate;
-                        }
-                        if (k == 1) {
-                            Map<String, Integer> counter = entry.getValue();
-                            if (j < sortedMap.size()) {
-                                j++;
-                            }
-                            lastDay = entry.getKey();
-                            allDayMap.put(lastDay, counter);
-                        }
-
-                    }
-                    allDayMap = new TreeMap<Long, Map<String, Integer>>(allDayMap);
-                    Map<String, Map<String, Integer>> grouped = Util.getGrouping(allDayMap, groupBy);
-                    grouped = new TreeMap<>(grouped);
-
                     int i = 1;
                     int l = 1;
                     recordWriter.write("[");
-                    for (Map.Entry<String, Map<String, Integer>> entry : grouped.entrySet()) {
+                    for (Map.Entry<String, Map<String, Integer>> entry : aggregatedMap.entrySet()) {
                         Map<String, Integer> counter = entry.getValue();
                         for (Map.Entry<String, Integer> infom : counter.entrySet()) {
-
-                            recordWriter.write("[[\"" + entry.getKey() + "\"],[\"" + infom.getKey() + "\"],[\"" + infom.getValue() + "\"]]");
+                            recordWriter.write("[[\"" + entry.getKey() + "\"],[\"" + infom.getKey()
+                                    + "\"],[\"" + infom.getValue() + "\"]]");
                             if (i < counter.size()) {
                                 recordWriter.write(",");
                                 i++;
                             }
                         }
                         i = 1;
-                        if (l < grouped.size()) {
+                        if (l < aggregatedMap.size()) {
                             recordWriter.write(",");
                             l++;
                         }
@@ -750,20 +281,24 @@ public class DashboardApiV10 {
                 }
             };
         } else {
-            String msg = String.format("Error occurred while retrieving field data");
+            String msg = String.format("Query cannot be NULL");
             log.error(msg);
             return new StreamingOutput() {
                 @Override
                 public void write(OutputStream outputStream) throws IOException, WebApplicationException {
                     Writer recordWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-                    recordWriter.write("Error in reading records");
+                    recordWriter.write("Query is null");
                     recordWriter.flush();
                 }
             };
         }
-
     }
 
+    /**
+     * POST method
+     * @param query QueryBean object from front end
+     * @return returns the facet child of given facet parent.
+     */
     @POST
     @Path("/logStreamData")
     @Produces("application/json")
@@ -811,7 +346,7 @@ public class DashboardApiV10 {
             };
 
         } catch (AnalyticsException e) {
-            String msg = String.format("Error occurred while retrieving field data");
+            String msg = String.format("Error occurred while drilldowning facet data");
             log.error(msg, e);
             return new StreamingOutput() {
                 @Override

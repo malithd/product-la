@@ -87,8 +87,14 @@
                     <a href="#">Link 3</a>
                 </div>
             </div-->
+            <p>Logstream</p>
+            <select id="0" name="logstreamSelect" onchange="addChildLogStream(this.value,this.id)">
+                <option value="None">All</option>
+            </select>
+
+            <div class="logstreamDiv" id="logStreamDiv"></div>
             <p>Visualize</p>
-            <label>Fileds</label>
+            <label>Fields</label>
             <select id="fieldsName" name="Fields"></select>
             <label>Chart type</label>
             <select id="chartType" name="charts">
@@ -99,14 +105,7 @@
             </select>
             <button type="btn button" id="visulaize" onclick="visualize()">Visualize</button>
 
-            <p>Logstream</p>
-            <select id="0" name="logstreamSelect" onchange="addChildLogStream(this.value,this.id)">
-                <option value="None">All</option>
-            </select>
 
-            <div class="logstreamDiv" id="logStreamDiv">
-
-            </div>
 
             <form action="">
                 <p>Filter</p>
