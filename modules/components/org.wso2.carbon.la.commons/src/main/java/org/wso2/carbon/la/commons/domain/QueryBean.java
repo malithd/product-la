@@ -38,9 +38,30 @@ public class QueryBean {
 
     private long timeTo;
 
+    private String facetPath;
+
+    private String str_timeFrom;
+    private String str_timeTo;
+
+    public String getStr_timeFrom(){ return str_timeFrom; }
+
+    public void setStr_timeFrom(String str_timeFrom) {
+        this.str_timeFrom = str_timeFrom;
+    }
+
+    public void setStr_timeTo(String str_timeTo){
+        this.str_timeTo = str_timeTo;
+    }
+
+    public String getStr_timeTo(){ return str_timeTo; }
+
     public int getLength() {
         return length;
     }
+
+    public String getFacetPath(){return facetPath;}
+
+    public void setFacetPath(String facetPath){this.facetPath=facetPath;}
 
     public void setLength(int length) {
         this.length = length;
