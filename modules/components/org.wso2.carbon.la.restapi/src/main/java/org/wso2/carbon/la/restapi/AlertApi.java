@@ -26,6 +26,7 @@ import org.wso2.carbon.la.alert.domain.SATaskInfo;
 import org.wso2.carbon.la.alert.impl.ScheduleAlertControllerImpl;
 import org.wso2.carbon.la.commons.constants.LAConstants;
 import org.wso2.carbon.ntask.common.TaskException;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
 import java.util.List;
 
@@ -66,8 +67,10 @@ public class AlertApi {
     @Path("/delete/{alertName}")
     @Produces("application/json")
     @Consumes("application/json")
-    public Response deleteScheduleAlert(@PathParam("alertName") String alertName) throws TaskException {
-        scheduleAlertControllerImpl.deleteAlertTask(alertName);
+    public Response deleteScheduleAlert(@PathParam("alertName") String alertName) throws TaskException, RegistryException {
+        PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId=carbonContext.getTenantId();
+        scheduleAlertControllerImpl.deleteAlertTask(alertName,tenantId);
         return Response.ok("delete").build();
     }
 

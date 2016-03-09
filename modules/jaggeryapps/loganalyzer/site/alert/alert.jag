@@ -91,13 +91,12 @@
                         <!-- Schedule Alert Content --- Schedule Alert List-->
                         <div class="container alert-list">
                              <button class="btn btn-main" id="add-alert-btn" class="input form-control">Add Alert</button>
-                            <table>
+                            <table id="alert-list" class="alert-list">
                             <thead>
                             <tr>
                             <th>Alert Name</th>
                             <th>Alert Description</th>
-                            <th>Alert Type</th>
-                            <th>Action</th>
+                            <th colspan="2">Action</th>
                             </tr>
                             </thead>
                             </table>

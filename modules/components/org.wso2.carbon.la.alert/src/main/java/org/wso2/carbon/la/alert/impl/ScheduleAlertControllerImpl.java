@@ -225,9 +225,18 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         return saTaskInfo;
     }
 
-    public boolean deleteAlertTask(String alertName) throws TaskException {
+    public boolean deleteAlertTask(String alertName, int tenantId) throws TaskException, RegistryException {
         TaskManager taskManager = LAAlertServiceValueHolder.getInstance().getTaskService().getTaskManager(LAAlertConstant.SCHEDULE_ALERT_TASK_TYPE);
         taskManager.deleteTask(alertName);
+        UserRegistry userRegistry = LAAlertServiceValueHolder.getInstance().getTenantConfigRegistry(tenantId);
+        String fileLocation=getConfigurationLocation(alertName);
+        if (userRegistry.resourceExists(fileLocation)) {
+            userRegistry.delete(fileLocation);
+        } else {
+            log.info("Cannot delete non existing file : " + alertName + " for tenantId : " + tenantId + ". " +
+                    "It might have been deleted already." );
+        }
+
         return true;
     }
 }

@@ -47,10 +47,57 @@ jQuery(document).ready(function() {
 
     }
 
+    getAllAlerts();
+
     loadAction();
     loadContent();
     loadCompare();
 });
+
+function getAllAlerts(){
+    jQuery.ajax({
+        type:"GET",
+        url:serverUrl+"/api/alert/getAllScheduleAlerts",
+        success: function(res){
+            alert(res);
+            var html = "";
+            $.each(res, function (key, alert) {
+                html += createTable(alert);
+            });
+            $("#alert-list").append(html);
+        },
+        error:function(res){
+            alert(res);
+        }
+    });
+}
+
+function createTable(alert){
+    return '<tr><td>'+ alert.alertName +'</td><td>' + alert.description + '</td><td><a  onclick=deleteAlert(\''+alert.alertName+'\')>Delete</a></td><td><a  onclick=updateAlert(\''+alert.alertName+'\')>Update</a></td></tr>';
+}
+
+function deleteAlert(alertName){
+    alert(alertName);
+    jQuery.ajax({
+        type:"DELETE",
+        url:serverUrl+"/api/alert/delete/"+alertName
+    });
+}
+
+function updateAlert(alertName){
+    alert(alertName);
+}
+
+
+
+
+
+
+
+
+
+
+
 
 function callAlert(){
     var payload={};
