@@ -194,6 +194,7 @@
                                 </table>
                             </div>
                         </div>
+                        <button class="btn btn-main" id="alert-btn">Alert</button>
                     </div>
                 </div>
 

@@ -192,3 +192,29 @@ function tableToCSV(table, tableElm) {
     link.click();
 }
 
+/*----------------Delete---------------------------*/
+$(function () {
+    $("#alert-btn").click(function () {
+
+        window.location = serverUrl + '/loganalyzer/site/alert/alert.jag';
+
+
+    });
+});
+
+
+
+$("#save-options").change(function(){
+
+    var query = $("#search-field").val();
+    alert(query);
+    var timeFrom = parseInt($("#timestamp-from").val());
+   var timeTo = parseInt($("#timestamp-to").val());
+    if($(this).val()=='alert'){
+        window.location=serverUrl+'/loganalyzer/site/alert/alert.jag?'+"query="+query + "&" + "timefrom="+timeFrom + "&" + "timeto="+timeTo;
+    }
+});
+
+
+
+/*---------------------Delete above----------------------------*/
