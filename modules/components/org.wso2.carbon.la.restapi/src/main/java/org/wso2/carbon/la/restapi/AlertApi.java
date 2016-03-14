@@ -42,7 +42,7 @@ public class AlertApi {
     @Path("/save")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response saveAlert(SATaskInfo saTaskInfo)  {
+    public Response saveAlert(SATaskInfo saTaskInfo) {
         PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
         String username=carbonContext.getUsername();
         int tenantId=carbonContext.getTenantId();
@@ -74,4 +74,28 @@ public class AlertApi {
         return Response.ok("delete").build();
     }
 
+    @GET
+    @Path("getAlertContent/{alertName}")
+    @Produces("application/json")
+    public SATaskInfo getAlertContent(@PathParam("alertName") String alertName) throws RegistryException {
+        PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId=carbonContext.getTenantId();
+        SATaskInfo saTaskInfo=scheduleAlertControllerImpl.getAlertConfiguration(alertName,tenantId);
+        return saTaskInfo;
+    }
+
+    @PUT
+    @Path("/update")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response updateAlertContent(SATaskInfo saTaskInfo) throws RegistryException, TaskException {
+        PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        String username=carbonContext.getUsername();
+        int tenantId=carbonContext.getTenantId();
+        saTaskInfo.setTableName(LAConstants.LOG_ANALYZER_STREAM_NAME);
+        saTaskInfo.setStart(0);
+        saTaskInfo.setLength(100);
+        scheduleAlertControllerImpl.updateScheduleAlertTask(saTaskInfo,username,tenantId);
+        return Response.ok("pass").build();
+    }
 }

@@ -137,6 +137,9 @@ li.active a, li.active a:hover {
 #alert-save-btn{
     float: right;
 }
+#alert-update-btn{
+    float: right;
+}
 
 .compare{
     margin-bottom: 20px;
@@ -180,4 +183,8 @@ li.active a, li.active a:hover {
 
 #action-sms{
     display:none;
+}
+
+#alert-update-btn{
+    display: none;
 }

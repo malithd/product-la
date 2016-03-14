@@ -3,6 +3,7 @@
  */
 var serverUrl = window.location.origin;
 
+
 jQuery(document).ready(function() {
 
     jQuery('.alert-tabs .tab-links a').on('click', function(e)  {
@@ -64,7 +65,7 @@ function getAllAlerts(){
             $.each(res, function (key, alert) {
                 html += createTable(alert);
             });
-            $("#alert-list").append(html);
+            $("#alert-list-table").append(html);
         },
         error:function(res){
             alert(res);
@@ -73,7 +74,7 @@ function getAllAlerts(){
 }
 
 function createTable(alert){
-    return '<tr><td>'+ alert.alertName +'</td><td>' + alert.description + '</td><td><a  onclick=deleteAlert(\''+alert.alertName+'\')>Delete</a></td><td><a  onclick=updateAlert(\''+alert.alertName+'\')>Update</a></td></tr>';
+    return '<tr><td>'+ alert.alertName +'</td><td>' + alert.description + '</td><td><a  onclick=deleteAlert(\''+alert.alertName+'\')>Delete</a></td><td><a  onclick=updateContent(\''+alert.alertName+'\')>Update</a></td></tr>';
 }
 
 function deleteAlert(alertName){
@@ -84,19 +85,138 @@ function deleteAlert(alertName){
     });
 }
 
-function updateAlert(alertName){
+function updateContent(alertName){
     alert(alertName);
+    $(".inner-container").show();
+    $(".alert-list").hide();
+    $("#alert-save-btn").hide();
+    $("#alert-update-btn").show();
+    jQuery.ajax({
+        type:"GET",
+        url:serverUrl+"/api/alert/getAlertContent/"+alertName,
+        success:function(res){
+            $("#alert-name-txt").val(res.alertName);
+            $("#alert-des-txa").val(res.description);
+            $("#filter-txt").val(res.query);
+            $("#timestamp-from").val(res.timeFrom);
+            $("#timestamp-to").val(res.timeTo);
+            $("#cron-exp").val(res.cronExpression);
+            $("#cond-type").val(res.condition);
+            $("#cmp-val").val(res.conditionValue);
+             $("#alert-action").val(res.alertActionType);
+            if(res.alertActionType=='logger'){
+                loadAction();
+                $("#action-logger-uniqueId").val(res.alertActionProperties.uniqueId);
+                $("#message").val(res.alertActionProperties.message);
+            }
+            else if(res.alertActionType=='email'){
+                loadAction();
+                $("#action-email-address").val(res.alertActionProperties.email_address);
+                $("#action-email-subject").val(res.alertActionProperties.email_subject);
+                $("#action-email-type").val(res.alertActionProperties.email_type);
+                $("#messahe").val(res.message);
+            }
+            else if(res.alertActionType=='sms'){
+                loadAction();
+                $("#action-sms-phoneNo").val(res.sms_no);
+                $("#message").val(res.message);
+            }
+        },
+        error:function(res){
+            alert(res);
+        }
+    });
 }
 
+function saveAlert(){
+    var payload={};
+    var action={};
+    payload.alertName=$("#alert-name-txt").val();
+    payload.description=$("#alert-des-txa").val();
+    payload.query=$("#filter-txt").val();
+    payload.timeFrom = $("#timestamp-from").val();
+    payload.timeTo=$("#timestamp-to").val();
+    payload.cronExpression=$("#cron-exp").val();
+    payload.condition=$("#cond-type").val();
+    payload.conditionValue=$("#cmp-val").val();
+    payload.alertActionType=$("#alert-action").val();
+    if (payload.alertActionType=="logger"){
+        action.uniqueId=$("#action-logger-uniqueId").val();
+        action.message=$("#message").val();
+    }
+    if (payload.alertActionType=="email"){
+        action.email_address=$("#action-email-address").val();
+        action.email_subject=$("#action-email-subject").val();
+        action.email_type=$("#action-email-type").val();
+        action.message=$("#message").val();
+    }
+    if (payload.alertActionType=="sms"){
+        action.sms_no=$("#action-sms-phoneNo").val();
+        action.message=$("#message").val();
+    }
+    payload.alertActionProperties=action;
+    var data=JSON.stringify(payload);
+    alert(data);
+    jQuery.ajax({
+        type: "POST",
+        data : data,
+        dataType : "json",
+        contentType : "application/json; charset=utf-8",
+        url: serverUrl + "/api/alert/save",
+        success: function(res) {
+            alert(res);
+        },
+        error: function(res) {
+            alert(res.responseText);
+        }
+    });
 
+}
 
+function updateAlert(){
+    var payload={};
+    var action={};
+    payload.alertName=$("#alert-name-txt").val();
+    payload.description=$("#alert-des-txa").val();
+    payload.query=$("#filter-txt").val();
+    payload.timeFrom = $("#timestamp-from").val();
+    payload.timeTo=$("#timestamp-to").val();
+    payload.cronExpression=$("#cron-exp").val();
+    payload.condition=$("#cond-type").val();
+    payload.conditionValue=$("#cmp-val").val();
+    payload.alertActionType=$("#alert-action").val();
+    if (payload.alertActionType=="logger"){
+        action.uniqueId=$("#action-logger-uniqueId").val();
+        action.message=$("#message").val();
+    }
+    if (payload.alertActionType=="email"){
+        action.email_address=$("#action-email-address").val();
+        action.email_subject=$("#action-email-subject").val();
+        action.email_type=$("#action-email-type").val();
+        action.message=$("#message").val();
+    }
+    if (payload.alertActionType=="sms"){
+        action.sms_no=$("#action-sms-phoneNo").val();
+        action.message=$("#message").val();
+    }
+    payload.alertActionProperties=action;
+    var data=JSON.stringify(payload);
+    alert(data);
+    jQuery.ajax({
+        type: "PUT",
+        data : data,
+        dataType : "json",
+        contentType : "application/json; charset=utf-8",
+        url: serverUrl + "/api/alert/update",
+        success: function(res) {
+            alert(res);
+        },
+        error: function(res) {
+            alert(res.responseText);
+        }
+    });
 
-
-
-
-
-
-
+}
 
 
 function callAlert(){
@@ -297,51 +417,7 @@ function cronBuilder (){
 
 }
 
-function saveAlert(){
-    var payload={};
-    var action={};
-    payload.alertName=$("#alert-name-txt").val();
-    payload.description=$("#alert-des-txa").val();
-    payload.query=$("#filter-txt").val();
-    payload.timeFrom = $("#timestamp-from").val();
-    payload.timeTo=$("#timestamp-to").val();
-    payload.cronExpression=$("#cron-exp").val();
-    payload.condition=$("#cond-type").val();
-    payload.conditionValue=$("#cmp-val").val();
-    payload.alertActionType=$("#alert-action").val();
-    if (payload.alertActionType=="logger"){
-        action.uniqueId=$("#action-logger-uniqueId").val();
-        action.message=$("#message").val();
-    }
-    if (payload.alertActionType=="email"){
-        action.email_address=$("#action-email-address").val();
-        action.email_subject=$("#action-email-subject").val();
-        action.email_type=$("#action-email-type").val();
-        action.message=$("#message").val();
-    }
-    if (payload.alertActionType=="sms"){
-        action.sms_no=$("#action-sms-phoneNo").val();
-        action.message=$("#message").val();
-    }
-    payload.alertActionProperties=action;
-    var data=JSON.stringify(payload);
-    alert(data);
-    jQuery.ajax({
-        type: "POST",
-        data : data,
-        dataType : "json",
-        contentType : "application/json; charset=utf-8",
-        url: serverUrl + "/api/alert/save",
-        success: function(res) {
-            alert(res);
-        },
-        error: function(res) {
-            alert(res.responseText);
-        }
-    });
 
-
-}
 
 function loadAction(){
     var value=$("#alert-action").val();

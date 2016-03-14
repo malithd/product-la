@@ -91,7 +91,7 @@
                         <!-- Schedule Alert Content --- Schedule Alert List-->
                         <div class="container alert-list">
                              <button class="btn btn-main" id="add-alert-btn" class="input form-control">Add Alert</button>
-                            <table id="alert-list" class="alert-list">
+                            <table id="alert-list-table" class="alert-list-table">
                             <thead>
                             <tr>
                             <th>Alert Name</th>
@@ -345,6 +345,7 @@
                                     </div>
                                 <button class="btn btn-main" id="alert-back-btn">Back</button>
                                 <button class="btn btn-main" id="alert-save-btn" onclick="saveAlert()">Save</button>
+                                <button class="btn btn-main" id="alert-update-btn" onclick="updateAlert()">Update</button>
                         </div>
                     </div>
                 </div>

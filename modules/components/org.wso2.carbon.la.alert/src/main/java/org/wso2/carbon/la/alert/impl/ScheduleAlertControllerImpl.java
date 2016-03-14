@@ -57,28 +57,31 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
 
     public void registerScheduleAlertTask(SATaskInfo saTaskInfo,String userName, int tenantId) {
         try {
-            try {
-                this.createOutputStream(saTaskInfo.getAlertName());
-                this.createPublisher(saTaskInfo.getAlertName(),saTaskInfo.getAlertActionType(), saTaskInfo.getAlertActionProperties());
-            } catch (EventPublisherConfigurationException e) {
-                e.printStackTrace();
-            } catch (EventStreamConfigurationException e) {
-                e.printStackTrace();
-            } catch (MalformedStreamDefinitionException e) {
-                e.printStackTrace();
-            }
-
+            this.createOutputStream(saTaskInfo.getAlertName());
+            this.createPublisher(saTaskInfo.getAlertName(),saTaskInfo.getAlertActionType(), saTaskInfo.getAlertActionProperties());
             this.saveConfiguration(saTaskInfo,tenantId);
+            this.scheduleTask(saTaskInfo,userName);
+        } catch (MalformedStreamDefinitionException e) {
+            e.printStackTrace();
+        } catch (EventStreamConfigurationException e) {
+            e.printStackTrace();
+        } catch (EventPublisherConfigurationException e) {
+            e.printStackTrace();
+        } catch (TaskException e) {
+            log.error("Unable to get task manager instance for SCHEDULE ALERT TASK" + e.getMessage(), e);
+        }
+    }
 
+    private void scheduleTask (SATaskInfo saTaskInfo, String userName) throws TaskException {
             TaskManager taskManager = LAAlertServiceValueHolder.getInstance().getTaskService().getTaskManager(LAAlertConstant.SCHEDULE_ALERT_TASK_TYPE);
             TaskInfo scheduleTaskInfo=createScheduleAlertTask(saTaskInfo,userName);
             taskManager.registerTask(scheduleTaskInfo);
             taskManager.rescheduleTask(scheduleTaskInfo.getName());
+    }
 
-        }
-        catch (TaskException e){
-            log.error("Unable to get task manager instance for SCHEDULE ALERT TASK" + e.getMessage(), e);
-        }
+    private void deleteScheduleTask (String alertName, int tenantId) throws TaskException {
+        TaskManager taskManager = LAAlertServiceValueHolder.getInstance().getTaskService().getTaskManager(LAAlertConstant.SCHEDULE_ALERT_TASK_TYPE);
+        taskManager.deleteTask(alertName);
     }
 
     public TaskInfo createScheduleAlertTask(SATaskInfo saTaskInfo, String userName) {
@@ -94,7 +97,6 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         taskProperties.put(LAAlertConstant.LENGTH,String.valueOf(saTaskInfo.getLength()));
         taskProperties.put(LAAlertConstant.ALERT_NAME,saTaskInfo.getAlertName());
         return new TaskInfo(taskName, ScheduleAlertTask.class.getName(), taskProperties, triggerInfo);
-
     }
 
     private boolean createPublisher(String alertName, String alertActionType ,Map<String,String> alertActionProperties) throws EventPublisherConfigurationException {
@@ -143,12 +145,7 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
             // for getting nice formatted output
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-            //specify the location and name of xml file to be created
-            // File XMLfile = new File("C:\\arpit\\CountryRecord.xml");
-
-            // Writing to XML file
-            //  jaxbMarshaller.marshal(countryIndia, XMLfile);
-            // Writing to console
+            // Writing to StringWriter
             jaxbMarshaller.marshal(eventPublisher,stringWriter);
 
         } catch (JAXBException e) {
@@ -156,7 +153,7 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
             e.printStackTrace();
         }
 
-         eventPublisherService.deployEventPublisherConfiguration(stringWriter.toString());
+        eventPublisherService.deployEventPublisherConfiguration(stringWriter.toString());
         return  true;
     }
 
@@ -166,18 +163,6 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         streamDefinition.addPayloadData("count", AttributeType.LONG);
         eventStreamService.addEventStreamDefinition(streamDefinition);
         return true;
-    }
-
-    private void createConfigurationCollection(UserRegistry userRegistry) throws RegistryException {
-        if (!userRegistry.resourceExists(LAAlertConstant.ALERT_CONFIGURATION_LOCATION)) {
-            Collection collection = userRegistry.newCollection();
-            userRegistry.put(LAAlertConstant.ALERT_CONFIGURATION_LOCATION, collection);
-        }
-    }
-
-    private String getConfigurationLocation(String alertName) {
-        return LAAlertConstant.ALERT_CONFIGURATION_LOCATION + RegistryConstants.PATH_SEPARATOR + alertName +
-                LAAlertConstant.CONFIGURATION_EXTENSION_SEPARATOR + LAAlertConstant.CONFIGURATION_EXTENSION;
     }
 
     private void saveConfiguration(SATaskInfo saTaskInfo,int tenantId) {
@@ -197,6 +182,40 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         } catch (RegistryException e) {
             e.printStackTrace();
         }
+    }
+
+    private void createConfigurationCollection(UserRegistry userRegistry) throws RegistryException {
+        if (!userRegistry.resourceExists(LAAlertConstant.ALERT_CONFIGURATION_LOCATION)) {
+            Collection collection = userRegistry.newCollection();
+            userRegistry.put(LAAlertConstant.ALERT_CONFIGURATION_LOCATION, collection);
+        }
+    }
+
+    private String getConfigurationLocation(String alertName) {
+        return LAAlertConstant.ALERT_CONFIGURATION_LOCATION + RegistryConstants.PATH_SEPARATOR + alertName +
+                LAAlertConstant.CONFIGURATION_EXTENSION_SEPARATOR + LAAlertConstant.CONFIGURATION_EXTENSION;
+    }
+
+    public void updateScheduleAlertTask (SATaskInfo saTaskInfo,String userName, int tenantId) throws RegistryException, TaskException {
+        UserRegistry userRegistry=LAAlertServiceValueHolder.getInstance().getTenantConfigRegistry(tenantId);
+        String fileLocation=getConfigurationLocation(saTaskInfo.getAlertName());
+        if (userRegistry.resourceExists(fileLocation)) {
+            Resource resource=userRegistry.get(fileLocation);
+            Gson gson=new Gson();
+            String json=gson.toJson(saTaskInfo);
+            resource.setContent(json);
+            resource.setMediaType(LAAlertConstant.CONFIGURATION_MEDIA_TYPE);
+            userRegistry.put(fileLocation,resource);
+        }
+
+        this.deleteAlertTask(saTaskInfo.getAlertName(),tenantId);
+        this.scheduleTask(saTaskInfo,userName);
+//        TaskManager taskManager = LAAlertServiceValueHolder.getInstance().getTaskService().getTaskManager(LAAlertConstant.SCHEDULE_ALERT_TASK_TYPE);
+//        TaskInfo scheduleTaskInfo=createScheduleAlertTask(saTaskInfo, userName);
+//        taskManager.deleteTask(scheduleTaskInfo.getName());
+//        taskManager.registerTask(scheduleTaskInfo);
+//        taskManager.rescheduleTask(scheduleTaskInfo.getName());
+
     }
 
     public List<SATaskInfo> getAllAlertConfigurations(int tenantId){
@@ -226,8 +245,7 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
     }
 
     public boolean deleteAlertTask(String alertName, int tenantId) throws TaskException, RegistryException {
-        TaskManager taskManager = LAAlertServiceValueHolder.getInstance().getTaskService().getTaskManager(LAAlertConstant.SCHEDULE_ALERT_TASK_TYPE);
-        taskManager.deleteTask(alertName);
+       this.deleteScheduleTask(alertName,tenantId);
         UserRegistry userRegistry = LAAlertServiceValueHolder.getInstance().getTenantConfigRegistry(tenantId);
         String fileLocation=getConfigurationLocation(alertName);
         if (userRegistry.resourceExists(fileLocation)) {
@@ -239,5 +257,18 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
 
         return true;
     }
+
+    public SATaskInfo getAlertConfiguration(String alertName, int tenantId) throws RegistryException{
+        UserRegistry userRegistry=LAAlertServiceValueHolder.getInstance().getTenantConfigRegistry(tenantId);
+        String fileLocation=getConfigurationLocation(alertName);
+        if (userRegistry.resourceExists(fileLocation)) {
+            return getConfigurationContent(RegistryUtils.decodeBytes((byte[]) userRegistry.get(fileLocation).getContent()));
+        }else{
+            new Exception().printStackTrace();
+        }
+        return new SATaskInfo();
+    }
+
+
 }
 

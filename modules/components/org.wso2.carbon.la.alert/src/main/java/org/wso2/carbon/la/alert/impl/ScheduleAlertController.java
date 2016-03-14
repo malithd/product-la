@@ -18,6 +18,7 @@
 package org.wso2.carbon.la.alert.impl;
 
 import org.wso2.carbon.la.alert.domain.SATaskInfo;
+import org.wso2.carbon.ntask.common.TaskException;
 import org.wso2.carbon.ntask.core.TaskInfo;
 
 public interface ScheduleAlertController {
@@ -27,7 +28,7 @@ public interface ScheduleAlertController {
      * @param userName User Name of this alert task scheduler
      * @param tenantId user tenantId of this alert scheduler
      */
-    void registerScheduleAlertTask(SATaskInfo saTaskInfo,String userName, int tenantId);
+    void registerScheduleAlertTask(SATaskInfo saTaskInfo,String userName, int tenantId) throws TaskException;
 
     /**
      * Set task properties
