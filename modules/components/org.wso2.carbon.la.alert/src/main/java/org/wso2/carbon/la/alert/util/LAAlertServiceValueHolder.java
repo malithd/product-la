@@ -46,35 +46,35 @@ public class LAAlertServiceValueHolder {
         return laAlertServiceValueHolder;
     }
 
-    public void setTaskService(TaskService taskService) {
-        this.taskService = taskService;
-    }
-
     public TaskService getTaskService() {
         return taskService;
     }
 
-    public void setEventPublisherService(EventPublisherService eventPublisherService) {
-        this.eventPublisherService = eventPublisherService;
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     public EventPublisherService getEventPublisherService() {
         return eventPublisherService;
     }
 
-    public void setEventStreamService(EventStreamService eventStreamService) {
-        this.eventStreamService = eventStreamService;
+    public void setEventPublisherService(EventPublisherService eventPublisherService) {
+        this.eventPublisherService = eventPublisherService;
     }
 
     public EventStreamService getEventStreamService() {
         return eventStreamService;
     }
 
-    public  void setRegistryService(RegistryService registryService) {
+    public void setEventStreamService(EventStreamService eventStreamService) {
+        this.eventStreamService = eventStreamService;
+    }
+
+    public void setRegistryService(RegistryService registryService) {
         this.registryService = registryService;
     }
 
-    public  void setTenantRegistryLoader(TenantRegistryLoader tenantRegistryLoader) {
+    public void setTenantRegistryLoader(TenantRegistryLoader tenantRegistryLoader) {
         this.tenantRegistryLoader = tenantRegistryLoader;
     }
 

@@ -60,7 +60,6 @@ function getAllAlerts(){
         type:"GET",
         url:serverUrl+"/api/alert/getAllScheduleAlerts",
         success: function(res){
-            alert(res);
             var html = "";
             $.each(res, function (key, alert) {
                 html += createTable(alert);
@@ -78,15 +77,19 @@ function createTable(alert){
 }
 
 function deleteAlert(alertName){
-    alert(alertName);
     jQuery.ajax({
         type:"DELETE",
-        url:serverUrl+"/api/alert/delete/"+alertName
+        url:serverUrl+"/api/alert/delete/"+alertName,
+        success:function(res){
+            window.location=serverUrl+'/loganalyzer/site/alert/alert.jag';
+        },
+        error:function(res){
+            alert(res);
+        }
     });
 }
 
 function updateContent(alertName){
-    alert(alertName);
     $(".inner-container").show();
     $(".alert-list").hide();
     $("#alert-save-btn").hide();
@@ -96,6 +99,7 @@ function updateContent(alertName){
         url:serverUrl+"/api/alert/getAlertContent/"+alertName,
         success:function(res){
             $("#alert-name-txt").val(res.alertName);
+            $("#alert-name-txt").attr('disabled', 'disabled');
             $("#alert-des-txa").val(res.description);
             $("#filter-txt").val(res.query);
             $("#timestamp-from").val(res.timeFrom);
@@ -116,7 +120,7 @@ function updateContent(alertName){
                 $("#action-email-type").val(res.alertActionProperties.email_type);
                 $("#messahe").val(res.message);
             }
-            else if(res.alertActionType=='sms'){
+            else if(res.alertActionType=='sms') {
                 loadAction();
                 $("#action-sms-phoneNo").val(res.sms_no);
                 $("#message").val(res.message);
@@ -156,15 +160,13 @@ function saveAlert(){
     }
     payload.alertActionProperties=action;
     var data=JSON.stringify(payload);
-    alert(data);
     jQuery.ajax({
         type: "POST",
         data : data,
-        dataType : "json",
         contentType : "application/json; charset=utf-8",
         url: serverUrl + "/api/alert/save",
         success: function(res) {
-            alert(res);
+            window.location=serverUrl+'/loganalyzer/site/alert/alert.jag';
         },
         error: function(res) {
             alert(res.responseText);
@@ -201,15 +203,13 @@ function updateAlert(){
     }
     payload.alertActionProperties=action;
     var data=JSON.stringify(payload);
-    alert(data);
     jQuery.ajax({
         type: "PUT",
         data : data,
-        dataType : "json",
         contentType : "application/json; charset=utf-8",
         url: serverUrl + "/api/alert/update",
         success: function(res) {
-            alert(res);
+            window.location=serverUrl+'/loganalyzer/site/alert/alert.jag';
         },
         error: function(res) {
             alert(res.responseText);
@@ -219,33 +219,33 @@ function updateAlert(){
 }
 
 
-function callAlert(){
-    var payload={};
-    payload.streamName="loganalyzer";
-    payload.alertName="Alert1";
-    payload.description="This is an alert";
-    payload.alertType="Real Time";
-    payload.filter="logType=WARN"
-    payload.fields=[
-        {"field0":"timestam"},
-        {"field1":"javaClass"}
-    ]
-    jQuery.ajax({
-        type: "POST",
-        data : JSON.stringify(payload),
-        dataType : "json",
-        contentType : "application/json; charset=utf-8",
-        url: serverUrl + "/api/alet/save",
-        success: function(res) {
-            alert(res.responseText);
-        },
-        error: function(res) {
-            alert(res.responseText);
-        }
-    });
-    alert(JSON.stringify(payload));
-
-}
+//function callAlert(){
+//    var payload={};
+//    payload.streamName="loganalyzer";
+//    payload.alertName="Alert1";
+//    payload.description="This is an alert";
+//    payload.alertType="Real Time";
+//    payload.filter="logType=WARN"
+//    payload.fields=[
+//        {"field0":"timestam"},
+//        {"field1":"javaClass"}
+//    ]
+//    jQuery.ajax({
+//        type: "POST",
+//        data : JSON.stringify(payload),
+//        dataType : "json",
+//        contentType : "application/json; charset=utf-8",
+//        url: serverUrl + "/api/alet/save",
+//        success: function(res) {
+//            alert(res.responseText);
+//        },
+//        error: function(res) {
+//            alert(res.responseText);
+//        }
+//    });
+//    alert(JSON.stringify(payload));
+//
+//}
 
 /*-------------Tab Pane handeling-----------------*/
 

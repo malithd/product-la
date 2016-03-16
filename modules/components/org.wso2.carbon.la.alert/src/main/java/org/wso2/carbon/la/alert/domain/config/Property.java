@@ -17,17 +17,15 @@
  */
 package org.wso2.carbon.la.alert.domain.config;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.*;
 
-@XmlRootElement(name="property")
-@XmlAccessorType (XmlAccessType.FIELD)
+@XmlRootElement(name = "property")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Property {
     @XmlAttribute()
     private String name;
+    @XmlValue
+    private String value;
 
     public String getName() {
         return name;
@@ -37,14 +35,11 @@ public class Property {
         this.name = name;
     }
 
-    @XmlValue
-    private String value;
+    public String getValue() {
+        return value;
+    }
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 }

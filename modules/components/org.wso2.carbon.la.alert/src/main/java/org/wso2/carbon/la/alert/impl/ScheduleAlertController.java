@@ -24,18 +24,20 @@ import org.wso2.carbon.ntask.core.TaskInfo;
 public interface ScheduleAlertController {
     /**
      * Register alert task
+     *
      * @param saTaskInfo Task info for scheduling
-     * @param userName User Name of this alert task scheduler
-     * @param tenantId user tenantId of this alert scheduler
+     * @param userName   User Name of this alert task scheduler
+     * @param tenantId   user tenantId of this alert scheduler
      */
-    void registerScheduleAlertTask(SATaskInfo saTaskInfo,String userName, int tenantId) throws TaskException;
+    void registerScheduleAlertTask(SATaskInfo saTaskInfo, String userName, int tenantId) throws TaskException;
 
     /**
      * Set task properties
+     *
      * @param saTaskInfo Task info for set task properties
-     * @param userName User Name of this alert task scheduler
+     * @param userName   User Name of this alert task scheduler
      * @return TaskInfo with triggerInfo
-    */
+     */
     TaskInfo createScheduleAlertTask(SATaskInfo saTaskInfo, String userName);
 
 }

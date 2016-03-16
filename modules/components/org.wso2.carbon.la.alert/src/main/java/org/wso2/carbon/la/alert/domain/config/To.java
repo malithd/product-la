@@ -17,29 +17,25 @@
  */
 package org.wso2.carbon.la.alert.domain.config;
 
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name="to")
-@XmlAccessorType (XmlAccessType.FIELD)
+@XmlRootElement(name = "to")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class To {
+    @XmlElement()
+    ArrayList<Property> property = new ArrayList<Property>();
     @XmlAttribute()
     private String eventAdapterType;
-    public void setEventAdapterType(String eventAdapterType) {
-        this.eventAdapterType = eventAdapterType;
-    }
 
     public String getEventAdapterType() {
         return eventAdapterType;
     }
 
-    @XmlElement()
-    ArrayList<Property> property=new ArrayList<Property>();
+    public void setEventAdapterType(String eventAdapterType) {
+        this.eventAdapterType = eventAdapterType;
+    }
+
     public ArrayList<Property> getProperty() {
         return property;
     }

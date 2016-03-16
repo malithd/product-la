@@ -22,50 +22,49 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Calendar;
 import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(value = XmlAccessType.FIELD)
 public class SATaskInfo {
-    @XmlElement(name= "alertName")
+    @XmlElement(name = "alertName")
     private String alertName;
 
-    @XmlElement(name= "description", required = false)
+    @XmlElement(name = "description", required = false)
     private String description;
 
-    @XmlElement(name= "tableName", required = false)
+    @XmlElement(name = "tableName", required = false)
     private String tableName;
 
-    @XmlElement(name= "query")
+    @XmlElement(name = "query")
     private String query;
 
-    @XmlElement(name= "start", required = false)
+    @XmlElement(name = "start", required = false)
     private int start;
 
-    @XmlElement(name= "timeFrom")
+    @XmlElement(name = "timeFrom")
     private long timeFrom;
 
-    @XmlElement(name= "timeTo")
+    @XmlElement(name = "timeTo")
     private long timeTo;
 
-    @XmlElement(name= "length", required = false)
+    @XmlElement(name = "length", required = false)
     private int length;
 
-    @XmlElement(name= "cronExpression")
+    @XmlElement(name = "cronExpression")
     private String cronExpression;
 
-    @XmlElement(name= "condition")
+    @XmlElement(name = "condition")
     private String condition;
 
-    @XmlElement(name= "conditionValue")
+    @XmlElement(name = "conditionValue")
     private String conditionValue;
 
-    @XmlElement(name="alertActionType")
+    @XmlElement(name = "alertActionType")
     private String alertActionType;
 
-    @XmlElement(name="alertActionProperties")
-    private Map<String,String> alertActionProperties;
+    @XmlElement(name = "alertActionProperties")
+    private Map<String, String> alertActionProperties;
 
     public SATaskInfo() {
     }
@@ -79,94 +78,85 @@ public class SATaskInfo {
         this.tableName = tableName;
     }
 
-    public void setAlertName(String alertName) {
-        this.alertName = alertName;
-    }
-
-    public void setConditionValue(String conditionValue) {
-        this.conditionValue = conditionValue;
-    }
-
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
-
-    public void setCronExpression(String cronExpression) {
-        this.cronExpression = cronExpression;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
-    public void setTimeTo(long timeTo) {
-        this.timeTo = timeTo;
-    }
-
-    public void setTimeFrom(long timeFrom) {
-        this.timeFrom = timeFrom;
-    }
-
-    public void setStart(int start) {
-        this.start = start;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
-    public void setAlertActionProperties(Map<String, String> alertActionProperties) {
-        this.alertActionProperties = alertActionProperties;
-    }
-
-    public void setAlertActionType(String alertActionType) {
-        this.alertActionType = alertActionType;
-    }
-
     public String getAlertName() {
 
         return alertName;
+    }
+
+    public void setAlertName(String alertName) {
+        this.alertName = alertName;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getQuery() {
         return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     public int getStart() {
         return start;
     }
 
+    public void setStart(int start) {
+        this.start = start;
+    }
+
     public long getTimeFrom() {
         return timeFrom;
+    }
+
+    public void setTimeFrom(long timeFrom) {
+        this.timeFrom = timeFrom;
     }
 
     public long getTimeTo() {
         return timeTo;
     }
 
+    public void setTimeTo(long timeTo) {
+        this.timeTo = timeTo;
+    }
+
     public String getCronExpression() {
         return cronExpression;
+    }
+
+    public void setCronExpression(String cronExpression) {
+        this.cronExpression = cronExpression;
     }
 
     public int getLength() {
         return length;
     }
 
+    public void setLength(int length) {
+        this.length = length;
+    }
+
     public String getCondition() {
         return condition;
     }
 
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
     public String getConditionValue() {
         return conditionValue;
+    }
+
+    public void setConditionValue(String conditionValue) {
+        this.conditionValue = conditionValue;
     }
 
     public String getAlertActionType() {
@@ -174,8 +164,16 @@ public class SATaskInfo {
         return alertActionType;
     }
 
+    public void setAlertActionType(String alertActionType) {
+        this.alertActionType = alertActionType;
+    }
+
     public Map<String, String> getAlertActionProperties() {
 
         return alertActionProperties;
+    }
+
+    public void setAlertActionProperties(Map<String, String> alertActionProperties) {
+        this.alertActionProperties = alertActionProperties;
     }
 }

@@ -21,60 +21,60 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
+import org.wso2.carbon.event.publisher.core.EventPublisherService;
 import org.wso2.carbon.event.stream.core.EventStreamService;
 import org.wso2.carbon.la.alert.domain.LAAlertConstant;
 import org.wso2.carbon.la.alert.impl.ScheduleAlertController;
-import org.wso2.carbon.ntask.core.service.TaskService;
-import org.wso2.carbon.la.alert.util.LAAlertServiceValueHolder;
 import org.wso2.carbon.la.alert.impl.ScheduleAlertControllerImpl;
-import org.wso2.carbon.event.publisher.core.EventPublisherService;
+import org.wso2.carbon.la.alert.util.LAAlertServiceValueHolder;
+import org.wso2.carbon.ntask.core.service.TaskService;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.service.TenantRegistryLoader;
 
 /**
  * @scr.component name="la.alert" immediate="true"
  * @scr.reference name="ntask.TaskService"
- *                interface="org.wso2.carbon.ntask.core.service.TaskService"
- *                cardinality="1..1" policy="dynamic" bind="setTaskService"
- *                unbind="unsetTaskService"
+ * interface="org.wso2.carbon.ntask.core.service.TaskService"
+ * cardinality="1..1" policy="dynamic" bind="setTaskService"
+ * unbind="unsetTaskService"
  * @scr.reference name="publisher.EventPublisherService"
- *                interface="org.wso2.carbon.event.publisher.core.EventPublisherService"
- *                cardinality="1..1" policy="dynamic" bind="setEventPublisherService"
- *                unbind="unsetEventPublisherService"
+ * interface="org.wso2.carbon.event.publisher.core.EventPublisherService"
+ * cardinality="1..1" policy="dynamic" bind="setEventPublisherService"
+ * unbind="unsetEventPublisherService"
  * @scr.reference name="stream.EventStreamService"
- *                interface="org.wso2.carbon.event.stream.core.EventStreamService"
- *                cardinality="1..1" policy="dynamic" bind="setEventStreamService"
- *                unbind="unsetEventStreamService"
+ * interface="org.wso2.carbon.event.stream.core.EventStreamService"
+ * cardinality="1..1" policy="dynamic" bind="setEventStreamService"
+ * unbind="unsetEventStreamService"
  * @scr.reference name="registry.service"
- *                interface="org.wso2.carbon.registry.core.service.RegistryService"
- *                cardinality="1..1" policy="dynamic" bind="setRegistryService"
- *                unbind="unsetRegistryService"
+ * interface="org.wso2.carbon.registry.core.service.RegistryService"
+ * cardinality="1..1" policy="dynamic" bind="setRegistryService"
+ * unbind="unsetRegistryService"
  * @scr.reference name="tenant.registryloader"
- *                interface="org.wso2.carbon.registry.core.service.TenantRegistryLoader"
- *                cardinality="1..1" policy="dynamic" bind="setTenantRegistryLoader"
- *                unbind="unsetTenantRegistryLoader"
+ * interface="org.wso2.carbon.registry.core.service.TenantRegistryLoader"
+ * cardinality="1..1" policy="dynamic" bind="setTenantRegistryLoader"
+ * unbind="unsetTenantRegistryLoader"
  */
 public class LAAlertDS {
 
-    private static final Log log= LogFactory.getLog(LAAlertDS.class);
+    private static final Log log = LogFactory.getLog(LAAlertDS.class);
 
     protected void activate(ComponentContext componentContext) {
-        BundleContext bundleContext=componentContext.getBundleContext();
+        BundleContext bundleContext = componentContext.getBundleContext();
         try {
 
             ScheduleAlertControllerImpl scheduleAlertControllerImpl = new ScheduleAlertControllerImpl();
-            bundleContext.registerService(ScheduleAlertController.class.getName(), scheduleAlertControllerImpl,null);
+            bundleContext.registerService(ScheduleAlertController.class.getName(), scheduleAlertControllerImpl, null);
             LAAlertServiceValueHolder.getInstance().getTaskService().registerTaskType(LAAlertConstant.SCHEDULE_ALERT_TASK_TYPE);
             if (log.isDebugEnabled()) {
                 log.debug("Data Services task bundle is activated ");
             }
         } catch (Throwable e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         }
     }
 
     protected void deactivate(ComponentContext componentContext) {
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("log analyzer core component deactivated");
         }
     }
@@ -87,7 +87,7 @@ public class LAAlertDS {
         LAAlertServiceValueHolder.getInstance().setTaskService(null);
     }
 
-    protected void setEventPublisherService(EventPublisherService eventPublisherService){
+    protected void setEventPublisherService(EventPublisherService eventPublisherService) {
         LAAlertServiceValueHolder.getInstance().setEventPublisherService(eventPublisherService);
     }
 
@@ -96,7 +96,7 @@ public class LAAlertDS {
     }
 
     protected void setEventStreamService(EventStreamService eventStreamService) {
-       LAAlertServiceValueHolder.getInstance().setEventStreamService(eventStreamService);
+        LAAlertServiceValueHolder.getInstance().setEventStreamService(eventStreamService);
     }
 
     protected void unsetEventStreamService(EventStreamService eventStreamService) {

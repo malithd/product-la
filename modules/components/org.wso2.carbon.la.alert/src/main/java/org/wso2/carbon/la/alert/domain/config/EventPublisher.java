@@ -18,74 +18,69 @@
 
 package org.wso2.carbon.la.alert.domain.config;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
-@XmlRootElement(name = "eventPublisher",namespace="http://wso2.org/carbon/eventpublisher")
-@XmlAccessorType (XmlAccessType.FIELD)
+@XmlRootElement(name = "eventPublisher", namespace = "http://wso2.org/carbon/eventpublisher")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class EventPublisher {
     @XmlAttribute
     private String name;
-    public void setName(String name) {
-        this.name = name;
-    }
+    @XmlAttribute
+    private String statistics;
+    @XmlAttribute
+    private String trace;
+    @XmlElement
+    private From from;
+    @XmlElement
+    private Mapping mapping;
+    @XmlElement
+    private To to;
 
     public String getName() {
         return name;
     }
 
-    @XmlAttribute
-    private String statistics;
-    public void setStatistics(String statistics) {
-        this.statistics = statistics;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getStatistics() {
         return statistics;
     }
 
-    @XmlAttribute
-    private String trace;
-    public void setTrace(String trace) {
-        this.trace = trace;
+    public void setStatistics(String statistics) {
+        this.statistics = statistics;
     }
 
     public String getTrace() {
         return trace;
     }
 
-
-    @XmlElement
-    private From from;
-    public void setFrom(From from) {
-        this.from = from;
+    public void setTrace(String trace) {
+        this.trace = trace;
     }
 
     public From getFrom() {
         return from;
     }
 
-    @XmlElement
-    private Mapping mapping;
-
-    public void setMapping(Mapping mapping) {
-        this.mapping = mapping;
+    public void setFrom(From from) {
+        this.from = from;
     }
 
     public Mapping getMapping() {
         return mapping;
     }
 
-    @XmlElement
-    private To to;
-    public void setTo(To to) {
-        this.to= to;
+    public void setMapping(Mapping mapping) {
+        this.mapping = mapping;
     }
 
     public To getTo() {
         return to;
+    }
+
+    public void setTo(To to) {
+        this.to = to;
     }
 }

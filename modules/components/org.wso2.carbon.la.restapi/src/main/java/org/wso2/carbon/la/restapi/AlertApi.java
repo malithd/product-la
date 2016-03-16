@@ -22,12 +22,14 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.event.publisher.core.exception.EventPublisherConfigurationException;
 import org.wso2.carbon.la.alert.domain.SATaskInfo;
 import org.wso2.carbon.la.alert.impl.ScheduleAlertControllerImpl;
 import org.wso2.carbon.la.commons.constants.LAConstants;
 import org.wso2.carbon.ntask.common.TaskException;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -50,7 +52,7 @@ public class AlertApi {
         saTaskInfo.setStart(0);
         saTaskInfo.setLength(100);
         scheduleAlertControllerImpl.registerScheduleAlertTask(saTaskInfo,username,tenantId);
-        return Response.ok("okPass").build();
+        return Response.ok().build();
     }
 
     @GET
@@ -88,7 +90,7 @@ public class AlertApi {
     @Path("/update")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response updateAlertContent(SATaskInfo saTaskInfo) throws RegistryException, TaskException {
+    public Response updateAlertContent(SATaskInfo saTaskInfo) throws RegistryException, TaskException, EventPublisherConfigurationException {
         PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
         String username=carbonContext.getUsername();
         int tenantId=carbonContext.getTenantId();

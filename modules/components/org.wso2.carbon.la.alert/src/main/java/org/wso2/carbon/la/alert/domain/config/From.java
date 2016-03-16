@@ -24,26 +24,27 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "eventPublisher")
-@XmlAccessorType (XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class From {
     @XmlAttribute()
     private String streamName;
-    public void setStreamName(String streamName) {
-        this.streamName = streamName;
-    }
+    @XmlAttribute()
+    private String version;
 
     public String getStreamName() {
         return streamName;
     }
 
-    @XmlAttribute()
-    private String version;
-    public void setVersion(String version) {
-        this.version = version;
+    public void setStreamName(String streamName) {
+        this.streamName = streamName;
     }
 
     public String getVersion() {
         return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }
 
