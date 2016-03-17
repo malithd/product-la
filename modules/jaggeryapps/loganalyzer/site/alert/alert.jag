@@ -322,13 +322,13 @@
                                      <div class="sl-label"><label>Unique Id:</label></div>
                                         <div class="input-control" id="fields"><input type="text" id="action-logger-uniqueId" class="action-logger-uniqueId"></div>
                                         <div class="sl-label"><label>Message:</label></div>
-                                        <div class="input-control" id="fields"><textarea rows="2" class="message" id="message"></textarea ></div>
+                                        <div class="input-control" id="fields"><textarea rows="2" class="message" id="logger-message"></textarea ></div>
                                     </div>
                                      <div id="action-sms">
                                      <div class="sl-label"><label>Phone no:</label></div>
                                         <div class="input-control" id="fields"><input type="text" id="action-sms-phoneNo" class="action-sms-phoneNo"></div>
                                         <div class="sl-label"><label>Message:</label></div>
-                                        <div class="input-control" id="fields"><textarea rows="2" class="message" id="message"></textarea ></div>
+                                        <div class="input-control" id="fields"><textarea rows="2" class="message" id="sms-message"></textarea ></div>
                                     </div>
                                     <div id="action-email">
                                      <div class="sl-label"><label>Email Addresses:</label></div>
@@ -341,9 +341,9 @@
                                              <option value="text/html">text/html</option>
                                          </select></div>
                                         <div class="sl-label"><label>Message:</label></div>
-                                        <div class="input-control" id="fields"><textarea rows="2" class="message" id="message"></textarea ></div>
+                                        <div class="input-control" id="fields"><textarea rows="2" class="message" id="email-message"></textarea ></div>
                                     </div>
-                                <button class="btn btn-main" id="alert-back-btn">Back</button>
+                                <button class="btn btn-main" id="alert-back-btn" onclick="backward()">Back</button>
                                 <button class="btn btn-main" id="alert-save-btn" onclick="saveAlert()">Save</button>
                                 <button class="btn btn-main" id="alert-update-btn" onclick="updateAlert()">Update</button>
                         </div>

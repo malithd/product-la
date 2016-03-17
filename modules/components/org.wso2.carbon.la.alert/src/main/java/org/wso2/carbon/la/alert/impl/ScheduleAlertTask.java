@@ -32,7 +32,8 @@ public class ScheduleAlertTask extends AbstractTask {
         String name = taskProperties.get(LAAlertConstant.ALERT_NAME);
         String version = "1.0.0";
         long timeStamp = System.currentTimeMillis();
-        String username = taskProperties.get(LAAlertConstant.USER_NAME);
+        String username = taskProperties.get(LAAlertConstant.USER_NAME);String condition=taskProperties.get(LAAlertConstant.CONDITION);
+        int conditionValue=Integer.valueOf(taskProperties.get(LAAlertConstant.CONDITION_VALUE));
         queryBean.setTableName(taskProperties.get(LAAlertConstant.TABLE_NAME));
         queryBean.setQuery(taskProperties.get(LAAlertConstant.QUERY));
         queryBean.setTimeFrom(Long.valueOf(taskProperties.get(LAAlertConstant.TIME_FROM)));
@@ -43,12 +44,52 @@ public class ScheduleAlertTask extends AbstractTask {
 
         try {
             List<RecordBean> recordBeans = searchController.search(queryBean, username);
-            int i = recordBeans.size();
-            payload = new Object[]{new Long(i)};
-            if (i > 3) {
-                Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
-                LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
+            int recodeListSize = recordBeans.size();
+            payload = new Object[]{new Long(recodeListSize)};
+            switch (condition) {
+                case "gt" :
+                    if (recodeListSize > conditionValue) {
+                        Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
+                        LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
+                    }
+                    break;
+                case "lt" :
+                    if (recodeListSize < conditionValue) {
+                        Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
+                        LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
+                    }
+                    break;
+                case "eq" :
+                    if (recodeListSize == conditionValue) {
+                        Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
+                        LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
+                    }
+                    break;
+                case "gteq" :
+                    if (recodeListSize >= conditionValue) {
+                        Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
+                        LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
+                    }
+                    break;
+                case "lteq" :
+                    if (recodeListSize <= conditionValue) {
+                        Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
+                        LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
+                    }
+                    break;
+                case "nteq" :
+                    if (recodeListSize != conditionValue) {
+                        Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
+                        LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
+                    }
+                    break;
             }
+
+
+//            if (recodeListSize > 3) {
+//                Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
+//                LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
+//            }
 
         } catch (AnalyticsException e) {
             log.error("Unable to perform schedule alert task due to " + e.getMessage(), e);

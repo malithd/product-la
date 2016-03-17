@@ -58,7 +58,7 @@ public class SATaskInfo {
     private String condition;
 
     @XmlElement(name = "conditionValue")
-    private String conditionValue;
+    private int conditionValue;
 
     @XmlElement(name = "alertActionType")
     private String alertActionType;
@@ -151,11 +151,11 @@ public class SATaskInfo {
         this.condition = condition;
     }
 
-    public String getConditionValue() {
+    public int getConditionValue() {
         return conditionValue;
     }
 
-    public void setConditionValue(String conditionValue) {
+    public void setConditionValue(int conditionValue) {
         this.conditionValue = conditionValue;
     }
 

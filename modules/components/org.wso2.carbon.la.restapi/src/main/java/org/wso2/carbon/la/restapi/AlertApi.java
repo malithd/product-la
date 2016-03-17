@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.event.publisher.core.exception.EventPublisherConfigurationException;
+import org.wso2.carbon.event.stream.core.exception.EventStreamConfigurationException;
 import org.wso2.carbon.la.alert.domain.SATaskInfo;
 import org.wso2.carbon.la.alert.impl.ScheduleAlertControllerImpl;
 import org.wso2.carbon.la.commons.constants.LAConstants;
@@ -69,11 +70,11 @@ public class AlertApi {
     @Path("/delete/{alertName}")
     @Produces("application/json")
     @Consumes("application/json")
-    public Response deleteScheduleAlert(@PathParam("alertName") String alertName) throws TaskException, RegistryException {
+    public Response deleteScheduleAlert(@PathParam("alertName") String alertName) throws TaskException, RegistryException, EventStreamConfigurationException, EventPublisherConfigurationException {
         PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId=carbonContext.getTenantId();
         scheduleAlertControllerImpl.deleteAlertTask(alertName,tenantId);
-        return Response.ok("delete").build();
+        return Response.ok().build();
     }
 
     @GET
@@ -98,6 +99,6 @@ public class AlertApi {
         saTaskInfo.setStart(0);
         saTaskInfo.setLength(100);
         scheduleAlertControllerImpl.updateScheduleAlertTask(saTaskInfo,username,tenantId);
-        return Response.ok("pass").build();
+        return Response.ok().build();
     }
 }

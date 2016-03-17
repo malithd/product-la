@@ -14,6 +14,8 @@ public class LAAlertConstant {
     public static final String START = "start";
     public static final String LENGTH = "length";
     public static final String ALERT_NAME = "alertName";
+    public static final String CONDITION = "condition";
+    public static final String CONDITION_VALUE = "conditionValue";
     public static final String ALERT_CONFIGURATION_LOCATION = "repository" + RegistryConstants.PATH_SEPARATOR
             + "components" + RegistryConstants.PATH_SEPARATOR + RegistryConstants.PATH_SEPARATOR
             + "org.wso2.carbon.la.alert";

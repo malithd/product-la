@@ -111,19 +111,19 @@ function updateContent(alertName){
             if(res.alertActionType=='logger'){
                 loadAction();
                 $("#action-logger-uniqueId").val(res.alertActionProperties.uniqueId);
-                $("#message").val(res.alertActionProperties.message);
+                $("#logger-message").val(res.alertActionProperties.message);
             }
             else if(res.alertActionType=='email'){
                 loadAction();
                 $("#action-email-address").val(res.alertActionProperties.email_address);
                 $("#action-email-subject").val(res.alertActionProperties.email_subject);
                 $("#action-email-type").val(res.alertActionProperties.email_type);
-                $("#messahe").val(res.message);
+                $("#email-message").val(res.alertActionProperties.message);
             }
             else if(res.alertActionType=='sms') {
                 loadAction();
-                $("#action-sms-phoneNo").val(res.sms_no);
-                $("#message").val(res.message);
+                $("#action-sms-phoneNo").val(res.alertActionProperties.sms_no);
+                $("#sms-message").val(res.alertActionProperties.message);
             }
         },
         error:function(res){
@@ -146,17 +146,17 @@ function saveAlert(){
     payload.alertActionType=$("#alert-action").val();
     if (payload.alertActionType=="logger"){
         action.uniqueId=$("#action-logger-uniqueId").val();
-        action.message=$("#message").val();
+        action.message=$("#logger-message").val();
     }
     if (payload.alertActionType=="email"){
         action.email_address=$("#action-email-address").val();
         action.email_subject=$("#action-email-subject").val();
         action.email_type=$("#action-email-type").val();
-        action.message=$("#message").val();
+        action.message=$("#email-message").val();
     }
     if (payload.alertActionType=="sms"){
-        action.sms_no=$("#action-sms-phoneNo").val();
-        action.message=$("#message").val();
+        action.sms_no=$("#action-sms-phoneNo").val()
+        action.message=$("#sms-message").val();
     }
     payload.alertActionProperties=action;
     var data=JSON.stringify(payload);
@@ -189,17 +189,17 @@ function updateAlert(){
     payload.alertActionType=$("#alert-action").val();
     if (payload.alertActionType=="logger"){
         action.uniqueId=$("#action-logger-uniqueId").val();
-        action.message=$("#message").val();
+        action.message=$("#logger-message").val();
     }
     if (payload.alertActionType=="email"){
         action.email_address=$("#action-email-address").val();
         action.email_subject=$("#action-email-subject").val();
         action.email_type=$("#action-email-type").val();
-        action.message=$("#message").val();
+        action.message=$("#email-message").val();
     }
     if (payload.alertActionType=="sms"){
         action.sms_no=$("#action-sms-phoneNo").val();
-        action.message=$("#message").val();
+        action.message=$("#sms-message").val();
     }
     payload.alertActionProperties=action;
     var data=JSON.stringify(payload);
@@ -437,6 +437,10 @@ function loadAction(){
         $("#action-sms").show();
     }
 
+}
+
+function backward(){
+    window.location=serverUrl+'/loganalyzer/site/alert/alert.jag';
 }
 
 /*

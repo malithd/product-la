@@ -96,6 +96,8 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         taskProperties.put(LAAlertConstant.START, String.valueOf(saTaskInfo.getStart()));
         taskProperties.put(LAAlertConstant.LENGTH, String.valueOf(saTaskInfo.getLength()));
         taskProperties.put(LAAlertConstant.ALERT_NAME, saTaskInfo.getAlertName());
+        taskProperties.put(LAAlertConstant.CONDITION, saTaskInfo.getCondition());
+        taskProperties.put(LAAlertConstant.CONDITION_VALUE, String.valueOf(saTaskInfo.getConditionValue()));
         return new TaskInfo(taskName, ScheduleAlertTask.class.getName(), taskProperties, triggerInfo);
     }
 
@@ -125,17 +127,18 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         to.setEventAdapterType(alertActionType);
 
         ArrayList<Property> properties = new ArrayList<Property>();
-        Property pro1 = new Property();
         String key;
         for (Map.Entry<String, String> prop : alertActionProperties.entrySet()) {
             if (prop.getKey() != "message") {
-                key=prop.getKey().replace("_",".");
+                Property pro1 = new Property();
+                key=prop.getKey();
+                key=key.replace("_",".");
                 pro1.setName(key);
                 pro1.setValue(prop.getValue());
+                properties.add(pro1);
             }
         }
 
-        properties.add(pro1);
         to.setProperty(properties);
 
         eventPublisher.setFrom(from);
@@ -246,7 +249,7 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         return saTaskInfo;
     }
 
-    public boolean deleteAlertTask(String alertName, int tenantId) throws TaskException, RegistryException {
+    public boolean deleteAlertTask(String alertName, int tenantId) throws TaskException, RegistryException, EventPublisherConfigurationException, EventStreamConfigurationException {
         this.deleteScheduleTask(alertName, tenantId);
         UserRegistry userRegistry = LAAlertServiceValueHolder.getInstance().getTenantConfigRegistry(tenantId);
         String fileLocation = getConfigurationLocation(alertName);
@@ -256,6 +259,10 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
             log.info("Cannot delete non existing file : " + alertName + " for tenantId : " + tenantId + ". " +
                     "It might have been deleted already.");
         }
+        EventPublisherService eventPublisherService=LAAlertServiceValueHolder.getInstance().getEventPublisherService();
+        eventPublisherService.undeployActiveEventPublisherConfiguration(alertName);
+        EventStreamService eventStreamService=LAAlertServiceValueHolder.getInstance().getEventStreamService();
+        eventStreamService.removeEventStreamDefinition(alertName,"1.0.0");
 
         return true;
     }
