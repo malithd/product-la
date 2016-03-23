@@ -105,7 +105,7 @@
                         <!-- Schedule Alert Content --- Schedule Alert Create Form-->
                         <div class="inner-container">
                             <div class="sl-label"><label>Alert Name:</label></div>
-                            <div class="input-control" id="fields"><input type="text" id="alert-name-txt" class="alert-name-txt"></div>
+                            <div class="input-control" id="fields"><input type="text" id="alert-name-txt" class="alert-name-txt" ></div>
                             <div class="sl-label"><label>Description</label></div>
                             <div class="input-control" id="fields"><textarea rows="3" class=alert-des-txa" id="alert-des-txa"></textarea ></div>
                             <div class="sl-label"><label>Filter:</label></div>

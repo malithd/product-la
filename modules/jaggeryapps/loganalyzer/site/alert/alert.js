@@ -133,30 +133,86 @@ function updateContent(alertName){
 }
 
 function saveAlert(){
+    var alertName=$("#alert-name-txt").val();
+    var cmpValue=$("#cmp-val").val();
+    var query=$("#filter-txt").val();
+    if(!isValidName(alertName)){
+        alert("Invalid Alert Name");
+        return;
+    }
+    if (!isValidNumber(cmpValue)||cmpValue=="") {
+        alert("Invalid Trigger Value");
+        return;
+    }
+    if (query=="") {
+        alert("Search can't be empty");
+        return;
+    }
     var payload={};
     var action={};
-    payload.alertName=$("#alert-name-txt").val();
+   var name=jQuery.trim($("#alert-name-txt").val());
+    payload.alertName=alertName;
     payload.description=$("#alert-des-txa").val();
-    payload.query=$("#filter-txt").val();
+    payload.query=query;
     payload.timeFrom = $("#timestamp-from").val();
     payload.timeTo=$("#timestamp-to").val();
     payload.cronExpression=$("#cron-exp").val();
     payload.condition=$("#cond-type").val();
-    payload.conditionValue=$("#cmp-val").val();
+    payload.conditionValue=cmpValue;
     payload.alertActionType=$("#alert-action").val();
     if (payload.alertActionType=="logger"){
-        action.uniqueId=$("#action-logger-uniqueId").val();
-        action.message=$("#logger-message").val();
+        var uniqueId=$("#action-logger-uniqueId").val();
+        var loggerMessage=$("#logger-message").val();
+        if (uniqueId == "") {
+            alert("Unique Id can't be empty");
+            return;
+        }
+        if (loggerMessage == "") {
+            alert("Message can't be empty");
+            return;
+        }
+        action.uniqueId=uniqueId;
+        action.message=loggerMessage;
     }
     if (payload.alertActionType=="email"){
-        action.email_address=$("#action-email-address").val();
-        action.email_subject=$("#action-email-subject").val();
+        var emailAddressesTxt=$("#action-email-address").val();
+        var emailAddresses = emailAddressesTxt.split(",");
+        var subject=$("#action-email-subject").val();
+        var emailMessage=$("#email-message").val();
+        for (var i in emailAddresses){
+            var emailAddress= emailAddresses[i].trim();
+            if (!isValidEmail(emailAddress)) {
+                alert("Invalid Email Address "+emailAddress);
+                return;
+            }
+        }
+        if (subject == "") {
+            alert("Subject can't be empty");
+            return;
+        }
+        if (subject == "") {
+            alert("Message can't be empty");
+            return;
+        }
+
+        action.email_address=emailAddressesTxt;
+        action.email_subject=subject;
         action.email_type=$("#action-email-type").val();
-        action.message=$("#email-message").val();
+        action.message=emailMessage;
     }
     if (payload.alertActionType=="sms"){
-        action.sms_no=$("#action-sms-phoneNo").val()
-        action.message=$("#sms-message").val();
+        var phoneNo = $("#action-sms-phoneNo").val();
+        var smsMessage =$("#sms-message").val();
+        if (!isValidPhoneNo(phoneNo)) {     //||phoneNo == ""
+            alert("Invalid Phone Number");
+            return;
+        }
+        if (smsMessage == "") {
+            alert("Message can't be empty");
+            return;
+        }
+        action.sms_no=phoneNo;
+        action.message=smsMessage;
     }
     payload.alertActionProperties=action;
     var data=JSON.stringify(payload);
@@ -176,30 +232,79 @@ function saveAlert(){
 }
 
 function updateAlert(){
+    var query=$("#filter-txt").val();
+    var cmpValue=$("#cmp-val").val();
     var payload={};
     var action={};
+    if (query=="") {
+        alert("Search can't be empty");
+        return;
+    }
+    if (!isValidNumber(cmpValue)||cmpValue=="") {
+        alert("Invalid Trigger Value");
+        return;
+    }
     payload.alertName=$("#alert-name-txt").val();
     payload.description=$("#alert-des-txa").val();
-    payload.query=$("#filter-txt").val();
+    payload.query=query;
     payload.timeFrom = $("#timestamp-from").val();
     payload.timeTo=$("#timestamp-to").val();
     payload.cronExpression=$("#cron-exp").val();
     payload.condition=$("#cond-type").val();
-    payload.conditionValue=$("#cmp-val").val();
+    payload.conditionValue=cmpValue;
     payload.alertActionType=$("#alert-action").val();
     if (payload.alertActionType=="logger"){
-        action.uniqueId=$("#action-logger-uniqueId").val();
-        action.message=$("#logger-message").val();
+        var uniqueId=$("#action-logger-uniqueId").val();
+        var loggerMessage=$("#logger-message").val();
+        if (uniqueId == "") {
+            alert("Unique Id can't be empty");
+            return;
+        }
+        if (loggerMessage == "") {
+            alert("Message can't be empty");
+            return;
+        }
+        action.uniqueId=uniqueId;
+        action.message=loggerMessage;
     }
     if (payload.alertActionType=="email"){
-        action.email_address=$("#action-email-address").val();
-        action.email_subject=$("#action-email-subject").val();
+        var emailAddressesTxt=$("#action-email-address").val();
+        var emailAddresses = emailAddressesTxt.split(",");
+        var subject=$("#action-email-subject").val();
+        var emailMessage=$("#email-message").val();
+        for (var i in emailAddresses){
+            if (!isValidEmail(emailAddresses[i])) {
+                alert("Invalid Email Address "+emailAddresses[i]);
+                return;
+            }
+        }
+        if (subject == "") {
+            alert("Subject can't be empty");
+            return;
+        }
+        if (subject == "") {
+            alert("Message can't be empty");
+            return;
+        }
+
+        action.email_address=emailAddressesTxt;
+        action.email_subject=subject;
         action.email_type=$("#action-email-type").val();
-        action.message=$("#email-message").val();
+        action.message=emailMessage;
     }
     if (payload.alertActionType=="sms"){
-        action.sms_no=$("#action-sms-phoneNo").val();
-        action.message=$("#sms-message").val();
+        var phoneNo = $("#action-sms-phoneNo").val();
+        var smsMessage =$("#sms-message").val();
+        if (!isValidPhoneNo(phoneNo)) {     //||phoneNo == ""
+            alert("Invalid Phone Number");
+            return;
+        }
+        if (smsMessage == "") {
+            alert("Message can't be empty");
+            return;
+        }
+        action.sms_no=phoneNo;
+        action.message=smsMessage;
     }
     payload.alertActionProperties=action;
     var data=JSON.stringify(payload);
@@ -215,87 +320,7 @@ function updateAlert(){
             alert(res.responseText);
         }
     });
-
 }
-
-
-//function callAlert(){
-//    var payload={};
-//    payload.streamName="loganalyzer";
-//    payload.alertName="Alert1";
-//    payload.description="This is an alert";
-//    payload.alertType="Real Time";
-//    payload.filter="logType=WARN"
-//    payload.fields=[
-//        {"field0":"timestam"},
-//        {"field1":"javaClass"}
-//    ]
-//    jQuery.ajax({
-//        type: "POST",
-//        data : JSON.stringify(payload),
-//        dataType : "json",
-//        contentType : "application/json; charset=utf-8",
-//        url: serverUrl + "/api/alet/save",
-//        success: function(res) {
-//            alert(res.responseText);
-//        },
-//        error: function(res) {
-//            alert(res.responseText);
-//        }
-//    });
-//    alert(JSON.stringify(payload));
-//
-//}
-
-/*-------------Tab Pane handeling-----------------*/
-
-jQuery(document).ready(function() {
-
-    jQuery('.alert-tabs .tab-links a').on('click', function(e)  {
-        var currentAttrValue = jQuery(this).attr('href');
-
-        // Show/Hide Tabs
-        jQuery('.alert-tabs ' + currentAttrValue).show().siblings().hide();
-
-        // Change/remove current tab to active
-        jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
-
-        e.preventDefault();
-    });
-
-    $("#daily-timepicker").timepicker({  timeFormat: 'H:i'
-        //,interval:30  // 15
-    });
-
-    $("#weekly-timepicker").timepicker({  timeFormat: 'H:i'
-        //,interval:30  // 15
-    });
-
-    $("#monthly-timepicker").timepicker({  timeFormat: 'H:i'
-        //,interval:30  // 15
-    });
-
-    $(".monthly-datepicker").datepicker({
-        dateFormat: 'dd',
-        changeYear:true,
-        changeMonth:true,
-        onSelect: function(dateText, inst) {
-            alert(dateText); // alerts the day name
-        }
-    });
-
-
-    if (window.location.search.indexOf('query') > -1) {
-        $(".inner-container").show();
-        urlParams = splitUrl();
-        setParams(urlParams);
-        $(".alert-list").hide();
-
-    }
-
-    loadContent();
-    loadCompare();
-});
 
     $("#add-alert-btn").click(function () {
         $(".inner-container").show();
@@ -305,6 +330,26 @@ jQuery(document).ready(function() {
     });
 /*---------------------------------------------------------------
 */
+function isValidName(string){
+    var alertNamePattern = /^([a-z]|[A-Z]|_|\.|-)([a-z]|[A-Z]|[0-9]|_|\.|-)*$/i;
+    return (alertNamePattern.test(string));
+}
+
+function isValidNumber(number){
+    var integerPattern= /^([0]|[1-9])*$/g;
+    return (integerPattern.test(number));
+}
+
+function isValidPhoneNo(number){
+    var PhoneNoPattern = /^(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)*$/gm;
+    return (PhoneNoPattern.test(number));
+}
+
+function isValidEmail(email) {
+    var emailPattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return emailPattern.test(email);
+}
+///^(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)*$/gm
 
 function splitUrl() {
     var urlParams;
@@ -320,6 +365,7 @@ function splitUrl() {
         urlParams[decode(match[1])] = decode(match[2]);
     return urlParams;
 }
+
 
 function setParams(values){
     for(var key in values){
@@ -442,6 +488,85 @@ function loadAction(){
 function backward(){
     window.location=serverUrl+'/loganalyzer/site/alert/alert.jag';
 }
+
+
+//function callAlert(){
+//    var payload={};
+//    payload.streamName="loganalyzer";
+//    payload.alertName="Alert1";
+//    payload.description="This is an alert";
+//    payload.alertType="Real Time";
+//    payload.filter="logType=WARN"
+//    payload.fields=[
+//        {"field0":"timestam"},
+//        {"field1":"javaClass"}
+//    ]
+//    jQuery.ajax({
+//        type: "POST",
+//        data : JSON.stringify(payload),
+//        dataType : "json",
+//        contentType : "application/json; charset=utf-8",
+//        url: serverUrl + "/api/alet/save",
+//        success: function(res) {
+//            alert(res.responseText);
+//        },
+//        error: function(res) {
+//            alert(res.responseText);
+//        }
+//    });
+//    alert(JSON.stringify(payload));
+//
+//}
+
+/*-------------Tab Pane handeling-----------------*/
+
+//jQuery(document).ready(function() {
+//
+//    jQuery('.alert-tabs .tab-links a').on('click', function(e)  {
+//        var currentAttrValue = jQuery(this).attr('href');
+//
+//        // Show/Hide Tabs
+//        jQuery('.alert-tabs ' + currentAttrValue).show().siblings().hide();
+//
+//        // Change/remove current tab to active
+//        jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
+//
+//        e.preventDefault();
+//    });
+//
+//    $("#daily-timepicker").timepicker({  timeFormat: 'H:i'
+//        //,interval:30  // 15
+//    });
+//
+//    $("#weekly-timepicker").timepicker({  timeFormat: 'H:i'
+//        //,interval:30  // 15
+//    });
+//
+//    $("#monthly-timepicker").timepicker({  timeFormat: 'H:i'
+//        //,interval:30  // 15
+//    });
+//
+//    $(".monthly-datepicker").datepicker({
+//        dateFormat: 'dd',
+//        changeYear:true,
+//        changeMonth:true,
+//        onSelect: function(dateText, inst) {
+//            alert(dateText); // alerts the day name
+//        }
+//    });
+//
+//
+//    if (window.location.search.indexOf('query') > -1) {
+//        $(".inner-container").show();
+//        urlParams = splitUrl();
+//        setParams(urlParams);
+//        $(".alert-list").hide();
+//
+//    }
+//
+//    loadContent();
+//    loadCompare();
+//});
 
 /*
  $(function () {
