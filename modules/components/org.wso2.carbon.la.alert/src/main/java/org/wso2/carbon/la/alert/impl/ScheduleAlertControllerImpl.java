@@ -56,7 +56,6 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
     private static final Log log = LogFactory.getLog(ScheduleAlertControllerImpl.class);
 
     public void registerScheduleAlertTask(SATaskInfo saTaskInfo, String userName, int tenantId) {
-
             this.createOutputStream(saTaskInfo.getAlertName());
             this.createPublisher(saTaskInfo.getAlertName(), saTaskInfo.getAlertActionType(), saTaskInfo.getAlertActionProperties());
             this.saveConfiguration(saTaskInfo, tenantId);
