@@ -29,7 +29,7 @@ public interface ScheduleAlertController {
      * @param userName   User Name of this alert task scheduler
      * @param tenantId   user tenantId of this alert scheduler
      */
-    void registerScheduleAlertTask(SATaskInfo saTaskInfo, String userName, int tenantId) throws TaskException;
+    void createScheduleAlert(SATaskInfo saTaskInfo, String userName, int tenantId) throws TaskException;
 
     /**
      * Set task properties

@@ -52,7 +52,7 @@ public class AlertApi {
         saTaskInfo.setTableName(LAConstants.LOG_ANALYZER_STREAM_NAME);
         saTaskInfo.setStart(0);
         saTaskInfo.setLength(100);
-        scheduleAlertControllerImpl.registerScheduleAlertTask(saTaskInfo,username,tenantId);
+        scheduleAlertControllerImpl.createScheduleAlert(saTaskInfo,username,tenantId);
         return Response.ok().build();
     }
 
