@@ -21,6 +21,7 @@ package org.wso2.carbon.la.restapi;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
+import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.event.publisher.core.exception.EventPublisherConfigurationException;
 import org.wso2.carbon.event.stream.core.exception.EventStreamConfigurationException;
@@ -32,6 +33,7 @@ import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Path("/alert")
@@ -64,6 +66,16 @@ public class AlertApi {
         int tenantId=carbonContext.getTenantId();
         List<SATaskInfo> saTaskInfoList= scheduleAlertControllerImpl.getAllAlertConfigurations(tenantId);
         return Response.ok(saTaskInfoList.toArray()).build();
+    }
+
+    @GET
+    @Path("getColumns")
+    @Produces("application/json")
+    public Response getAllColumns() throws AnalyticsException {
+        PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId=carbonContext.getTenantId();
+        Set<String> keys= scheduleAlertControllerImpl.getTableColumns(tenantId);
+        return  Response.ok(keys.toArray()).build();
     }
 
     @DELETE

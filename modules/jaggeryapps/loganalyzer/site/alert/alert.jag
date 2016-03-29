@@ -343,9 +343,15 @@
                                         <div class="sl-label"><label>Message:</label></div>
                                         <div class="input-control" id="fields"><textarea rows="2" class="message" id="email-message"></textarea ></div>
                                     </div>
+                                    <div>
+                                    <div><button  onclick="getColumns()">+ Advance</button></div>
+                                    <div class="columns" id="columns"></div>
+                                    </div>
+
                                 <button class="btn btn-main" id="alert-back-btn" onclick="backward()">Back</button>
                                 <button class="btn btn-main" id="alert-save-btn" onclick="saveAlert()">Save</button>
                                 <button class="btn btn-main" id="alert-update-btn" onclick="updateAlert()">Update</button>
+
                         </div>
                     </div>
                 </div>

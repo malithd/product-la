@@ -133,6 +133,7 @@ function updateContent(alertName){
 }
 
 function saveAlert(){
+
     var alertName=$("#alert-name-txt").val();
     var cmpValue=$("#cmp-val").val();
     var query=$("#filter-txt").val();
@@ -149,6 +150,8 @@ function saveAlert(){
         return;
     }
     var payload={};
+    var fields={};
+    var count=0;
     var action={};
    var name=jQuery.trim($("#alert-name-txt").val());
     payload.alertName=alertName;
@@ -160,6 +163,16 @@ function saveAlert(){
     payload.condition=$("#cond-type").val();
     payload.conditionValue=cmpValue;
     payload.alertActionType=$("#alert-action").val();
+    $('input[name="columns"]:checked').each(function() {
+        var fieldName="field"+count;
+        var field;
+        fields[fieldName]=this.value;
+        count+=1;
+       // fields."field"+count=this.value;
+      //  fields.push(this.value);
+      //  console.log(this.text());
+    });
+    payload.fields=fields;
     if (payload.alertActionType=="logger"){
         var uniqueId=$("#action-logger-uniqueId").val();
         var loggerMessage=$("#logger-message").val();
@@ -489,6 +502,27 @@ function backward(){
     window.location=serverUrl+'/loganalyzer/site/alert/alert.jag';
 }
 
+function getColumns(){
+    jQuery.ajax({
+        type:"GET",
+        url: serverUrl+"/api/alert/getColumns",
+        success:function(res){
+                var htmlcolunm = "";
+                $.each(res, function (count) {
+                    var value=res[count];
+                    htmlcolunm += createList(value);
+                });
+                $("#columns").append(htmlcolunm);
+        },
+        error:function (res) {
+            alert(res);
+        }
+    });
+}
+
+function createList(column) {
+    return  '<input type="checkbox" id="columnsslt" name="columns" value=\"'+column+'\">'+column+'<br>';
+}
 
 //function callAlert(){
 //    var payload={};

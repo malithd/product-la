@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 import java.util.Map;
 
 @XmlRootElement
@@ -63,7 +64,11 @@ public class SATaskInfo {
     @XmlElement(name = "alertActionType")
     private String alertActionType;
 
+    @XmlElement(name = "fields", required = false)
+    private Map<String, String> fields;
+
     @XmlElement(name = "alertActionProperties")
+
     private Map<String, String> alertActionProperties;
 
     public SATaskInfo() {
@@ -77,9 +82,7 @@ public class SATaskInfo {
 
         this.tableName = tableName;
     }
-
     public String getAlertName() {
-
         return alertName;
     }
 
@@ -176,4 +179,13 @@ public class SATaskInfo {
     public void setAlertActionProperties(Map<String, String> alertActionProperties) {
         this.alertActionProperties = alertActionProperties;
     }
+
+    public void setFields(Map<String, String> fields) {
+        this.fields = fields;
+    }
+
+    public Map<String, String> getFields() {
+        return fields;
+    }
+
 }

@@ -21,6 +21,10 @@ package org.wso2.carbon.la.alert.impl;
 import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
+import org.wso2.carbon.analytics.datasource.commons.AnalyticsSchema;
+import org.wso2.carbon.analytics.datasource.commons.ColumnDefinition;
+import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.databridge.commons.AttributeType;
 import org.wso2.carbon.databridge.commons.StreamDefinition;
 import org.wso2.carbon.databridge.commons.exception.MalformedStreamDefinitionException;
@@ -46,10 +50,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ScheduleAlertControllerImpl implements ScheduleAlertController {
 
@@ -98,6 +99,13 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         taskProperties.put(LAAlertConstant.ALERT_NAME, saTaskInfo.getAlertName());
         taskProperties.put(LAAlertConstant.CONDITION, saTaskInfo.getCondition());
         taskProperties.put(LAAlertConstant.CONDITION_VALUE, String.valueOf(saTaskInfo.getConditionValue()));
+        Map <String, String> fields=saTaskInfo.getFields();
+        StringBuilder fieldString=new StringBuilder();
+        for (String field:fields.values()) {
+                fieldString.append(field).append(",");
+        }
+        fieldString.deleteCharAt(fieldString.length()-1);
+        taskProperties.put(LAAlertConstant.FIELDS,fieldString.toString());
         return new TaskInfo(taskName, ScheduleAlertTask.class.getName(), taskProperties, triggerInfo);
     }
 
@@ -174,6 +182,7 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         try {
             EventStreamService eventStreamService = LAAlertServiceValueHolder.getInstance().getEventStreamService();
             StreamDefinition streamDefinition = new StreamDefinition(alertName, "1.0.0");
+            streamDefinition.addPayloadData("values",AttributeType.STRING);
             streamDefinition.addPayloadData("count", AttributeType.LONG);
             eventStreamService.addEventStreamDefinition(streamDefinition);
         }catch (MalformedStreamDefinitionException e) {
@@ -307,6 +316,13 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         return new SATaskInfo();
     }
 
+    public Set getTableColumns (int tenantId) throws AnalyticsException {
+            AnalyticsDataAPI analyticsDataAPI=LAAlertServiceValueHolder.getInstance().getAnalyticsDataAPI();
+            AnalyticsSchema analyticsSchema=analyticsDataAPI.getTableSchema(tenantId,LAAlertConstant.LOG_ANALYZER_STREAM_NAME.toUpperCase());
+            Map<String,ColumnDefinition> columns=analyticsSchema.getColumns();
+            Set <String> keys= columns.keySet();
+            return keys;
+    }
 
 }
 

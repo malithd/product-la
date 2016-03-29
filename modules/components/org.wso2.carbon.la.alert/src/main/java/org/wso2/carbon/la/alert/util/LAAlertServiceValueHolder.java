@@ -17,6 +17,7 @@
  */
 package org.wso2.carbon.la.alert.util;
 
+import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
 import org.wso2.carbon.event.publisher.core.EventPublisherService;
 import org.wso2.carbon.event.stream.core.EventStreamService;
 import org.wso2.carbon.ntask.core.service.TaskService;
@@ -34,6 +35,7 @@ public class LAAlertServiceValueHolder {
     private EventStreamService eventStreamService;
     private RegistryService registryService;
     private TenantRegistryLoader tenantRegistryLoader;
+    private AnalyticsDataAPI analyticsDataAPI;
 
     public static LAAlertServiceValueHolder getInstance() {
         if (laAlertServiceValueHolder == null) {
@@ -87,5 +89,12 @@ public class LAAlertServiceValueHolder {
         }
     }
 
+    public void setAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI) {
+        this.analyticsDataAPI = analyticsDataAPI;
+    }
 
+    public AnalyticsDataAPI getAnalyticsDataAPI() {
+
+        return analyticsDataAPI;
+    }
 }

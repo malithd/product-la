@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
+import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
 import org.wso2.carbon.event.publisher.core.EventPublisherService;
 import org.wso2.carbon.event.stream.core.EventStreamService;
 import org.wso2.carbon.la.alert.domain.LAAlertConstant;
@@ -53,6 +54,11 @@ import org.wso2.carbon.registry.core.service.TenantRegistryLoader;
  * interface="org.wso2.carbon.registry.core.service.TenantRegistryLoader"
  * cardinality="1..1" policy="dynamic" bind="setTenantRegistryLoader"
  * unbind="unsetTenantRegistryLoader"
+ ** @scr.reference name="org.wso2.carbon.analytics.api.AnalyticsDataAPI"
+ *  interface="org.wso2.carbon.analytics.api.AnalyticsDataAPI"
+ *  cardinality="1..1" policy="dynamic" bind="setAnalyticsDataAPI"
+ *  unbind="unsetAnalyticsDataAPI"
+ *
  */
 public class LAAlertDS {
 
@@ -118,5 +124,13 @@ public class LAAlertDS {
 
     protected void unsetTenantRegistryLoader(TenantRegistryLoader tenantRegistryLoader) {
         LAAlertServiceValueHolder.getInstance().setTenantRegistryLoader(null);
+    }
+
+    protected void setAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI){
+        LAAlertServiceValueHolder.getInstance().setAnalyticsDataAPI(analyticsDataAPI);
+    }
+
+    protected void unsetAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI){
+        LAAlertServiceValueHolder.getInstance().setAnalyticsDataAPI(null);
     }
 }

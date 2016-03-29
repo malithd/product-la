@@ -1,5 +1,6 @@
 package org.wso2.carbon.la.alert.impl;
 
+import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
@@ -12,6 +13,7 @@ import org.wso2.carbon.la.commons.domain.RecordBean;
 import org.wso2.carbon.la.core.impl.SearchController;
 import org.wso2.carbon.ntask.core.AbstractTask;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -44,8 +46,15 @@ public class ScheduleAlertTask extends AbstractTask {
 
         try {
             List<RecordBean> recordBeans = searchController.search(queryBean, username);
+            List<Object> records=new ArrayList<>();
+            for (RecordBean record:recordBeans){
+                Map<String, Object> map=record.getValues();
+               records.add(map.get("_timestamp2"));
+            }
+            Gson gson=new Gson();
+            String recordsGson=gson.toJson(records);
             int recodeListSize = recordBeans.size();
-            payload = new Object[]{new Long(recodeListSize)};
+            payload = new Object[]{recordsGson,new Long(recodeListSize)};
             switch (condition) {
                 case "gt" :
                     if (recodeListSize > conditionValue) {
