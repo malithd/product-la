@@ -13,6 +13,7 @@ public class LAAlertConstant {
     public static final String TIME_TO = "timeTo";
     public static final String START = "start";
     public static final String LENGTH = "length";
+    public static final String FIELDS = "fields";
     public static final String ALERT_NAME = "alertName";
     public static final String CONDITION = "condition";
     public static final String CONDITION_VALUE = "conditionValue";

@@ -68,7 +68,6 @@ public class SATaskInfo {
     private Map<String, String> fields;
 
     @XmlElement(name = "alertActionProperties")
-
     private Map<String, String> alertActionProperties;
 
     public SATaskInfo() {
