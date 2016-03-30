@@ -12,7 +12,6 @@ public class LAAlertConstant {
     public static final String TIME_FROM = "timeFrom";
     public static final String TIME_TO = "timeTo";
     public static final String START = "start";
-    public static final String FIELDS = "fields";
     public static final String LENGTH = "length";
     public static final String ALERT_NAME = "alertName";
     public static final String CONDITION = "condition";
@@ -26,7 +25,6 @@ public class LAAlertConstant {
 
     public static final String SCHEDULE_ALERT_TASK_TYPE = "LAScheduleAlertTask";
     public static final String LOG_ANALYZER_STREAM_NAME = "loganalyzer";
-
 
 
 }

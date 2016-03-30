@@ -42,22 +42,14 @@ public class ScheduleAlertTask extends AbstractTask {
         queryBean.setTimeTo(Long.valueOf(taskProperties.get(LAAlertConstant.TIME_TO)));
         queryBean.setStart(Integer.valueOf(taskProperties.get(LAAlertConstant.START)));
         queryBean.setLength(Integer.valueOf(taskProperties.get(LAAlertConstant.LENGTH)));
-        String[] fields=null;
-        if (taskProperties.containsKey(LAAlertConstant.FIELDS)) {
-           fields = taskProperties.get(LAAlertConstant.FIELDS).split(",");
-        }
         Object[] payload;
 
         try {
             List<RecordBean> recordBeans = searchController.search(queryBean, username);
             List<Object> records=new ArrayList<>();
-            if (taskProperties.containsKey(LAAlertConstant.FIELDS)) {
-                for (RecordBean record : recordBeans) {
-                    Map<String, Object> map = record.getValues();
-                    for (String field : fields) {
-                        records.add(map.get(field));
-                    }
-                }
+            for (RecordBean record:recordBeans){
+                Map<String, Object> map=record.getValues();
+               records.add(map.get("_timestamp2"));
             }
             Gson gson=new Gson();
             String recordsGson=gson.toJson(records);

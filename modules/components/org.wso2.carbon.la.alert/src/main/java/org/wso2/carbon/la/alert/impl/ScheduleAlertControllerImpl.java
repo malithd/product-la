@@ -99,19 +99,14 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         taskProperties.put(LAAlertConstant.ALERT_NAME, saTaskInfo.getAlertName());
         taskProperties.put(LAAlertConstant.CONDITION, saTaskInfo.getCondition());
         taskProperties.put(LAAlertConstant.CONDITION_VALUE, String.valueOf(saTaskInfo.getConditionValue()));
-        if(saTaskInfo.getFields().isEmpty()){
-            return new TaskInfo(taskName, ScheduleAlertTask.class.getName(), taskProperties, triggerInfo);
-        }
-        else{
-            Map <String, String> fields=saTaskInfo.getFields();
-            StringBuilder fieldString=new StringBuilder();
-            for (String field:fields.values()) {
+        Map <String, String> fields=saTaskInfo.getFields();
+        StringBuilder fieldString=new StringBuilder();
+        for (String field:fields.values()) {
                 fieldString.append(field).append(",");
-            }
-            fieldString.deleteCharAt(fieldString.length()-1);
-            taskProperties.put(LAAlertConstant.FIELDS,fieldString.toString());
-            return new TaskInfo(taskName, ScheduleAlertTask.class.getName(), taskProperties, triggerInfo);
         }
+        fieldString.deleteCharAt(fieldString.length()-1);
+        taskProperties.put(LAAlertConstant.FIELDS,fieldString.toString());
+        return new TaskInfo(taskName, ScheduleAlertTask.class.getName(), taskProperties, triggerInfo);
     }
 
     private void createPublisher(String alertName, String alertActionType, Map<String, String> alertActionProperties)  {

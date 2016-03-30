@@ -137,7 +137,6 @@ function saveAlert(){
     var alertName=$("#alert-name-txt").val();
     var cmpValue=$("#cmp-val").val();
     var query=$("#filter-txt").val();
-    var valuesSlt=false;
     if(!isValidName(alertName)){
         alert("Invalid Alert Name");
         return;
@@ -165,7 +164,6 @@ function saveAlert(){
     payload.conditionValue=cmpValue;
     payload.alertActionType=$("#alert-action").val();
     $('input[name="columns"]:checked').each(function() {
-        valuesSlt=true;
         var fieldName="field"+count;
         var field;
         fields[fieldName]=this.value;
@@ -185,12 +183,6 @@ function saveAlert(){
         if (loggerMessage == "") {
             alert("Message can't be empty");
             return;
-        }
-        if (valuesSlt) {
-            loggerMessage+=" {{values}}"
-        }
-        if ($("#countSlt").is(":checked")) {
-            loggerMessage+=" {{count}}";
         }
         action.uniqueId=uniqueId;
         action.message=loggerMessage;
@@ -215,12 +207,7 @@ function saveAlert(){
             alert("Message can't be empty");
             return;
         }
-        if (valuesSlt) {
-            emailMessage+=" Log Values {{values}}"
-        }
-        if ($("#countSlt").is(":checked")) {
-            emailMessage+=" Result Count {{count}}";
-        }
+
         action.email_address=emailAddressesTxt;
         action.email_subject=subject;
         action.email_type=$("#action-email-type").val();
@@ -236,12 +223,6 @@ function saveAlert(){
         if (smsMessage == "") {
             alert("Message can't be empty");
             return;
-        }
-        if (valuesSlt) {
-            smsMessage+=" {{values}}"
-        }
-        if ($("#countSlt").is(":checked")) {
-            smsMessage+=" {{count}}";
         }
         action.sms_no=phoneNo;
         action.message=smsMessage;
@@ -268,8 +249,6 @@ function updateAlert(){
     var cmpValue=$("#cmp-val").val();
     var payload={};
     var action={};
-    var count=0;
-    var valuesSlt=false;
     if (query=="") {
         alert("Search can't be empty");
         return;
@@ -287,17 +266,6 @@ function updateAlert(){
     payload.condition=$("#cond-type").val();
     payload.conditionValue=cmpValue;
     payload.alertActionType=$("#alert-action").val();
-    $('input[name="columns"]:checked').each(function() {
-        valuesSlt=true;
-        var fieldName="field"+count;
-        var field;
-        fields[fieldName]=this.value;
-        count+=1;
-        // fields."field"+count=this.value;
-        //  fields.push(this.value);
-        //  console.log(this.text());
-    });
-    payload.fields=fields;
     if (payload.alertActionType=="logger"){
         var uniqueId=$("#action-logger-uniqueId").val();
         var loggerMessage=$("#logger-message").val();
@@ -308,12 +276,6 @@ function updateAlert(){
         if (loggerMessage == "") {
             alert("Message can't be empty");
             return;
-        }
-        if (valuesSlt) {
-            loggerMessage+=" {{values}}"
-        }
-        if ($("#countSlt").is(":checked")) {
-            loggerMessage+=" {{count}}";
         }
         action.uniqueId=uniqueId;
         action.message=loggerMessage;
@@ -337,12 +299,6 @@ function updateAlert(){
             alert("Message can't be empty");
             return;
         }
-        if (valuesSlt) {
-            emailMessage+=" Log Values {{values}}"
-        }
-        if ($("#countSlt").is(":checked")) {
-            emailMessage+=" Result Count {{count}}";
-        }
 
         action.email_address=emailAddressesTxt;
         action.email_subject=subject;
@@ -359,12 +315,6 @@ function updateAlert(){
         if (smsMessage == "") {
             alert("Message can't be empty");
             return;
-        }
-        if (valuesSlt) {
-            smsMessage+=" {{values}}"
-        }
-        if ($("#countSlt").is(":checked")) {
-            smsMessage+=" {{count}}";
         }
         action.sms_no=phoneNo;
         action.message=smsMessage;
@@ -562,7 +512,6 @@ function getColumns(){
                     var value=res[count];
                     htmlcolunm += createList(value);
                 });
-                 htmlcolunm+='<input type="checkbox" id="countSlt" name="count" value="count">'+"Result Count";
                 $("#columns").append(htmlcolunm);
         },
         error:function (res) {
@@ -572,7 +521,6 @@ function getColumns(){
 }
 
 function createList(column) {
-    $("#columns").empty();
     return  '<input type="checkbox" id="columnsslt" name="columns" value=\"'+column+'\">'+column+'<br>';
 }
 
