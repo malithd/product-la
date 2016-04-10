@@ -13,9 +13,7 @@ import org.wso2.carbon.la.commons.domain.RecordBean;
 import org.wso2.carbon.la.core.impl.SearchController;
 import org.wso2.carbon.ntask.core.AbstractTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class ScheduleAlertTask extends AbstractTask {
@@ -50,17 +48,19 @@ public class ScheduleAlertTask extends AbstractTask {
 
         try {
             List<RecordBean> recordBeans = searchController.search(queryBean, username);
-            List<Object> records=new ArrayList<>();
+            List<Object> records=new ArrayList<Object>();
             if (taskProperties.containsKey(LAAlertConstant.FIELDS)) {
                 for (RecordBean record : recordBeans) {
                     Map<String, Object> map = record.getValues();
+                    Map <String,Object> data=new HashMap<String,Object>();
                     for (String field : fields) {
-                        records.add(map.get(field));
+                        data.put(field,map.get(field));
+                        records.add(data);
                     }
                 }
             }
             Gson gson=new Gson();
-            String recordsGson=gson.toJson(records);
+            String recordsGson = gson.toJson(records);
             int recodeListSize = recordBeans.size();
             payload = new Object[]{recordsGson,new Long(recodeListSize)};
             switch (condition) {

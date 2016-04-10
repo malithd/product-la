@@ -22,8 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpHeaders;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.la.commons.domain.LogGroup;
-import org.wso2.carbon.la.commons.domain.LogStream;
 import org.wso2.carbon.la.core.exceptions.LogsControllerException;
 import org.wso2.carbon.la.core.impl.LogsController;
 import org.wso2.carbon.la.restapi.beans.LAErrorBean;
@@ -36,11 +34,16 @@ import java.util.Map;
 @Path("/logs")
 public class LogsApiV10 extends LARestApi {
 
+
     private static final Log log = LogFactory.getLog(LogsApiV10.class);
     private LogsController logsController;
 
+
+
+
     public LogsApiV10() {
         logsController = new LogsController();
+
     }
 
     @OPTIONS
@@ -89,4 +92,5 @@ public class LogsApiV10 extends LARestApi {
                     .build();
         }
     }
+
 }

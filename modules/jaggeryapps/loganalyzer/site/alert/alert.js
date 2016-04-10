@@ -111,19 +111,25 @@ function updateContent(alertName){
             if(res.alertActionType=='logger'){
                 loadAction();
                 $("#action-logger-uniqueId").val(res.alertActionProperties.uniqueId);
-                $("#logger-message").val(res.alertActionProperties.message);
+                var getContent=res.alertActionProperties.message;
+                var setMessage=getContent.replace(/{{.*/,"");
+                $("#logger-message").val(setMessage);
             }
             else if(res.alertActionType=='email'){
                 loadAction();
                 $("#action-email-address").val(res.alertActionProperties.email_address);
                 $("#action-email-subject").val(res.alertActionProperties.email_subject);
                 $("#action-email-type").val(res.alertActionProperties.email_type);
-                $("#email-message").val(res.alertActionProperties.message);
+                var getContent=res.alertActionProperties.message;
+                var setMessage=getContent.replace(/{{.*/,"");
+                $("#email-message").val(setMessage);
             }
             else if(res.alertActionType=='sms') {
                 loadAction();
                 $("#action-sms-phoneNo").val(res.alertActionProperties.sms_no);
-                $("#sms-message").val(res.alertActionProperties.message);
+                var getContent=res.alertActionProperties.message;
+                var setMessage=getContent.replace(/{{.*/,"");
+                $("#sms-message").val(setMessage);
             }
         },
         error:function(res){
@@ -268,6 +274,7 @@ function updateAlert(){
     var query=$("#filter-txt").val();
     var cmpValue=$("#cmp-val").val();
     var payload={};
+    var fields={};
     var action={};
     var count=0;
     var valuesSlt=false;
@@ -574,7 +581,8 @@ function getColumns(){
 
 function createList(column) {
     $("#columns").empty();
-    return  '<input type="checkbox" id="columnsslt" name="columns" value=\"'+column+'\">'+column+'<br>';
+    var displayText=column.replace("_","");
+    return  '<input type="checkbox" id="columnsslt" name="columns" value=\"'+column+'\">'+displayText+'<br>';
 }
 
 //function callAlert(){
