@@ -57,10 +57,10 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
     private static final Log log = LogFactory.getLog(ScheduleAlertControllerImpl.class);
 
     public void createScheduleAlert(SATaskInfo saTaskInfo, String userName, int tenantId) {
-            this.createOutputStream(saTaskInfo.getAlertName());
-            this.createPublisher(saTaskInfo.getAlertName(), saTaskInfo.getAlertActionType(), saTaskInfo.getAlertActionProperties());
-            this.saveConfiguration(saTaskInfo, tenantId);
-            this.scheduleTask(saTaskInfo, userName);
+        this.createOutputStream(saTaskInfo.getAlertName());
+        this.createPublisher(saTaskInfo.getAlertName(), saTaskInfo.getAlertActionType(), saTaskInfo.getAlertActionProperties());
+        this.saveConfiguration(saTaskInfo, tenantId);
+        this.scheduleTask(saTaskInfo, userName);
     }
 
     private void scheduleTask(SATaskInfo saTaskInfo, String userName) {
@@ -69,9 +69,9 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
             TaskInfo scheduleTaskInfo = createScheduleAlertTask(saTaskInfo, userName);
             taskManager.registerTask(scheduleTaskInfo);
             taskManager.rescheduleTask(scheduleTaskInfo.getName());
-        }
-        catch (TaskException e){
-            log.error("Unable to schedule task "+ e.getMessage(),e);
+        } catch (TaskException e) {
+            log.error("Unable to schedule task " + e.getMessage(), e);
+
         }
     }
 
@@ -79,19 +79,20 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         try {
             TaskManager taskManager = LAAlertServiceValueHolder.getInstance().getTaskService().getTaskManager(LAAlertConstant.SCHEDULE_ALERT_TASK_TYPE);
             taskManager.deleteTask(alertName);
-        }
-        catch (TaskException e) {
-            log.error("Unable to delete scheduled task "+e.getMessage(),e);
+        } catch (TaskException e) {
+            log.error("Unable to delete scheduled task " + e.getMessage(), e);
         }
     }
 
     public TaskInfo createScheduleAlertTask(SATaskInfo saTaskInfo, String userName) {
         String taskName = saTaskInfo.getAlertName();
+        long timeDiff = saTaskInfo.getTimeTo() - saTaskInfo.getTimeFrom();
         TaskInfo.TriggerInfo triggerInfo = new TaskInfo.TriggerInfo(saTaskInfo.getCronExpression());
         Map<String, String> taskProperties = new HashMap<>();
         taskProperties.put(LAAlertConstant.TABLE_NAME, saTaskInfo.getTableName());
         taskProperties.put(LAAlertConstant.QUERY, saTaskInfo.getQuery());
         taskProperties.put(LAAlertConstant.USER_NAME, userName);
+        taskProperties.put(LAAlertConstant.TIME_DIFF, String.valueOf(timeDiff));
         taskProperties.put(LAAlertConstant.TIME_FROM, String.valueOf(saTaskInfo.getTimeFrom()));
         taskProperties.put(LAAlertConstant.TIME_TO, String.valueOf(saTaskInfo.getTimeTo()));
         taskProperties.put(LAAlertConstant.START, String.valueOf(saTaskInfo.getStart()));
@@ -99,28 +100,28 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         taskProperties.put(LAAlertConstant.ALERT_NAME, saTaskInfo.getAlertName());
         taskProperties.put(LAAlertConstant.CONDITION, saTaskInfo.getCondition());
         taskProperties.put(LAAlertConstant.CONDITION_VALUE, String.valueOf(saTaskInfo.getConditionValue()));
-        if(saTaskInfo.getFields().isEmpty()){
+        if (saTaskInfo.getFields().isEmpty()) {
             return new TaskInfo(taskName, ScheduleAlertTask.class.getName(), taskProperties, triggerInfo);
-        }
-        else{
-            Map <String, String> fields=saTaskInfo.getFields();
-            StringBuilder fieldString=new StringBuilder();
-            for (String field:fields.values()) {
+        } else {
+            Map<String, String> fields = saTaskInfo.getFields();
+            StringBuilder fieldString = new StringBuilder();
+            for (String field : fields.values()) {
                 fieldString.append(field).append(",");
             }
-            fieldString.deleteCharAt(fieldString.length()-1);
-            taskProperties.put(LAAlertConstant.FIELDS,fieldString.toString());
+            fieldString.deleteCharAt(fieldString.length() - 1);
+            taskProperties.put(LAAlertConstant.FIELDS, fieldString.toString());
             return new TaskInfo(taskName, ScheduleAlertTask.class.getName(), taskProperties, triggerInfo);
         }
     }
 
-    private void createPublisher(String alertName, String alertActionType, Map<String, String> alertActionProperties)  {
+
+    private void createPublisher(String alertName, String alertActionType, Map<String, String> alertActionProperties) {
         try {
             EventPublisherService eventPublisherService = LAAlertServiceValueHolder.getInstance().getEventPublisherService();
             StringWriter stringWriter = this.createPublisherXML(alertName, alertActionType, alertActionProperties);
             eventPublisherService.deployEventPublisherConfiguration(stringWriter.toString());
 
-        }catch (EventPublisherConfigurationException e) {
+        } catch (EventPublisherConfigurationException e) {
             log.error("Unable to deploy Event Publish Configuration " + e.getMessage(), e);
         }
     }
@@ -187,13 +188,13 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         try {
             EventStreamService eventStreamService = LAAlertServiceValueHolder.getInstance().getEventStreamService();
             StreamDefinition streamDefinition = new StreamDefinition(alertName, "1.0.0");
-            streamDefinition.addPayloadData("values",AttributeType.STRING);
+            streamDefinition.addPayloadData("values", AttributeType.STRING);
             streamDefinition.addPayloadData("count", AttributeType.LONG);
             eventStreamService.addEventStreamDefinition(streamDefinition);
-        }catch (MalformedStreamDefinitionException e) {
-            log.error("Malformed Stream definition "+ e.getMessage(),e);
+        } catch (MalformedStreamDefinitionException e) {
+            log.error("Malformed Stream definition " + e.getMessage(), e);
         } catch (EventStreamConfigurationException e) {
-            log.error("Unable to add event stream definition "+ e.getMessage(), e );
+            log.error("Unable to add event stream definition " + e.getMessage(), e);
         }
     }
 
@@ -211,18 +212,18 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
                 userRegistry.put(configurationLocation, resource);
             }
         } catch (RegistryException e) {
-            log.error("Unable to save Alert configurations "+e.getMessage(),e);
+            log.error("Unable to save Alert configurations " + e.getMessage(), e);
         }
     }
 
-    private void createConfigurationCollection(UserRegistry userRegistry)  {
+    private void createConfigurationCollection(UserRegistry userRegistry) {
         try {
             if (!userRegistry.resourceExists(LAAlertConstant.ALERT_CONFIGURATION_LOCATION)) {
                 Collection collection = userRegistry.newCollection();
                 userRegistry.put(LAAlertConstant.ALERT_CONFIGURATION_LOCATION, collection);
             }
         } catch (RegistryException e) {
-            log.error("Unable to create Configuration Collection in Registry "+e.getMessage(),e);
+            log.error("Unable to create Configuration Collection in Registry " + e.getMessage(), e);
         }
 
     }
@@ -233,7 +234,7 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
     }
 
     public void updateScheduleAlertTask(SATaskInfo saTaskInfo, String userName, int tenantId) {
-        try{
+        try {
             UserRegistry userRegistry = LAAlertServiceValueHolder.getInstance().getTenantConfigRegistry(tenantId);
             String fileLocation = getConfigurationLocation(saTaskInfo.getAlertName());
             if (userRegistry.resourceExists(fileLocation)) {
@@ -250,11 +251,11 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
             this.deleteScheduleTask(saTaskInfo.getAlertName(), tenantId);
             this.scheduleTask(saTaskInfo, userName);
         } catch (RegistryException e) {
-            log.error("Unable to save Alert Configuration "+e.getMessage(),e);
+            log.error("Unable to save Alert Configuration " + e.getMessage(), e);
         } catch (EventPublisherConfigurationException e) {
-            log.error("Unable to update publisher "+e.getMessage(),e);
+            log.error("Unable to update publisher " + e.getMessage(), e);
         } catch (TaskException e) {
-            log.error("Unable to update scheduled task "+e.getMessage(),e);
+            log.error("Unable to update scheduled task " + e.getMessage(), e);
         }
     }
 
@@ -273,7 +274,7 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
                 return configurations;
             }
         } catch (RegistryException e) {
-           log.error("Unable to get alert configuration from registry "+e.getMessage(),e);
+            log.error("Unable to get alert configuration from registry " + e.getMessage(), e);
         }
         return null;
     }
@@ -285,29 +286,29 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
     }
 
     public void deleteAlertTask(String alertName, int tenantId) {
-       try {
-           this.deleteScheduleTask(alertName, tenantId);
-           UserRegistry userRegistry = LAAlertServiceValueHolder.getInstance().getTenantConfigRegistry(tenantId);
-           EventPublisherService eventPublisherService = LAAlertServiceValueHolder.getInstance().getEventPublisherService();
-           EventStreamService eventStreamService = LAAlertServiceValueHolder.getInstance().getEventStreamService();
-           String fileLocation = getConfigurationLocation(alertName);
-           if (userRegistry.resourceExists(fileLocation)) {
-               userRegistry.delete(fileLocation);
-           } else {
-               log.info("Cannot delete non existing file : " + alertName + " for tenantId : " + tenantId + ". " +
-                       "It might have been deleted already.");
-           }
-           eventPublisherService.undeployActiveEventPublisherConfiguration(alertName);
-           eventStreamService.removeEventStreamDefinition(alertName, "1.0.0");
-       } catch (EventStreamConfigurationException e) {
-           log.error("Cannot delete event stream "+e.getMessage(),e);
-       } catch (RegistryException e) {
-           log.error("Cannot delete alert configuration file "+e.getMessage(), e);
-       } catch (EventPublisherConfigurationException e) {
-           log.error("Cannot delete publisher "+e.getMessage(),e);
-       } catch (TaskException e) {
-           log.error("Cannot delete scheduled task "+e.getMessage(),e);
-       }
+        try {
+            this.deleteScheduleTask(alertName, tenantId);
+            UserRegistry userRegistry = LAAlertServiceValueHolder.getInstance().getTenantConfigRegistry(tenantId);
+            EventPublisherService eventPublisherService = LAAlertServiceValueHolder.getInstance().getEventPublisherService();
+            EventStreamService eventStreamService = LAAlertServiceValueHolder.getInstance().getEventStreamService();
+            String fileLocation = getConfigurationLocation(alertName);
+            if (userRegistry.resourceExists(fileLocation)) {
+                userRegistry.delete(fileLocation);
+            } else {
+                log.info("Cannot delete non existing file : " + alertName + " for tenantId : " + tenantId + ". " +
+                        "It might have been deleted already.");
+            }
+            eventPublisherService.undeployActiveEventPublisherConfiguration(alertName);
+            eventStreamService.removeEventStreamDefinition(alertName, "1.0.0");
+        } catch (EventStreamConfigurationException e) {
+            log.error("Cannot delete event stream " + e.getMessage(), e);
+        } catch (RegistryException e) {
+            log.error("Cannot delete alert configuration file " + e.getMessage(), e);
+        } catch (EventPublisherConfigurationException e) {
+            log.error("Cannot delete publisher " + e.getMessage(), e);
+        } catch (TaskException e) {
+            log.error("Cannot delete scheduled task " + e.getMessage(), e);
+        }
     }
 
     public SATaskInfo getAlertConfiguration(String alertName, int tenantId) throws RegistryException {
@@ -316,17 +317,17 @@ public class ScheduleAlertControllerImpl implements ScheduleAlertController {
         if (userRegistry.resourceExists(fileLocation)) {
             return getConfigurationContent(RegistryUtils.decodeBytes((byte[]) userRegistry.get(fileLocation).getContent()));
         } else {
-           log.info(alertName+" Resource not exist for tenantId "+tenantId);
+            log.info(alertName + " Resource not exist for tenantId " + tenantId);
         }
         return new SATaskInfo();
     }
 
-    public Set getTableColumns (int tenantId) throws AnalyticsException {
-            AnalyticsDataAPI analyticsDataAPI=LAAlertServiceValueHolder.getInstance().getAnalyticsDataAPI();
-            AnalyticsSchema analyticsSchema=analyticsDataAPI.getTableSchema(tenantId,LAAlertConstant.LOG_ANALYZER_STREAM_NAME.toUpperCase());
-            Map<String,ColumnDefinition> columns=analyticsSchema.getColumns();
-            Set <String> keys= columns.keySet();
-            return keys;
+    public Set getTableColumns(int tenantId) throws AnalyticsException {
+        AnalyticsDataAPI analyticsDataAPI = LAAlertServiceValueHolder.getInstance().getAnalyticsDataAPI();
+        AnalyticsSchema analyticsSchema = analyticsDataAPI.getTableSchema(tenantId, LAAlertConstant.LOG_ANALYZER_STREAM_NAME.toUpperCase());
+        Map<String, ColumnDefinition> columns = analyticsSchema.getColumns();
+        Set<String> keys = columns.keySet();
+        return keys;
     }
 
 }

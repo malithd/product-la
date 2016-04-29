@@ -53,6 +53,41 @@ jQuery(document).ready(function() {
     loadAction();
     loadContent();
     loadCompare();
+
+    $("#field-data").select2();
+    getColumns();
+
+    //$('input[name="daterange"]').daterangepicker({
+    //    timePicker: true,
+    //    timePickerIncrement: 30,
+    //    locale: {
+    //        format: 'MM/DD/YYYY h:mm A'
+    //    }
+    //});
+
+    function cb(start, end) {
+        $('#reportrange span').html(start.format('MM/DD/YYYY h:mm A') + ' - ' + end.format('MM/DD/YYYY h:mm A'));
+    }
+    cb(moment().subtract(29, 'days'), moment());
+
+    $('#reportrange').daterangepicker({
+        timePicker: true,
+        timePickerIncrement: 30,
+        locale: {
+            format: 'MM/DD/YYYY h:mm A'
+        },
+        ranges: {
+            'All Time':[moment(0).unix(),moment(8640000000000000).unix()],
+            'Today': [moment().startOf('days'), moment().endOf('days')],
+            'Yesterday': [moment().subtract(1, 'days').startOf('days'), moment().subtract(1, 'days').endOf('days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            'Last 15 Minutes':[moment().subtract(15, 'minutes'), moment()],
+            'Last Hour':[moment().subtract(60, 'minutes'),moment()]
+        }
+    }, cb);
 });
 
 function getAllAlerts(){
@@ -73,7 +108,7 @@ function getAllAlerts(){
 }
 
 function createTable(alert){
-    return '<tr><td>'+ alert.alertName +'</td><td>' + alert.description + '</td><td><a  onclick=deleteAlert(\''+alert.alertName+'\')>Delete</a></td><td><a  onclick=updateContent(\''+alert.alertName+'\')>Update</a></td></tr>';
+    return '<tr><td>'+ alert.alertName +'</td><td>' + alert.description + '</td><td>' + alert.cronExpression + '</td><td><a  onclick=deleteAlert(\''+alert.alertName+'\')>Delete</a></td><td><a  onclick=updateContent(\''+alert.alertName+'\')>Update</a></td></tr>';
 }
 
 function deleteAlert(alertName){
@@ -119,9 +154,9 @@ function updateContent(alertName){
                 loadAction();
                 $("#action-email-address").val(res.alertActionProperties.email_address);
                 $("#action-email-subject").val(res.alertActionProperties.email_subject);
-                $("#action-email-type").val(res.alertActionProperties.email_type);
+               // $("#action-email-type").val(res.alertActionProperties.email_type);
                 var getContent=res.alertActionProperties.message;
-                var setMessage=getContent.replace(/{{.*/,"");
+                var setMessage=getContent.replace(/<.*/,"");
                 $("#email-message").val(setMessage);
             }
             else if(res.alertActionType=='sms') {
@@ -143,7 +178,7 @@ function saveAlert(){
     var alertName=$("#alert-name-txt").val();
     var cmpValue=$("#cmp-val").val();
     var query=$("#filter-txt").val();
-    var valuesSlt=false;
+    //var valuesSlt=false;
     if(!isValidName(alertName)){
         alert("Invalid Alert Name");
         return;
@@ -170,16 +205,22 @@ function saveAlert(){
     payload.condition=$("#cond-type").val();
     payload.conditionValue=cmpValue;
     payload.alertActionType=$("#alert-action").val();
-    $('input[name="columns"]:checked').each(function() {
-        valuesSlt=true;
+    var fieldData=$("#field-data").val();
+    for(var field in fieldData){
         var fieldName="field"+count;
-        var field;
-        fields[fieldName]=this.value;
+        fields[fieldName]=fieldData[field];
         count+=1;
-       // fields."field"+count=this.value;
-      //  fields.push(this.value);
-      //  console.log(this.text());
-    });
+    }
+    //$('input[name="columns"]:checked').each(function() {
+    //    valuesSlt=true;
+    //    var fieldName="field"+count;
+    //    var field;
+    //    fields[fieldName]=this.value;
+    //    count+=1;
+    //   // fields."field"+count=this.value;
+    //  //  fields.push(this.value);
+    //  //  console.log(this.text());
+    //});
     payload.fields=fields;
     if (payload.alertActionType=="logger"){
         var uniqueId=$("#action-logger-uniqueId").val();
@@ -192,9 +233,9 @@ function saveAlert(){
             alert("Message can't be empty");
             return;
         }
-        if (valuesSlt) {
-            loggerMessage+=" {{values}}"
-        }
+        //if (valuesSlt) {
+        //    loggerMessage+=" {{values}}"
+        //}
         if ($("#countSlt").is(":checked")) {
             loggerMessage+=" {{count}}";
         }
@@ -221,16 +262,16 @@ function saveAlert(){
             alert("Message can't be empty");
             return;
         }
-        if (valuesSlt) {
-            emailMessage+=" Log Values {{values}}"
+        if ($("#field-data").val()) {
+            emailMessage+="<div> Results <br> {{values}} </div>div>";
         }
         if ($("#countSlt").is(":checked")) {
-            emailMessage+=" Result Count {{count}}";
+            emailMessage+=" <div> Result Count {{count}} </div>";
         }
 
         action.email_address=emailAddressesTxt;
         action.email_subject=subject;
-        action.email_type=$("#action-email-type").val();
+        action.email_type="text/html";
         action.message=emailMessage;
     }
     if (payload.alertActionType=="sms"){
@@ -244,9 +285,9 @@ function saveAlert(){
             alert("Message can't be empty");
             return;
         }
-        if (valuesSlt) {
-            smsMessage+=" {{values}}"
-        }
+        //if (valuesSlt) {
+        //    smsMessage+=" {{values}}"
+        //}
         if ($("#countSlt").is(":checked")) {
             smsMessage+=" {{count}}";
         }
@@ -295,16 +336,22 @@ function updateAlert(){
     payload.condition=$("#cond-type").val();
     payload.conditionValue=cmpValue;
     payload.alertActionType=$("#alert-action").val();
-    $('input[name="columns"]:checked').each(function() {
-        valuesSlt=true;
+    var fieldData=$("#field-data").val();
+    for(var field in fieldData){
         var fieldName="field"+count;
-        var field;
-        fields[fieldName]=this.value;
+        fields[fieldName]=fieldData[field];
         count+=1;
-        // fields."field"+count=this.value;
-        //  fields.push(this.value);
-        //  console.log(this.text());
-    });
+    }
+    //$('input[name="columns"]:checked').each(function() {
+    //    valuesSlt=true;
+    //    var fieldName="field"+count;
+    //    var field;
+    //    fields[fieldName]=this.value;
+    //    count+=1;
+    //    // fields."field"+count=this.value;
+    //    //  fields.push(this.value);
+    //    //  console.log(this.text());
+    //});
     payload.fields=fields;
     if (payload.alertActionType=="logger"){
         var uniqueId=$("#action-logger-uniqueId").val();
@@ -317,9 +364,9 @@ function updateAlert(){
             alert("Message can't be empty");
             return;
         }
-        if (valuesSlt) {
-            loggerMessage+=" {{values}}"
-        }
+        //if (valuesSlt) {
+        //    loggerMessage+=" {{values}}"
+        //}
         if ($("#countSlt").is(":checked")) {
             loggerMessage+=" {{count}}";
         }
@@ -345,16 +392,16 @@ function updateAlert(){
             alert("Message can't be empty");
             return;
         }
-        if (valuesSlt) {
-            emailMessage+=" Log Values {{values}}"
+        if ($("#field-data").val()) {
+            emailMessage+="<div> Results <br> {{values}} </div>div>";
         }
         if ($("#countSlt").is(":checked")) {
-            emailMessage+=" Result Count {{count}}";
+            emailMessage+=" <div> Result Count {{count}} </div>";
         }
 
         action.email_address=emailAddressesTxt;
         action.email_subject=subject;
-        action.email_type=$("#action-email-type").val();
+        action.email_type="text/html";
         action.message=emailMessage;
     }
     if (payload.alertActionType=="sms"){
@@ -368,9 +415,9 @@ function updateAlert(){
             alert("Message can't be empty");
             return;
         }
-        if (valuesSlt) {
-            smsMessage+=" {{values}}"
-        }
+        //if (valuesSlt) {
+        //    smsMessage+=" {{values}}"
+        //}
         if ($("#countSlt").is(":checked")) {
             smsMessage+=" {{count}}";
         }
@@ -570,8 +617,8 @@ function getColumns(){
                     var value=res[count];
                     htmlcolunm += createList(value);
                 });
-            htmlcolunm+='<input type="checkbox" id="countSlt" name="count" value="count">'+"Result Count";
-                $("#columns").append(htmlcolunm);
+           // htmlcolunm+='<input type="checkbox" id="countSlt" name="count" value="count">'+"Result Count";
+                $("#field-data").append(htmlcolunm);
         },
         error:function (res) {
             alert(res);
@@ -580,10 +627,24 @@ function getColumns(){
 }
 
 function createList(column) {
-    $("#columns").empty();
+    //$("#columns").empty();
     var displayText=column.replace("_","");
-    return  '<input type="checkbox" id="columnsslt" name="columns" value=\"'+column+'\">'+displayText+'<br>';
+    return '<option value=\"'+column+'\">'+displayText+'</option>';
+
+    //return  '<input type="checkbox" id="columnsslt" name="columns" value=\"'+column+'\">'+displayText+'<br>';
 }
+
+function addAlert(){
+    var timeRange=$("#reportrange").val();
+    var splitRange=timeRange.split("-");
+    var timeFrom=splitRange[0];
+    var timeTo=splitRange[1];
+    var timeFromMils=Date.parse(timeFrom);
+    var timeToMils=Date.parse(timeTo);
+   $("#timestamp-from").val(timeFromMils);
+    $("#timestamp-to").val(timeToMils);
+}
+
 
 //function callAlert(){
 //    var payload={};

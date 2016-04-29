@@ -54,7 +54,13 @@
                     </div>
 
                     <div class="wr-project">
-                        <span class="title">SEARCH</span>
+                        <a class="title" >SEARCH</a>
+                    </div>
+                     <div class="wr-project">
+                        <a class="link" id="alert-link" onclick="alertPage()">Alert</a>
+                    </div>
+                    <div class="wr-project">
+                        <a  class="link" id="visualize-link">Visualization</a>
                     </div>
                 </div>
             </div>
@@ -176,12 +182,15 @@
                                 <button class="btn btn-main" id="search-btn" onclick="searchActivities()">Search</button>
                             </div>
                             <select id="save-options" class="drop-down-fixed">
-                                <option disabled="disabled" style="display: none" selected="selected">Download As</option>
+                                <option disabled="disabled" style="display: none" selected="selected">Save As</option>
+                                <optgroup label="Save As">
+                                    <option value="alert">Alert</option>
+                                </optgroup>
+                                <option disabled="disabled" style="display: none" >Download As</option>
                                 <optgroup label="Download As">
                                     <option value="pdf">PDF</option>
                                     <option value="csv">CSV</option>
                                 </optgroup>
-                                <option value="alert">Alert</option>
                             </select>
 
                             <div  id="tab-preview" class="wr-form col-lg-12 col-left">
@@ -194,7 +203,6 @@
                                 </table>
                             </div>
                         </div>
-                        <button class="btn btn-main" id="alert-btn">Alert</button>
                     </div>
                 </div>
 

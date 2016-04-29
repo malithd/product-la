@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.la.core.impl;
 
+import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
@@ -130,6 +131,7 @@ public class LogsController {
             }
             rawEvent.put(LAConstants.LOG_STREAM, LAConstants.DEFAULT_STREAM);
         }
+
         long timestamp = extractTimeStamp(rawEvent);
 
         String logStreamId = (String) rawEvent.get(LAConstants.LOG_STREAM);
@@ -159,6 +161,7 @@ public class LogsController {
                 log.debug("Successfully published event " + logEvent.toString());
             }
         }
+
     }
 
     private Long extractTimeStamp(Map<String, Object> rawEvent) throws LogsControllerException {

@@ -1,6 +1,5 @@
 package org.wso2.carbon.la.alert.impl;
 
-import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
@@ -13,7 +12,8 @@ import org.wso2.carbon.la.commons.domain.RecordBean;
 import org.wso2.carbon.la.core.impl.SearchController;
 import org.wso2.carbon.ntask.core.AbstractTask;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 
 public class ScheduleAlertTask extends AbstractTask {
@@ -31,16 +31,26 @@ public class ScheduleAlertTask extends AbstractTask {
         Map<String, String> taskProperties = this.getProperties();
         String name = taskProperties.get(LAAlertConstant.ALERT_NAME);
         String version = "1.0.0";
+        long timeFrom = Long.valueOf(taskProperties.get(LAAlertConstant.TIME_FROM));
+        long timeTo = Long.valueOf(taskProperties.get(LAAlertConstant.TIME_TO));
+        String timeF = taskProperties.get(LAAlertConstant.TIME_FROM);
+        String timeT = taskProperties.get(LAAlertConstant.TIME_TO);
         long timeStamp = System.currentTimeMillis();
-        String username = taskProperties.get(LAAlertConstant.USER_NAME);String condition=taskProperties.get(LAAlertConstant.CONDITION);
-        int conditionValue=Integer.valueOf(taskProperties.get(LAAlertConstant.CONDITION_VALUE));
+        if (Long.valueOf(taskProperties.get(LAAlertConstant.TIME_FROM)) != 0) {
+            long timeDifference = Long.valueOf(taskProperties.get(LAAlertConstant.TIME_DIFF));
+            timeFrom = timeStamp - timeDifference;
+            timeTo = timeStamp;
+        }
+        String username = taskProperties.get(LAAlertConstant.USER_NAME);
+        String condition = taskProperties.get(LAAlertConstant.CONDITION);
+        int conditionValue = Integer.valueOf(taskProperties.get(LAAlertConstant.CONDITION_VALUE));
         queryBean.setTableName(taskProperties.get(LAAlertConstant.TABLE_NAME));
         queryBean.setQuery(taskProperties.get(LAAlertConstant.QUERY));
-        queryBean.setTimeFrom(Long.valueOf(taskProperties.get(LAAlertConstant.TIME_FROM)));
-        queryBean.setTimeTo(Long.valueOf(taskProperties.get(LAAlertConstant.TIME_TO)));
+        queryBean.setTimeFrom(timeFrom);
+        queryBean.setTimeTo(timeTo);
         queryBean.setStart(Integer.valueOf(taskProperties.get(LAAlertConstant.START)));
         queryBean.setLength(Integer.valueOf(taskProperties.get(LAAlertConstant.LENGTH)));
-        String[] fields=null;
+        String[] fields = null;
         if (taskProperties.containsKey(LAAlertConstant.FIELDS)) {
             fields = taskProperties.get(LAAlertConstant.FIELDS).split(",");
         }
@@ -48,53 +58,78 @@ public class ScheduleAlertTask extends AbstractTask {
 
         try {
             List<RecordBean> recordBeans = searchController.search(queryBean, username);
-            List<Object> records=new ArrayList<Object>();
+            StringBuilder stringBuilder = new StringBuilder();
             if (taskProperties.containsKey(LAAlertConstant.FIELDS)) {
                 for (RecordBean record : recordBeans) {
                     Map<String, Object> map = record.getValues();
-                    Map <String,Object> data=new HashMap<String,Object>();
+                    String dataOb = "<div>";
                     for (String field : fields) {
-                        data.put(field,map.get(field));
-                        records.add(data);
+                        dataOb += field + ":" + map.get(field) + ",";
                     }
+                    dataOb += "</div>";
+                    stringBuilder.append(dataOb);
                 }
             }
-            Gson gson=new Gson();
-            String recordsGson = gson.toJson(records);
+
+
+//            List<Object> records=new ArrayList<Object>();
+//            if (taskProperties.containsKey(LAAlertConstant.FIELDS)) {
+//                for (RecordBean record : recordBeans) {
+//                    Map<String, Object> map = record.getValues();
+//                    Map <String,Object> data=new HashMap<String,Object>();
+//                    for (String field : fields) {
+//                        data.put(field,map.get(field));
+//                        records.add(data);
+//                    }
+//                }
+//            }
+//            Gson gson=new Gson();
+//            String recordsGson = gson.toJson(records);
             int recodeListSize = recordBeans.size();
-            payload = new Object[]{recordsGson,new Long(recodeListSize)};
+
+//            for (Object recordMap : records) {
+//                Map<String,Object> mapob= (Map<String, Object>) recordMap;
+//                int mapsize=mapob.size();
+//                for(int x=0; x < mapsize;x++){
+//                   Set mapdata=mapob.entrySet();
+//                }
+//
+//               // String dataString=
+//            }
+
+            payload = new Object[] {/*recordsGson*/stringBuilder.toString(), new Long(recodeListSize)};
             switch (condition) {
-                case "gt" :
+                case "gt":
                     if (recodeListSize > conditionValue) {
                         Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
                         LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
                     }
                     break;
-                case "lt" :
+                case "lt":
                     if (recodeListSize < conditionValue) {
                         Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
                         LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
                     }
                     break;
-                case "eq" :
+                case "eq":
                     if (recodeListSize == conditionValue) {
                         Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
                         LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
                     }
                     break;
-                case "gteq" :
+                case "gteq":
                     if (recodeListSize >= conditionValue) {
                         Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
                         LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
                     }
                     break;
-                case "lteq" :
+                case "lteq":
                     if (recodeListSize <= conditionValue) {
                         Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
                         LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);
                     }
                     break;
-                case "nteq" :
+                case "nteq":
                     if (recodeListSize != conditionValue) {
                         Event event = new Event(DataBridgeCommonsUtils.generateStreamId(name, version), timeStamp, null, null, payload);
                         LAAlertServiceValueHolder.getInstance().getEventStreamService().publish(event);

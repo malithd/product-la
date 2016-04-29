@@ -15,6 +15,10 @@
     <link href="../../css/plugins/dataTables/dataTables.tableTools.min.css" rel="stylesheet"/>
     <link href="../../css/plugins/timepicker/jquery.timepicker.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+   <link href="../../css/select2.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="../../css/daterangepicker.css" />
+
 
     <% include("../../includes/tenantAware.jag"); %>
 
@@ -96,6 +100,7 @@
                             <tr>
                             <th>Alert Name</th>
                             <th>Alert Description</th>
+                            <th>Cron Expression</th>
                             <th colspan="2">Action</th>
                             </tr>
                             </thead>
@@ -104,14 +109,19 @@
                         <!-- END --- Schedule Alert Content --- Schedule Alert List-->
                         <!-- Schedule Alert Content --- Schedule Alert Create Form-->
                         <div class="inner-container">
-                            <div class="sl-label"><label>Alert Name:</label></div>
-                            <div class="input-control" id="fields"><input type="text" id="alert-name-txt" class="alert-name-txt" ></div>
-                            <div class="sl-label"><label>Description</label></div>
-                            <div class="input-control" id="fields"><textarea rows="3" class=alert-des-txa" id="alert-des-txa"></textarea ></div>
-                            <div class="sl-label"><label>Filter:</label></div>
+
+                        <div class="sl-label-main"><label>Search:</label></div>
+                            <div class="container-box">
+                             <div class="sl-label"><label>Search Query:</label></div>
                             <div class="input-control" id="fields">
                                      <input type="text" id="filter-txt" class="filter-text">
-                                     <div class="hidden-div">
+                                     </div >
+                                  <div  class="reportrange" >
+                                   <div class="sl-label"><label>Date/Time Range:</label> <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;</div>
+                                     <input id="reportrange" type="text"  onchange="addAlert()">
+                                        <span></span>
+                                    </div>
+                                   <!-- <div class="hidden-div">
                                 <div class="drop-down-div">
                                  <div id="drop-down-area" class="drop-down-area">
                                 <button type="button" class="btn btn-main" id="date-time-select" data-placement="bottom" rel="popover"
@@ -186,12 +196,16 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                             <input type="hidden" id="timestamp-from" value="0"/>
                             <input type="hidden" id="timestamp-to" value="8640000000000000"/>
+
                             </div>
+
                             <!-- Schedule Alert Create Form --- Schedule time Selector --- -->
-                            <div class="sl-label"><label>Schedule</label></div>
+                            <div class="sl-label-main"><label>Schedule Configuration:</label></div>
+                            <div class="container-box">
+                            <div class="sl-label"><label>Schedule in:</label></div>
                             <div class="input-control" id="fields">
                                  <select class="sch-type" id="sch-type" onchange="loadContent()" >
                                     <option value="0">Hourly</option>
@@ -202,6 +216,7 @@
                                 </select>
                                 <input type="hidden" class="hdn-cronExp" id="hdn-cronExp"/>
                             </div>
+                            <div class="input-control">
                             <div class="load-content hourly" id="load-content-hourly">
                                 <div class="load-label">
                                     <label>At:</label>
@@ -233,7 +248,7 @@
                                         <option value="TUE">Tuesday</option>
                                         <option value="WED">Wednesday</option>
                                         <option value="THU">Thursday</option>
-                                        <option value="FRI">Friday</option
+                                        <option value="FRI">Friday</option>
                                         <option value="SAT">Saturday</option>
                                         <option value="SUN">Sunday</option>
                                     </select>
@@ -261,7 +276,7 @@
                             </div>
 
                             <div class="load-content cronExp" id="load-content-cronExp" >
-                                <div>
+                               <!-- <div>
                                     <div class='load-label'><lable>From:</lable></div>
                                     <div class='load-input' id='load-field'>
                                             <label>Date:</label>
@@ -278,7 +293,7 @@
                                             <lable>Time:</lable>
                                             <input type='text' id='toRangeTimePicker' class='alert-timepicker' />
                                         </div>
-                                </div>
+                                </div>-->
                                 <div class="cron-field">
                                         <div class='load-label'><lable>Cron Expression:</lable></div>
                                         <div class='load-input' id='load-field'>
@@ -286,30 +301,46 @@
                                         </div>
                                 </div>
                                 </div>
+                                </div>
+                                </div>
+
                                  <!-- END --- Schedule Alert Create Form --- Schedule time Selector --- -->
                                   <!--- Schedule Alert Create Form --- Trigger Condition selector --- -->
-                                     <div class="sl-label"><label>Trigger</label></div>
+                                  <div class="sl-label-main"><label>Trigger Configuration</label></div>
+                                    <div class="container-box">
+                                     <div class="sl-label"><label>Trigger:</label></div>
                                      <div class="input-control" id="fields">
                                          <select class="trigger-type" id="trigger-type" onchange="loadCompare()" >
-                                            <option value="0">Base on Results</option>
-                                             <option value="1">Base on Hosts</option>
+                                            <option value="0">Based on Result Count</option>
+                                             <option value="1">Based on Hosts</option>
                                          </select>
                                     </div>
                                 <div class="compare" id="compare">
                                  <div class="load-input" id="load-field">
                                      <select class="cond-type" id="cond-type">
-                                        <option value="gt">greater than</option>
-                                        <option value="lt">less than</option>
-                                        <option value="eq">equal</option>
-                                        <option value="gteq">greater than or equal</option>
-                                        <option value="lteq">less than or equal</option>
-                                        <option value="nteq">not equal</option>
+                                        <option value="gt">is greater than</option>
+                                        <option value="lt">is less than</option>
+                                        <option value="eq">is equal</option>
+                                        <option value="gteq">is greater than or equal</option>
+                                        <option value="lteq">is less than or equal</option>
+                                        <option value="nteq">is not equal</option>
                                     </select>
                                     <input type="text" id="cmp-val" class="cmp-val" />
                                     </div>
                                 </div>
-                                   <!--- END --- Schedule Alert Create Form --- Trigger Condition selector --- -->
+                                </div>
+                                <!--- END --- Schedule Alert Create Form --- Trigger Condition selector --- -->
+                                <div class="sl-label-main"><label>Alert Configuration:</label></div>
+                                <div class="container-box">
+                            <div class="sl-label"><label>Alert Name:</label></div>
+                            <div class="input-control" id="fields"><input type="text" id="alert-name-txt" class="alert-name-txt" ></div>
+                            <div class="sl-label"><label>Description</label></div>
+                            <div class="input-control" id="fields"><textarea rows="3" class=alert-des-txa" id="alert-des-txa"></textarea ></div>
+                            </div>
+
                                     <!--- END --- Schedule Alert Create Form --- Trigger Condition selector --- -->
+                                   <div class="sl-label-main"><label>Alert Publisher Configuration:</label></div>
+                                   <div class="container-box">
                                    <div class="sl-label"><label>Alert Action:</label></div>
                                      <div class="input-control" id="fields">
                                          <select class="alert-action" id="alert-action" onchange="loadAction()" >
@@ -335,23 +366,32 @@
                                         <div class="input-control" id="fields"><input type="text" id="action-email-address" class="action-email-address"></div>
                                          <div class="sl-label"><label>Subject:</label></div>
                                         <div class="input-control" id="fields"><input type="text" id="action-email-subject" class="action-email-subject"></div>
-                                         <div class="sl-label"><label>Email Type:</label></div>
+                                        <!-- <div class="sl-label"><label>Email Type:</label></div>
                                          <div class="input-control" id="fields"> <select class="action-email-type" id="action-email-type">
                                             <option value="text/plain">text/plain</option>
                                              <option value="text/html">text/html</option>
-                                         </select></div>
+                                         </select></div>-->
                                         <div class="sl-label"><label>Message:</label></div>
                                         <div class="input-control" id="fields"><textarea rows="2" class="message" id="email-message"></textarea ></div>
-                                    </div>
-                                    <div>
-                                    <div><button  onclick="getColumns()">+ Advance</button></div>
-                                    <div class="columns" id="columns"></div>
+                                         <div class="sl-label"><label>To Attach Field Data:</label></div>
+                                        <div class="input-control" id="fields">
+                                            <select multiple id="field-data" class="field-data" style="width:586px">
+
+                                            </select>
+                                        </div>
                                     </div>
 
+                                    <div style="margin-bottom: 20px"> <input type="checkbox" id="countSlt" name="count" value="count"> Send Result Count with the Message.
+                                    <!--<button  onclick="getColumns()">+ Advance</button></div>
+                                    <div class="columns" id="columns"></div>-->
+                                    </div>
+                                    </div>
+
+                                <div class="container-box">
                                 <button class="btn btn-main" id="alert-back-btn" onclick="backward()">Back</button>
                                 <button class="btn btn-main" id="alert-save-btn" onclick="saveAlert()">Save</button>
                                 <button class="btn btn-main" id="alert-update-btn" onclick="updateAlert()">Update</button>
-
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -379,7 +419,11 @@
     <script src="../../site/alert/alert.js"></script>
      <script src="../../site/alert/schedule.js"></script>
      <script src="../../site/search/search.js"></script>
+      <script src="../../js/select2.min.js"></script>
 
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+</div>
 </body>
 
 </html>

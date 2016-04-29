@@ -18,9 +18,6 @@
 
 package org.wso2.carbon.la.restapi;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-
 import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.event.publisher.core.exception.EventPublisherConfigurationException;
@@ -31,7 +28,8 @@ import org.wso2.carbon.la.commons.constants.LAConstants;
 import org.wso2.carbon.ntask.common.TaskException;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
-import java.util.ArrayList;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Set;
 
@@ -56,6 +54,8 @@ public class AlertApi {
         saTaskInfo.setLength(100);
         scheduleAlertControllerImpl.createScheduleAlert(saTaskInfo,username,tenantId);
         return Response.ok().build();
+
+
     }
 
     @GET

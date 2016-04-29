@@ -52,4 +52,6 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
     
     <bean id="basicAuthenticationFilter" class="org.wso2.carbon.la.restapi.handler.LASBasicAuthenticationHandler"/>
     <bean id="sessionAuthenticationFilter" class="org.wso2.carbon.la.restapi.handler.SessionBasedAuthenticationHandler"/>
+
 </beans>
+

@@ -184,7 +184,7 @@ function tableToCSV(table, tableElm) {
         csvContent += index < csv.length ? dataString+ "\n" : dataString;
 
     });
-
+-link
     var encodedUri = encodeURI(csvContent);
     var link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -193,16 +193,9 @@ function tableToCSV(table, tableElm) {
 }
 
 /*----------------Delete---------------------------*/
-$(function () {
-    $("#alert-btn").click(function () {
-
-        window.location = serverUrl + '/loganalyzer/site/alert/alert.jag';
-
-
-    });
+$("#alert-link").click(function(){
+    window.location = serverUrl + '/loganalyzer/site/alert/alert.jag';
 });
-
-
 
 $("#save-options").change(function(){
 

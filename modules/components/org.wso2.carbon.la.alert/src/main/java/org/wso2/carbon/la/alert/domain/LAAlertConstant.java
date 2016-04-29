@@ -10,6 +10,7 @@ public class LAAlertConstant {
     public static final String QUERY = "query";
     public static final String USER_NAME = "userName";
     public static final String TIME_FROM = "timeFrom";
+    public static final String TIME_DIFF = "timeDifference";
     public static final String TIME_TO = "timeTo";
     public static final String START = "start";
     public static final String LENGTH = "length";
