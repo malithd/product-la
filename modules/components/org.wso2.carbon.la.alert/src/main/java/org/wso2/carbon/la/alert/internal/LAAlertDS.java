@@ -67,7 +67,6 @@ public class LAAlertDS {
     protected void activate(ComponentContext componentContext) {
         BundleContext bundleContext = componentContext.getBundleContext();
         try {
-
             ScheduleAlertControllerImpl scheduleAlertControllerImpl = new ScheduleAlertControllerImpl();
             bundleContext.registerService(ScheduleAlertController.class.getName(), scheduleAlertControllerImpl, null);
             LAAlertServiceValueHolder.getInstance().getTaskService().registerTaskType(LAAlertConstant.SCHEDULE_ALERT_TASK_TYPE);
@@ -126,11 +125,11 @@ public class LAAlertDS {
         LAAlertServiceValueHolder.getInstance().setTenantRegistryLoader(null);
     }
 
-    protected void setAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI){
+    protected void setAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI) {
         LAAlertServiceValueHolder.getInstance().setAnalyticsDataAPI(analyticsDataAPI);
     }
 
-    protected void unsetAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI){
+    protected void unsetAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI) {
         LAAlertServiceValueHolder.getInstance().setAnalyticsDataAPI(null);
     }
 }

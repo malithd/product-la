@@ -417,7 +417,7 @@
     <script src="../../js/plugins/jspdf/from_html.js"></script>
     <script src="../../js/plugins/jspdf/cell.js"></script>
     <script src="../../site/alert/alert.js"></script>
-     <script src="../../site/alert/schedule.js"></script>
+    <!-- <script src="../../site/alert/schedule.js"></script>-->
      <script src="../../site/search/search.js"></script>
       <script src="../../js/select2.min.js"></script>
 

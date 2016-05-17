@@ -25,7 +25,7 @@ import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.service.TenantRegistryLoader;
 import org.wso2.carbon.registry.core.session.UserRegistry;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.user.core.service.RealmService;
 
 public class LAAlertServiceValueHolder {
 
@@ -36,6 +36,8 @@ public class LAAlertServiceValueHolder {
     private RegistryService registryService;
     private TenantRegistryLoader tenantRegistryLoader;
     private AnalyticsDataAPI analyticsDataAPI;
+    //Realm Service which is used to get tenant data.
+    private static RealmService realmService;
 
     public static LAAlertServiceValueHolder getInstance() {
         if (laAlertServiceValueHolder == null) {
@@ -76,25 +78,27 @@ public class LAAlertServiceValueHolder {
         this.registryService = registryService;
     }
 
+    public RegistryService getRegistryService() {
+        return registryService;
+    }
+
     public void setTenantRegistryLoader(TenantRegistryLoader tenantRegistryLoader) {
         this.tenantRegistryLoader = tenantRegistryLoader;
     }
 
     public UserRegistry getTenantConfigRegistry(int tenantId) throws RegistryException {
-        if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
-            return this.registryService.getConfigSystemRegistry();
-        } else {
             this.tenantRegistryLoader.loadTenantRegistry(tenantId);
             return this.registryService.getConfigSystemRegistry(tenantId);
-        }
-    }
-
-    public void setAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI) {
-        this.analyticsDataAPI = analyticsDataAPI;
     }
 
     public AnalyticsDataAPI getAnalyticsDataAPI() {
 
         return analyticsDataAPI;
     }
+
+    public void setAnalyticsDataAPI(AnalyticsDataAPI analyticsDataAPI) {
+        this.analyticsDataAPI = analyticsDataAPI;
+    }
+
+
 }

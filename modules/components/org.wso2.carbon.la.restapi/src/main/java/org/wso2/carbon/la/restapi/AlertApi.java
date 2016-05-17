@@ -20,12 +20,10 @@ package org.wso2.carbon.la.restapi;
 
 import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.event.publisher.core.exception.EventPublisherConfigurationException;
-import org.wso2.carbon.event.stream.core.exception.EventStreamConfigurationException;
-import org.wso2.carbon.la.alert.domain.SATaskInfo;
+import org.wso2.carbon.la.alert.domain.ScheduleAlertBean;
+import org.wso2.carbon.la.alert.exception.ScheduleAlertException;
 import org.wso2.carbon.la.alert.impl.ScheduleAlertControllerImpl;
 import org.wso2.carbon.la.commons.constants.LAConstants;
-import org.wso2.carbon.ntask.common.TaskException;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
 import javax.ws.rs.*;
@@ -36,81 +34,80 @@ import java.util.Set;
 
 @Path("/alert")
 public class AlertApi {
-        ScheduleAlertControllerImpl scheduleAlertControllerImpl;
-        public AlertApi(){
-            scheduleAlertControllerImpl =new ScheduleAlertControllerImpl();
-        }
+    ScheduleAlertControllerImpl scheduleAlertControllerImpl;
+
+    public AlertApi() {
+        scheduleAlertControllerImpl = new ScheduleAlertControllerImpl();
+    }
 
     @POST
     @Path("/save")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response saveAlert(SATaskInfo saTaskInfo) {
-        PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        String username=carbonContext.getUsername();
-        int tenantId=carbonContext.getTenantId();
-        saTaskInfo.setTableName(LAConstants.LOG_ANALYZER_STREAM_NAME);
-        saTaskInfo.setStart(0);
-        saTaskInfo.setLength(100);
-        scheduleAlertControllerImpl.createScheduleAlert(saTaskInfo,username,tenantId);
+    public Response saveAlert(ScheduleAlertBean scheduleAlertBean) throws ScheduleAlertException {
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        String username = carbonContext.getUsername();
+        int tenantId = carbonContext.getTenantId();
+        scheduleAlertBean.setTableName(LAConstants.LOG_ANALYZER_STREAM_NAME);
+        scheduleAlertBean.setStart(0);
+        scheduleAlertBean.setLength(100);
+        scheduleAlertControllerImpl.createScheduleAlert(scheduleAlertBean, username, tenantId);
         return Response.ok().build();
-
-
     }
 
     @GET
     @Path("getAllScheduleAlerts")
     @Produces("application/json")
     public Response getAllScheduleAlerts() {
-        PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        int tenantId=carbonContext.getTenantId();
-        List<SATaskInfo> saTaskInfoList= scheduleAlertControllerImpl.getAllAlertConfigurations(tenantId);
-        return Response.ok(saTaskInfoList.toArray()).build();
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        List<ScheduleAlertBean> scheduleAlertBeanList = scheduleAlertControllerImpl.getAllAlertConfigurations(tenantId);
+        return Response.ok(scheduleAlertBeanList.toArray()).build();
     }
 
     @GET
     @Path("getColumns")
     @Produces("application/json")
     public Response getAllColumns() throws AnalyticsException {
-        PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        int tenantId=carbonContext.getTenantId();
-        Set<String> keys= scheduleAlertControllerImpl.getTableColumns(tenantId);
-        return  Response.ok(keys.toArray()).build();
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        Set<String> keys = scheduleAlertControllerImpl.getTableColumns(tenantId);
+        return Response.ok(keys.toArray()).build();
     }
 
     @DELETE
     @Path("/delete/{alertName}")
     @Produces("application/json")
     @Consumes("application/json")
-    public Response deleteScheduleAlert(@PathParam("alertName") String alertName) throws TaskException, RegistryException, EventStreamConfigurationException, EventPublisherConfigurationException {
-        PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        int tenantId=carbonContext.getTenantId();
-        scheduleAlertControllerImpl.deleteAlertTask(alertName,tenantId);
+    public Response deleteScheduleAlert(@PathParam("alertName") String alertName) throws ScheduleAlertException {
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        scheduleAlertControllerImpl.deleteScheduleAlert(alertName, tenantId);
         return Response.ok().build();
     }
 
     @GET
     @Path("getAlertContent/{alertName}")
     @Produces("application/json")
-    public SATaskInfo getAlertContent(@PathParam("alertName") String alertName) throws RegistryException {
-        PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        int tenantId=carbonContext.getTenantId();
-        SATaskInfo saTaskInfo=scheduleAlertControllerImpl.getAlertConfiguration(alertName,tenantId);
-        return saTaskInfo;
+    public ScheduleAlertBean getAlertContent(@PathParam("alertName") String alertName) throws RegistryException, ScheduleAlertException {
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        int tenantId = carbonContext.getTenantId();
+        ScheduleAlertBean scheduleAlertBean = scheduleAlertControllerImpl.getAlertConfiguration(alertName, tenantId);
+        return scheduleAlertBean;
     }
 
     @PUT
     @Path("/update")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response updateAlertContent(SATaskInfo saTaskInfo) throws RegistryException, TaskException, EventPublisherConfigurationException {
-        PrivilegedCarbonContext carbonContext=PrivilegedCarbonContext.getThreadLocalCarbonContext();
-        String username=carbonContext.getUsername();
-        int tenantId=carbonContext.getTenantId();
-        saTaskInfo.setTableName(LAConstants.LOG_ANALYZER_STREAM_NAME);
-        saTaskInfo.setStart(0);
-        saTaskInfo.setLength(100);
-        scheduleAlertControllerImpl.updateScheduleAlertTask(saTaskInfo,username,tenantId);
+    public Response updateAlertContent(ScheduleAlertBean scheduleAlertBean) throws ScheduleAlertException {
+        PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        String username = carbonContext.getUsername();
+        int tenantId = carbonContext.getTenantId();
+        scheduleAlertBean.setTableName(LAConstants.LOG_ANALYZER_STREAM_NAME);
+        scheduleAlertBean.setStart(0);
+        scheduleAlertBean.setLength(100);
+        scheduleAlertControllerImpl.updateScheduleAlertTask(scheduleAlertBean, username, tenantId);
         return Response.ok().build();
     }
 }

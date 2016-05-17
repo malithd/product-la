@@ -19,7 +19,7 @@ public class LAAlertConstant {
     public static final String CONDITION = "condition";
     public static final String CONDITION_VALUE = "conditionValue";
     public static final String ALERT_CONFIGURATION_LOCATION = "repository" + RegistryConstants.PATH_SEPARATOR
-            + "components" + RegistryConstants.PATH_SEPARATOR + RegistryConstants.PATH_SEPARATOR
+            + "components" + RegistryConstants.PATH_SEPARATOR
             + "org.wso2.carbon.la.alert";
     public static final String CONFIGURATION_EXTENSION_SEPARATOR = ".";
     public static final String CONFIGURATION_EXTENSION = "json";
@@ -27,6 +27,14 @@ public class LAAlertConstant {
 
     public static final String SCHEDULE_ALERT_TASK_TYPE = "LAScheduleAlertTask";
     public static final String LOG_ANALYZER_STREAM_NAME = "loganalyzer";
+    public static final String CONDITION_GREATER_THAN = "gt";
+    public static final String CONDITION_LESS_THAN = "lt";
+    public static final String CONDITION_GREATER_THAN_OR_EQUAL = "gteq";
+    public static final String CONDITION_LESS_THAN_OR_EQUAL = "lteq";
+    public static final String CONDITION_EQUALS = "eq";
+    public static final String CONDITION_NOT_EQUALS = "nteq";
+
+
 
 
 }

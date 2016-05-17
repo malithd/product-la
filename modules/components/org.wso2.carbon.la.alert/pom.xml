@@ -51,6 +51,7 @@
             <groupId>org.wso2.carbon.analytics-common</groupId>
             <artifactId>org.wso2.carbon.event.publisher.core</artifactId>
         </dependency>
+
     </dependencies>
     <build>
         <plugins>

@@ -29,7 +29,6 @@
     transition:all linear 0.15s;
 }
 
-/*/#6c5c76//#fff*/
 .tab-links a:hover {
     background: #533565;
     color:#f0f0f0;;
@@ -56,14 +55,6 @@ li.active a, li.active a:hover {
 .tab.active {
     display:block;
 }
-
-/*.row{*/
-    /*margin-left: -15px;*/
-    /*margin-right: 15px;*/
-/*}*/
-
-
-
 /*-------------------Schedule Jag Css----------------------------------*/
 
 .inner-container{

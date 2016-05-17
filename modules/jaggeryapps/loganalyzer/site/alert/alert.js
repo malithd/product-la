@@ -57,13 +57,6 @@ jQuery(document).ready(function() {
     $("#field-data").select2();
     getColumns();
 
-    //$('input[name="daterange"]').daterangepicker({
-    //    timePicker: true,
-    //    timePickerIncrement: 30,
-    //    locale: {
-    //        format: 'MM/DD/YYYY h:mm A'
-    //    }
-    //});
 
     function cb(start, end) {
         $('#reportrange span').html(start.format('MM/DD/YYYY h:mm A') + ' - ' + end.format('MM/DD/YYYY h:mm A'));
@@ -178,7 +171,6 @@ function saveAlert(){
     var alertName=$("#alert-name-txt").val();
     var cmpValue=$("#cmp-val").val();
     var query=$("#filter-txt").val();
-    //var valuesSlt=false;
     if(!isValidName(alertName)){
         alert("Invalid Alert Name");
         return;
@@ -211,16 +203,6 @@ function saveAlert(){
         fields[fieldName]=fieldData[field];
         count+=1;
     }
-    //$('input[name="columns"]:checked').each(function() {
-    //    valuesSlt=true;
-    //    var fieldName="field"+count;
-    //    var field;
-    //    fields[fieldName]=this.value;
-    //    count+=1;
-    //   // fields."field"+count=this.value;
-    //  //  fields.push(this.value);
-    //  //  console.log(this.text());
-    //});
     payload.fields=fields;
     if (payload.alertActionType=="logger"){
         var uniqueId=$("#action-logger-uniqueId").val();
@@ -233,9 +215,7 @@ function saveAlert(){
             alert("Message can't be empty");
             return;
         }
-        //if (valuesSlt) {
-        //    loggerMessage+=" {{values}}"
-        //}
+
         if ($("#countSlt").is(":checked")) {
             loggerMessage+=" {{count}}";
         }
@@ -263,10 +243,10 @@ function saveAlert(){
             return;
         }
         if ($("#field-data").val()) {
-            emailMessage+="<div> Results <br> {{values}} </div>div>";
+            emailMessage+="<div> Required fields of Results <br> {{values}} </div>";
         }
         if ($("#countSlt").is(":checked")) {
-            emailMessage+=" <div> Result Count {{count}} </div>";
+            emailMessage+=" <div> Result Count is {{count}} </div>";
         }
 
         action.email_address=emailAddressesTxt;
@@ -277,7 +257,7 @@ function saveAlert(){
     if (payload.alertActionType=="sms"){
         var phoneNo = $("#action-sms-phoneNo").val();
         var smsMessage =$("#sms-message").val();
-        if (!isValidPhoneNo(phoneNo)) {     //||phoneNo == ""
+        if (!isValidPhoneNo(phoneNo)) {
             alert("Invalid Phone Number");
             return;
         }
@@ -285,9 +265,6 @@ function saveAlert(){
             alert("Message can't be empty");
             return;
         }
-        //if (valuesSlt) {
-        //    smsMessage+=" {{values}}"
-        //}
         if ($("#countSlt").is(":checked")) {
             smsMessage+=" {{count}}";
         }
@@ -305,7 +282,9 @@ function saveAlert(){
             window.location=serverUrl+'/loganalyzer/site/alert/alert.jag';
         },
         error: function(res) {
-            alert(res.responseText);
+            var restest=JSON.parse(res.responseText);
+            alert(restest.message);
+            window.location=serverUrl+'/loganalyzer/site/alert/alert.jag';
         }
     });
 
@@ -342,16 +321,6 @@ function updateAlert(){
         fields[fieldName]=fieldData[field];
         count+=1;
     }
-    //$('input[name="columns"]:checked').each(function() {
-    //    valuesSlt=true;
-    //    var fieldName="field"+count;
-    //    var field;
-    //    fields[fieldName]=this.value;
-    //    count+=1;
-    //    // fields."field"+count=this.value;
-    //    //  fields.push(this.value);
-    //    //  console.log(this.text());
-    //});
     payload.fields=fields;
     if (payload.alertActionType=="logger"){
         var uniqueId=$("#action-logger-uniqueId").val();
@@ -364,9 +333,6 @@ function updateAlert(){
             alert("Message can't be empty");
             return;
         }
-        //if (valuesSlt) {
-        //    loggerMessage+=" {{values}}"
-        //}
         if ($("#countSlt").is(":checked")) {
             loggerMessage+=" {{count}}";
         }
@@ -393,7 +359,7 @@ function updateAlert(){
             return;
         }
         if ($("#field-data").val()) {
-            emailMessage+="<div> Results <br> {{values}} </div>div>";
+            emailMessage+="<div> Results <br> {{values}} </div>";
         }
         if ($("#countSlt").is(":checked")) {
             emailMessage+=" <div> Result Count {{count}} </div>";
@@ -407,7 +373,7 @@ function updateAlert(){
     if (payload.alertActionType=="sms"){
         var phoneNo = $("#action-sms-phoneNo").val();
         var smsMessage =$("#sms-message").val();
-        if (!isValidPhoneNo(phoneNo)) {     //||phoneNo == ""
+        if (!isValidPhoneNo(phoneNo)) {
             alert("Invalid Phone Number");
             return;
         }
@@ -415,9 +381,6 @@ function updateAlert(){
             alert("Message can't be empty");
             return;
         }
-        //if (valuesSlt) {
-        //    smsMessage+=" {{values}}"
-        //}
         if ($("#countSlt").is(":checked")) {
             smsMessage+=" {{count}}";
         }
@@ -467,7 +430,6 @@ function isValidEmail(email) {
     var emailPattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return emailPattern.test(email);
 }
-///^(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)*$/gm
 
 function splitUrl() {
     var urlParams;
@@ -576,9 +538,7 @@ function cronBuilder (){
         $("#cron-exp").val("0 0/"+minute+" * * * ?");
 
     }
-
     alert($("#cron-exp").val());
-
 }
 
 
@@ -617,7 +577,6 @@ function getColumns(){
                     var value=res[count];
                     htmlcolunm += createList(value);
                 });
-           // htmlcolunm+='<input type="checkbox" id="countSlt" name="count" value="count">'+"Result Count";
                 $("#field-data").append(htmlcolunm);
         },
         error:function (res) {
@@ -630,8 +589,6 @@ function createList(column) {
     //$("#columns").empty();
     var displayText=column.replace("_","");
     return '<option value=\"'+column+'\">'+displayText+'</option>';
-
-    //return  '<input type="checkbox" id="columnsslt" name="columns" value=\"'+column+'\">'+displayText+'<br>';
 }
 
 function addAlert(){
@@ -644,106 +601,3 @@ function addAlert(){
    $("#timestamp-from").val(timeFromMils);
     $("#timestamp-to").val(timeToMils);
 }
-
-
-//function callAlert(){
-//    var payload={};
-//    payload.streamName="loganalyzer";
-//    payload.alertName="Alert1";
-//    payload.description="This is an alert";
-//    payload.alertType="Real Time";
-//    payload.filter="logType=WARN"
-//    payload.fields=[
-//        {"field0":"timestam"},
-//        {"field1":"javaClass"}
-//    ]
-//    jQuery.ajax({
-//        type: "POST",
-//        data : JSON.stringify(payload),
-//        dataType : "json",
-//        contentType : "application/json; charset=utf-8",
-//        url: serverUrl + "/api/alet/save",
-//        success: function(res) {
-//            alert(res.responseText);
-//        },
-//        error: function(res) {
-//            alert(res.responseText);
-//        }
-//    });
-//    alert(JSON.stringify(payload));
-//
-//}
-
-/*-------------Tab Pane handeling-----------------*/
-
-//jQuery(document).ready(function() {
-//
-//    jQuery('.alert-tabs .tab-links a').on('click', function(e)  {
-//        var currentAttrValue = jQuery(this).attr('href');
-//
-//        // Show/Hide Tabs
-//        jQuery('.alert-tabs ' + currentAttrValue).show().siblings().hide();
-//
-//        // Change/remove current tab to active
-//        jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
-//
-//        e.preventDefault();
-//    });
-//
-//    $("#daily-timepicker").timepicker({  timeFormat: 'H:i'
-//        //,interval:30  // 15
-//    });
-//
-//    $("#weekly-timepicker").timepicker({  timeFormat: 'H:i'
-//        //,interval:30  // 15
-//    });
-//
-//    $("#monthly-timepicker").timepicker({  timeFormat: 'H:i'
-//        //,interval:30  // 15
-//    });
-//
-//    $(".monthly-datepicker").datepicker({
-//        dateFormat: 'dd',
-//        changeYear:true,
-//        changeMonth:true,
-//        onSelect: function(dateText, inst) {
-//            alert(dateText); // alerts the day name
-//        }
-//    });
-//
-//
-//    if (window.location.search.indexOf('query') > -1) {
-//        $(".inner-container").show();
-//        urlParams = splitUrl();
-//        setParams(urlParams);
-//        $(".alert-list").hide();
-//
-//    }
-//
-//    loadContent();
-//    loadCompare();
-//});
-
-/*
- $(function () {
- $("#realTime-alert").click(function () {
- var url = serverUrl + '/loganalyzer/site/alert/realtime.jag'
- $("#alert-content").load(url);
-
- });
- });
- $(function () {
- $("#schedule-alert").click(function () {
- var url = serverUrl + '/loganalyzer/site/alert/schedule.jag'
- $("#alert-content").load(url);
-
- });
- });
- */
-
-
-/*if (window.location.search.indexOf('track=yes') > -1) {
- alert('track present');
- } else {
- alert('track not here');
- }*/

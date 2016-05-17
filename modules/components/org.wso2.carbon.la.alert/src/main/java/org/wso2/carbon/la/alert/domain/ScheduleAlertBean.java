@@ -22,12 +22,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
 import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(value = XmlAccessType.FIELD)
-public class SATaskInfo {
+public class ScheduleAlertBean {
     @XmlElement(name = "alertName")
     private String alertName;
 
@@ -70,7 +69,7 @@ public class SATaskInfo {
     @XmlElement(name = "alertActionProperties")
     private Map<String, String> alertActionProperties;
 
-    public SATaskInfo() {
+    public ScheduleAlertBean() {
     }
 
     public String getTableName() {

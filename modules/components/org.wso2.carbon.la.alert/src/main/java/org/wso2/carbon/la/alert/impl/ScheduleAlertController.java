@@ -17,27 +17,48 @@
  */
 package org.wso2.carbon.la.alert.impl;
 
-import org.wso2.carbon.la.alert.domain.SATaskInfo;
-import org.wso2.carbon.ntask.common.TaskException;
-import org.wso2.carbon.ntask.core.TaskInfo;
+import org.wso2.carbon.la.alert.domain.ScheduleAlertBean;
+import org.wso2.carbon.la.alert.exception.ScheduleAlertException;
+
+import java.util.List;
 
 public interface ScheduleAlertController {
     /**
      * Register alert task
      *
-     * @param saTaskInfo Task info for scheduling
+     * @param scheduleAlertBean Task info for scheduling
      * @param userName   User Name of this alert task scheduler
      * @param tenantId   user tenantId of this alert scheduler
      */
-    void createScheduleAlert(SATaskInfo saTaskInfo, String userName, int tenantId) throws TaskException;
+    void createScheduleAlert(ScheduleAlertBean scheduleAlertBean, String userName, int tenantId) throws ScheduleAlertException;
 
     /**
-     * Set task properties
+     * Update Alert Task
      *
-     * @param saTaskInfo Task info for set task properties
+     * @param scheduleAlertBean Task info for set task properties
      * @param userName   User Name of this alert task scheduler
-     * @return TaskInfo with triggerInfo
+     * @param tenantId   Tenant ID of this alert task scheduler
      */
-    TaskInfo createScheduleAlertTask(SATaskInfo saTaskInfo, String userName);
+    void updateScheduleAlertTask(ScheduleAlertBean scheduleAlertBean, String userName, int tenantId) throws ScheduleAlertException;
 
+    /**
+     * Delete Alert Task
+     *
+     * @param alertName Task info for set task properties
+     * @param tenantId   Tenant ID of this alert task scheduler
+     */
+    void deleteScheduleAlert(String alertName, int tenantId) throws ScheduleAlertException;
+
+    /**
+     * Get all Alert configuration
+     *
+     * @param tenantId   Tenant ID of this alert task scheduler
+     */
+
+    /**
+     * Get Alert configuration
+     *
+     * @param tenantId   Tenant ID of this alert task scheduler
+     */
+    List<ScheduleAlertBean> getAllAlertConfigurations(int tenantId);
 }
