@@ -130,7 +130,7 @@ li.active a, li.active a:hover {
     margin-left: 6px;
 }
 #alert-update-btn{
-    float: right;
+    margin-left: 6px;
 }
 
 .compare{

@@ -224,7 +224,6 @@ $("#alert-link").click(function(){
 $("#save-options").change(function(){
 
     var query = $("#search-field").val();
-    alert(query);
     var timeFrom = parseInt($("#timestamp-from").val());
    var timeTo = parseInt($("#timestamp-to").val());
     if($(this).val()=='alert'){

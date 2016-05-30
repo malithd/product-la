@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.la.alert.domain;
+package org.wso2.carbon.la.alert.beans;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

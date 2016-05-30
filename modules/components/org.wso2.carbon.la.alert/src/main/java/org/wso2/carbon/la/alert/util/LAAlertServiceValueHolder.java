@@ -25,7 +25,6 @@ import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.service.TenantRegistryLoader;
 import org.wso2.carbon.registry.core.session.UserRegistry;
-import org.wso2.carbon.user.core.service.RealmService;
 
 public class LAAlertServiceValueHolder {
 
@@ -36,8 +35,6 @@ public class LAAlertServiceValueHolder {
     private RegistryService registryService;
     private TenantRegistryLoader tenantRegistryLoader;
     private AnalyticsDataAPI analyticsDataAPI;
-    //Realm Service which is used to get tenant data.
-    private static RealmService realmService;
 
     public static LAAlertServiceValueHolder getInstance() {
         if (laAlertServiceValueHolder == null) {
@@ -74,12 +71,12 @@ public class LAAlertServiceValueHolder {
         this.eventStreamService = eventStreamService;
     }
 
-    public void setRegistryService(RegistryService registryService) {
-        this.registryService = registryService;
-    }
-
     public RegistryService getRegistryService() {
         return registryService;
+    }
+
+    public void setRegistryService(RegistryService registryService) {
+        this.registryService = registryService;
     }
 
     public void setTenantRegistryLoader(TenantRegistryLoader tenantRegistryLoader) {
@@ -87,8 +84,8 @@ public class LAAlertServiceValueHolder {
     }
 
     public UserRegistry getTenantConfigRegistry(int tenantId) throws RegistryException {
-            this.tenantRegistryLoader.loadTenantRegistry(tenantId);
-            return this.registryService.getConfigSystemRegistry(tenantId);
+        this.tenantRegistryLoader.loadTenantRegistry(tenantId);
+        return this.registryService.getConfigSystemRegistry(tenantId);
     }
 
     public AnalyticsDataAPI getAnalyticsDataAPI() {

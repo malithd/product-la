@@ -60,8 +60,14 @@
                         </a>
                     </div>
 
+                     <div class="wr-project">
+                        <a class="link" id="search-link" >Search</a>
+                    </div>
+                     <div class="wr-project">
+                        <a  class="title" >Alert</a>
+                    </div>
                     <div class="wr-project">
-                        <span class="title">Alert</span>
+                        <a  class="link" id="visualize-link">Visualization</a>
                     </div>
                 </div>
             </div>
@@ -121,82 +127,7 @@
                                      <input id="reportrange" type="text"  onchange="addAlert()">
                                         <span></span>
                                     </div>
-                                   <!-- <div class="hidden-div">
-                                <div class="drop-down-div">
-                                 <div id="drop-down-area" class="drop-down-area">
-                                <button type="button" class="btn btn-main" id="date-time-select" data-placement="bottom" rel="popover"
-                                data-original-title="All Time">All Time</button>
-                                </div>
-                                </div>
-                                </div>
-                            <div class="panel-group" id="timeListContent" style="display: none">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#timeListContent" href="#pre-defined">Pre-defined Sets</a>
-                                        </h4>
-                                    </div>
-                                    <div id="pre-defined" class="panel-collapse collapse in">
-                                        <div class="panel-body">
-                                            <ul class="list-unstyled">
-                                                <li id="all-time" onclick="changeTime(this.innerHTML, 0, new Date(8640000000000000).getTime())">All Time</li>
-                                                <li id="today" onclick="changeTime(this.innerHTML, new Date().setHours(0,0,0,0),
-                                                        new Date().setHours(24,0,0,0))">Today</li>
-                                                <li value="week-to-date" onclick="changeTime(this.innerHTML, getLastWeek().getTime(), Date.now())">Week to Date</li>
-                                                <li value="month-to-date" onclick="changeTime(this.innerHTML, getLastMonth().getTime(), Date.now())">Month to Date</li>
-                                                <li value="last-15-minutes" onclick="changeTime(this.innerHTML, Date.now() - 15*60000, Date.now())">Last 15 Minutes</li>
-                                                <li value="last-hour" onclick="changeTime(this.innerHTML, Date.now() - 60*60000, Date.now())">Last 1 Hour</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#timeListContent" href="#date-range">Date Range</a>
-                                        </h4>
-                                    </div>
-                                    <div id="date-range" class="panel-collapse collapse">
-                                        <div class="panel-body">
-                                            <div>
-                                                <label>From: </label>
-                                                <input type="text" id="dateRangeDatePickerFrom" class="datepicker" placeholder="Start Date of event" />
-                                            </div>
-                                            <div>
-                                                <label>To: </label>
-                                                <input type="text" id="dateRangeDatePickerTo" class="datepicker" placeholder="End Date of event" />
-                                            </div>
-                                            <div>
-                                                <button type="button" class="btn btn-main" id="date-range-add-btn" onclick="assignDateRange()">Add</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4 class="panel-title">
-                                          <a data-toggle="collapse" data-parent="#timeListContent" href="#date-time-range">Date Time Range</a>
-                                        </h4>
-                                    </div>
-                                    <div id="date-time-range" class="panel-collapse collapse">
-                                        <div class="panel-body">
-                                            <div>
-                                                <label>From: </label>
-                                                <input type="text" id="dateTimeRangeDatePickerFrom" class="datepicker" placeholder="Start Date time of event" />
-                                                <input id="dateTimeRangeTimePickerFrom" class="timepicker" type="text" />
-                                            </div>
-                                            <div>
-                                                <label>To: </label>
-                                                <input type="text" id="dateTimeRangeDatePickerTo" class="datepicker" placeholder="End Date time of event" />
-                                                <input id="dateTimeRangeTimePickerTo" class="timepicker" type="text" />
-                                            </div>
-                                            <div>
-                                                <button type="button" class="btn btn-main" id="date-range-add-btn" onclick="assignDateTimeRange()">Add</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>-->
+
                             <input type="hidden" id="timestamp-from" value="0"/>
                             <input type="hidden" id="timestamp-to" value="8640000000000000"/>
 
@@ -381,7 +312,7 @@
                                         </div>
                                     </div>
 
-                                    <div style="margin-bottom: 20px"> <input type="checkbox" id="countSlt" name="count" value="count"> Send Result Count with the Message.
+                                    <div style="margin-bottom: 20px"> <input type="checkbox" id="countSlt" name="count" value="count"> Include Link to Results
                                     <!--<button  onclick="getColumns()">+ Advance</button></div>
                                     <div class="columns" id="columns"></div>-->
                                     </div>

@@ -35,7 +35,7 @@ jQuery(document).ready(function() {
         changeYear:true,
         changeMonth:true,
         onSelect: function(dateText, inst) {
-            alert(dateText); // alerts the day name
+           // alert(dateText); // alerts the day name
         }
     });
 
@@ -78,7 +78,8 @@ jQuery(document).ready(function() {
             'This Month': [moment().startOf('month'), moment().endOf('month')],
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
             'Last 15 Minutes':[moment().subtract(15, 'minutes'), moment()],
-            'Last Hour':[moment().subtract(60, 'minutes'),moment()]
+            'Last Hour':[moment().subtract(60, 'minutes'),moment()],
+            'Last 24 Hours':[moment().subtract(24, 'hours'),moment()]
         }
     }, cb);
 });
@@ -217,7 +218,7 @@ function saveAlert(){
         }
 
         if ($("#countSlt").is(":checked")) {
-            loggerMessage+=" {{count}}";
+            loggerMessage+=" \nResults Link: {{url}}";
         }
         action.uniqueId=uniqueId;
         action.message=loggerMessage;
@@ -242,11 +243,11 @@ function saveAlert(){
             alert("Message can't be empty");
             return;
         }
+        if ($("#countSlt").is(":checked")) {
+            emailMessage+=" <div> <a href='{{url}}'> View Results</a></div>";
+        }
         if ($("#field-data").val()) {
             emailMessage+="<div> Required fields of Results <br> {{values}} </div>";
-        }
-        if ($("#countSlt").is(":checked")) {
-            emailMessage+=" <div> Result Count is {{count}} </div>";
         }
 
         action.email_address=emailAddressesTxt;
@@ -266,7 +267,7 @@ function saveAlert(){
             return;
         }
         if ($("#countSlt").is(":checked")) {
-            smsMessage+=" {{count}}";
+            smsMessage+=" Results Link: {{count}}";
         }
         action.sms_no=phoneNo;
         action.message=smsMessage;
@@ -334,7 +335,7 @@ function updateAlert(){
             return;
         }
         if ($("#countSlt").is(":checked")) {
-            loggerMessage+=" {{count}}";
+            loggerMessage+=" \nResults Link: {{url}}";
         }
         action.uniqueId=uniqueId;
         action.message=loggerMessage;
@@ -358,11 +359,11 @@ function updateAlert(){
             alert("Message can't be empty");
             return;
         }
+        if ($("#countSlt").is(":checked")) {
+            emailMessage+=" <div><a href='{{url}}'> View Results</a>  </div>";
+        }
         if ($("#field-data").val()) {
             emailMessage+="<div> Results <br> {{values}} </div>";
-        }
-        if ($("#countSlt").is(":checked")) {
-            emailMessage+=" <div> Result Count {{count}} </div>";
         }
 
         action.email_address=emailAddressesTxt;
@@ -382,7 +383,7 @@ function updateAlert(){
             return;
         }
         if ($("#countSlt").is(":checked")) {
-            smsMessage+=" {{count}}";
+            smsMessage+=" Results Link: {{url}}";
         }
         action.sms_no=phoneNo;
         action.message=smsMessage;
@@ -538,7 +539,7 @@ function cronBuilder (){
         $("#cron-exp").val("0 0/"+minute+" * * * ?");
 
     }
-    alert($("#cron-exp").val());
+   // alert($("#cron-exp").val());
 }
 
 
@@ -601,3 +602,7 @@ function addAlert(){
    $("#timestamp-from").val(timeFromMils);
     $("#timestamp-to").val(timeToMils);
 }
+
+$("#search-link").click(function(){
+    window.location = serverUrl + '/loganalyzer/site/search/search.jag';
+});

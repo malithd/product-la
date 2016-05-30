@@ -24,8 +24,8 @@ import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
 import org.wso2.carbon.event.publisher.core.EventPublisherService;
 import org.wso2.carbon.event.stream.core.EventStreamService;
-import org.wso2.carbon.la.alert.domain.LAAlertConstant;
-import org.wso2.carbon.la.alert.impl.ScheduleAlertController;
+import org.wso2.carbon.la.alert.domain.LAAlertConstants;
+import org.wso2.carbon.la.alert.domain.ScheduleAlertController;
 import org.wso2.carbon.la.alert.impl.ScheduleAlertControllerImpl;
 import org.wso2.carbon.la.alert.util.LAAlertServiceValueHolder;
 import org.wso2.carbon.ntask.core.service.TaskService;
@@ -54,22 +54,21 @@ import org.wso2.carbon.registry.core.service.TenantRegistryLoader;
  * interface="org.wso2.carbon.registry.core.service.TenantRegistryLoader"
  * cardinality="1..1" policy="dynamic" bind="setTenantRegistryLoader"
  * unbind="unsetTenantRegistryLoader"
- ** @scr.reference name="org.wso2.carbon.analytics.api.AnalyticsDataAPI"
- *  interface="org.wso2.carbon.analytics.api.AnalyticsDataAPI"
- *  cardinality="1..1" policy="dynamic" bind="setAnalyticsDataAPI"
- *  unbind="unsetAnalyticsDataAPI"
- *
+ * * @scr.reference name="org.wso2.carbon.analytics.api.AnalyticsDataAPI"
+ * interface="org.wso2.carbon.analytics.api.AnalyticsDataAPI"
+ * cardinality="1..1" policy="dynamic" bind="setAnalyticsDataAPI"
+ * unbind="unsetAnalyticsDataAPI"
  */
-public class LAAlertDS {
+public class LAAlertComponent {
 
-    private static final Log log = LogFactory.getLog(LAAlertDS.class);
+    private static final Log log = LogFactory.getLog(LAAlertComponent.class);
 
     protected void activate(ComponentContext componentContext) {
         BundleContext bundleContext = componentContext.getBundleContext();
         try {
             ScheduleAlertControllerImpl scheduleAlertControllerImpl = new ScheduleAlertControllerImpl();
             bundleContext.registerService(ScheduleAlertController.class.getName(), scheduleAlertControllerImpl, null);
-            LAAlertServiceValueHolder.getInstance().getTaskService().registerTaskType(LAAlertConstant.SCHEDULE_ALERT_TASK_TYPE);
+            LAAlertServiceValueHolder.getInstance().getTaskService().registerTaskType(LAAlertConstants.SCHEDULE_ALERT_TASK_TYPE);
             if (log.isDebugEnabled()) {
                 log.debug("Data Services task bundle is activated ");
             }

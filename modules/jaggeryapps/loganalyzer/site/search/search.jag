@@ -54,7 +54,7 @@
                     </div>
 
                     <div class="wr-project">
-                        <a class="title" >SEARCH</a>
+                        <a class="title" >Search</a>
                     </div>
                      <div class="wr-project">
                         <a class="link" id="alert-link" onclick="alertPage()">Alert</a>

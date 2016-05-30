@@ -20,7 +20,7 @@ package org.wso2.carbon.la.restapi;
 
 import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.la.alert.domain.ScheduleAlertBean;
+import org.wso2.carbon.la.alert.beans.ScheduleAlertBean;
 import org.wso2.carbon.la.alert.exception.ScheduleAlertException;
 import org.wso2.carbon.la.alert.impl.ScheduleAlertControllerImpl;
 import org.wso2.carbon.la.commons.constants.LAConstants;
@@ -30,7 +30,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Set;
-
 
 @Path("/alert")
 public class AlertApi {
@@ -58,7 +57,7 @@ public class AlertApi {
     @GET
     @Path("getAllScheduleAlerts")
     @Produces("application/json")
-    public Response getAllScheduleAlerts() {
+    public Response getAllScheduleAlerts() throws ScheduleAlertException {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
         List<ScheduleAlertBean> scheduleAlertBeanList = scheduleAlertControllerImpl.getAllAlertConfigurations(tenantId);
@@ -82,7 +81,7 @@ public class AlertApi {
     public Response deleteScheduleAlert(@PathParam("alertName") String alertName) throws ScheduleAlertException {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
-        scheduleAlertControllerImpl.deleteScheduleAlert(alertName, tenantId);
+        scheduleAlertControllerImpl.deleteScheduledAlert(alertName, tenantId);
         return Response.ok().build();
     }
 
@@ -92,8 +91,7 @@ public class AlertApi {
     public ScheduleAlertBean getAlertContent(@PathParam("alertName") String alertName) throws RegistryException, ScheduleAlertException {
         PrivilegedCarbonContext carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
         int tenantId = carbonContext.getTenantId();
-        ScheduleAlertBean scheduleAlertBean = scheduleAlertControllerImpl.getAlertConfiguration(alertName, tenantId);
-        return scheduleAlertBean;
+        return scheduleAlertControllerImpl.getAlertConfiguration(alertName, tenantId);
     }
 
     @PUT
