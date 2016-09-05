@@ -43,13 +43,11 @@ public class SearchController {
     }
 
     private String appendTimeRangeToSearchQuery(String query, long timeFrom, long timeTo) {
-        String timeF=String.valueOf(timeFrom);
-        String timeT=String.valueOf(timeTo);
         String searchQuery = "";
         if (!"".equals(query)) {
             searchQuery = query + " AND ";
         }
-        return searchQuery + "_eventTimeStamp:[" + timeF + " TO " + timeT + "]";
+        return searchQuery + "_timestamp:[" + timeFrom + " TO " + timeTo + "]";
     }
 
     /**
