@@ -284,9 +284,8 @@
                                     org.wso2.carbon.analytics:org.wso2.carbon.analytics.stream.persistence.server.feature:${carbon.analytics.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
-                                    org.wso2.carbon.analytics-common:org.wso2.carbon.event.execution.manager.feature:${carbon.analytics.common.version}
+                                    org.wso2.carbon.event-processing:org.wso2.carbon.event.execution.manager.feature:${carbon.event-processing.version}
                                 </featureArtifactDef>
-
                                 <!-- ************** END - EVENT PROCESSING FEATURES ************ -->
 
                                 <!-- START - UES Features -->
@@ -340,10 +339,6 @@
                                 </featureArtifactDef>
 
                                 <featureArtifactDef>
-                                    org.wso2.carbon.la:org.wso2.carbon.la.alert.feature:${carbon.la.version}
-                                </featureArtifactDef>
-
-                                <featureArtifactDef>
                                     org.wso2.carbon.analytics:org.wso2.carbon.analytics.messageconsole.feature:${carbon.analytics.version}
                                 </featureArtifactDef>
 
@@ -378,11 +373,6 @@
 
                                 <feature>
                                     <id>org.wso2.carbon.la.core.feature.group</id>
-                                    <version>${carbon.la.version}</version>
-                                </feature>
-
-                                <feature>
-                                    <id>org.wso2.carbon.la.alert.feature.group</id>
                                     <version>${carbon.la.version}</version>
                                 </feature>
 
@@ -637,7 +627,7 @@
                                 </feature>
                                 <feature>
                                     <id>org.wso2.carbon.event.execution.manager.feature.group</id>
-                                    <version>${carbon.analytics.common.version}</version>
+                                    <version>${carbon.event-processing.version}</version>
                                 </feature>
 
                                 <!-- ************** END - EVENT PROCESSING FEATURES ************ -->

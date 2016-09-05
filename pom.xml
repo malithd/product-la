@@ -40,7 +40,6 @@
         <module>modules/features</module>
         <module>modules/p2-profile-gen</module>
         <module>modules/distribution</module>
-        <module>modules/integration</module>
     </modules>
 
     <dependencyManagement>
@@ -146,16 +145,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.la</groupId>
-                <artifactId>org.wso2.carbon.la.integration.common.clients</artifactId>
-                <version>${carbon.la.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.la</groupId>
-                <artifactId>org.wso2.carbon.la.integration.common.utils</artifactId>
-                <version>${carbon.la.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.wso2.carbon.automation</groupId>
                 <artifactId>org.wso2.carbon.automation.test.utils</artifactId>
                 <version>${carbon.automation.version}</version>
@@ -229,11 +218,6 @@
                 <version>${carbon.analytics.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.analytics</groupId>
-                <artifactId>org.wso2.carbon.analytics.messageconsole.stub</artifactId>
-                <version>${carbon.analytics.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.wso2.carbon.analytics-common</groupId>
                 <artifactId>org.wso2.carbon.event.stream.persistence.stub</artifactId>
                 <version>${carbon.analytics.common.version}</version>
@@ -247,16 +231,6 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>org.jacoco.agent</artifactId>
                 <version>${jacoco.agent.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.analytics</groupId>
-                <artifactId>org.wso2.carbon.analytics.activitydashboard.stub</artifactId>
-                <version>${carbon.analytics.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.analytics</groupId>
-                <artifactId>org.wso2.carbon.analytics.activitydashboard.commons</artifactId>
-                <version>${carbon.analytics.version}</version>
             </dependency>
             <!-- END - Integration test dependencies -->
 
@@ -485,11 +459,6 @@
                 <artifactId>org.wso2.carbon.la.commons</artifactId>
                 <version>${carbon.la.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.la</groupId>
-                <artifactId>org.wso2.carbon.la.alert</artifactId>
-                <version>${carbon.la.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.wso2.carbon.la</groupId>
@@ -510,14 +479,9 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.analytics-common</groupId>
-                <artifactId>org.wso2.carbon.event.publisher.core</artifactId>
-                <version>${carbon.analytics.common.version}</version>
-            </dependency>
-            <!--<dependency>
-                <groupId>org.wso2.carbon.analytics-common</groupId>
                 <artifactId>org.wso2.carbon.event.stream.persistence.stub</artifactId>
                 <version>${carbon.analytics.common.version}</version>
-            </dependency>-->
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -554,7 +518,7 @@
         <carbon.kernel.version>4.4.3</carbon.kernel.version>
         <commons.io.version>2.4</commons.io.version>
         <carbon.analytics.version>1.0.6-SNAPSHOT</carbon.analytics.version>
-        <carbon.analytics.common.version>5.0.12-SNAPSHOT</carbon.analytics.common.version>
+        <carbon.analytics.common.version>5.0.10-SNAPSHOT</carbon.analytics.common.version>
         <carbon.automationutils.version>4.4.1</carbon.automationutils.version>
         <carbon.automation.version>4.4.2</carbon.automation.version>
         <carbon.registry.version>4.4.8</carbon.registry.version>
@@ -563,7 +527,7 @@
         <carbon.identity.version>4.5.6</carbon.identity.version>
         <carbon.commons.version>4.4.8</carbon.commons.version>
         <carbon.data.version>4.3.4</carbon.data.version>
-        <carbon.event-processing.version>2.0.13-SNAPSHOT</carbon.event-processing.version>
+        <carbon.event-processing.version>2.0.11</carbon.event-processing.version>
         <carbon.dashboard.version>1.0.7</carbon.dashboard.version>
         <carbon.metrics.version>1.1.1</carbon.metrics.version>
 

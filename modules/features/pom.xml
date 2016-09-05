@@ -19,6 +19,5 @@
         <module>org.wso2.carbon.la.restapi.feature</module>
         <module>org.wso2.carbon.la.database.feature</module>
         <module>org.wso2.carbon.la.core.feature</module>
-        <module>org.wso2.carbon.la.alert.feature</module>
     </modules>
 </project> 
