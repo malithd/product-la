@@ -88,6 +88,4 @@ public class LAConstants {
     public static final String DELIMITER_COMMA = "\\s*,\\s*";
     public static final String DELIMITER_TAB = "\\t";
     public static final String DELIMITER_PIPE = "\\|";
-
-
 }

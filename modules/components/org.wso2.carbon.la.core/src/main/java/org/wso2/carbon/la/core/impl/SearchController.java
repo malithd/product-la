@@ -24,7 +24,7 @@ public class SearchController {
         if (query != null) {
             query.setQuery(appendTimeRangeToSearchQuery(query.getQuery(), query.getTimeFrom(), query.getTimeTo()));
             List<SearchResultEntry> searchResults = analyticsDataService.search(username,query.getTableName(),
-                    query.getQuery(),query.getStart(), query.getLength(),null);
+                    query.getQuery(),query.getStart(), query.getLength());
             List<String> ids = getRecordIds(searchResults);
             AnalyticsDataResponse resp = analyticsDataService.get(username, query.getTableName(), 1, null, ids);
 

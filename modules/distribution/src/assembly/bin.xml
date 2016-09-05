@@ -166,17 +166,6 @@
             </excludes>
         </fileSet>
 
-        <!--creating an empty domain template directory-->
-        <fileSet>
-            <directory>.</directory>
-            <outputDirectory>
-                ${pom.artifactId}-${pom.version}/repository/conf/execution-manager/domain-template
-            </outputDirectory>
-            <excludes>
-                <exclude>**/*</exclude>
-            </excludes>
-        </fileSet>
-
         <!--creating an empty output event adaptors directory-->
         <fileSet>
             <directory>.</directory>
@@ -711,15 +700,6 @@
             <fileMode>755</fileMode>
         </file>
 
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/analytics/spark/carbon-spark-classpath.conf
-            </source>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/conf/analytics/spark/
-            </outputDirectory>
-            <fileMode>755</fileMode>
-        </file>
-
         <!--spark udf conf file-->
         <file>
             <source>
@@ -789,7 +769,7 @@
             <source>
                 src/repository/conf/domain-template/temperature-analysis.xml
             </source>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/conf/execution-manager/domain-template</outputDirectory>
+            <outputDirectory>${pom.artifactId}-${pom.version}/repository/conf/cep/domain-template</outputDirectory>
             <filtered>true</filtered>
         </file>
 
