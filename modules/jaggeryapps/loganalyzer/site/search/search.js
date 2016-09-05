@@ -98,7 +98,31 @@ $(document).ready(function () {
         }
     });
 
+    if (window.location.search.indexOf('query') > -1) {
+        urlParams = splitUrl();
+        var decodeQuery=(urlParams["query"]);
+        $("#search-field").val(window.atob(urlParams["query"]));
+        $("#timestamp-from").val(window.atob(urlParams["timeFrom"]));
+        $("#timestamp-to").val(window.atob(urlParams["timeTo"]));
+        searchActivities();
+    }
+
 });
+
+function splitUrl() {
+    var urlParams;
+    var match,
+        pl = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) {
+            return decodeURIComponent(s.replace(pl, " "));
+        },
+        query = window.location.search.substring(1);
+    urlParams = {};
+    while (match = search.exec(query))
+        urlParams[decode(match[1])] = decode(match[2]);
+    return urlParams;
+}
 
 function searchActivities2() {
     var payload = {};
@@ -184,7 +208,7 @@ function tableToCSV(table, tableElm) {
         csvContent += index < csv.length ? dataString+ "\n" : dataString;
 
     });
-
+-link
     var encodedUri = encodeURI(csvContent);
     var link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -192,3 +216,21 @@ function tableToCSV(table, tableElm) {
     link.click();
 }
 
+/*----------------Delete---------------------------*/
+$("#alert-link").click(function(){
+    window.location = serverUrl + '/loganalyzer/site/alert/alert.jag';
+});
+
+$("#save-options").change(function(){
+
+    var query = $("#search-field").val();
+    var timeFrom = parseInt($("#timestamp-from").val());
+   var timeTo = parseInt($("#timestamp-to").val());
+    if($(this).val()=='alert'){
+        window.location=serverUrl+'/loganalyzer/site/alert/alert.jag?'+"query="+query + "&" + "timefrom="+timeFrom + "&" + "timeto="+timeTo;
+    }
+});
+
+
+
+/*---------------------Delete above----------------------------*/
