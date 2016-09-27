@@ -41,7 +41,11 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
             <bean class="org.wso2.carbon.la.restapi.SearchApiV10"/>
             <bean class="org.wso2.carbon.la.restapi.ActivityDashboardApiV10"/>
             <bean class="org.wso2.carbon.la.restapi.FileProcessingApi"/>
+<<<<<<< HEAD
             <bean class="org.wso2.carbon.la.restapi.AlertApi"/>
+=======
+            <bean class="org.wso2.carbon.la.restapi.DashboardApiV10"/>
+>>>>>>> ff1fc2b4919b90d18dab825b6ab81a4b3a55ab04
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
